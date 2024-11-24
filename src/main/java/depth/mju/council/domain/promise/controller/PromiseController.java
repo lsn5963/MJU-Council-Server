@@ -20,10 +20,10 @@ public class PromiseController {
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PostMapping("/{id}/{policyTitle}")
-    public ResponseEntity<?> createPromise(
+    public ResponseEntity<?> createPromiseCategory(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long id, @PathVariable String policyTitle){
-        return promiseService.createPromise(id, policyTitle);
+        return promiseService.createPromiseCategory(id, policyTitle);
     }
     @Operation(summary = "정책 조회 API", description = "정책 목록을 조회하는 API입니다.")
     @ApiResponses(value = {
@@ -31,10 +31,10 @@ public class PromiseController {
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> retrievePromise(
+    public ResponseEntity<?> retrievePromiseCategory(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long id){
-        return promiseService.retrievePromise(id);
+        return promiseService.retrievePromiseCategory(id);
     }
     @Operation(summary = "정책 수정 API", description = "정책 목록을 수정하는 API입니다.")
     @ApiResponses(value = {
@@ -42,12 +42,12 @@ public class PromiseController {
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PatchMapping("/{id}/{policyId}/{policyTitle}")
-    public ResponseEntity<?> modifyPromise(
+    public ResponseEntity<?> modifyPromiseCategory(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long id,
             @PathVariable Long policyId,
             @PathVariable String policyTitle){
-        return promiseService.modifyPromise(id,policyId,policyTitle);
+        return promiseService.modifyPromiseCategory(id,policyId,policyTitle);
     }
     @Operation(summary = "정책 삭제 API", description = "정책 목록을 삭제하는 API입니다.")
     @ApiResponses(value = {
@@ -55,11 +55,11 @@ public class PromiseController {
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @DeleteMapping("/{id}/{policyId}")
-    public ResponseEntity<?> deletePromise(
+    public ResponseEntity<?> deletePromiseCategory(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long id,
             @PathVariable Long policyId){
-        return promiseService.deletePromise(id,policyId);
+        return promiseService.deletePromiseCategory(id,policyId);
     }
 
 }

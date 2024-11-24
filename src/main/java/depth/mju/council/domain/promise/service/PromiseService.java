@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class PromiseService {
     private final UserRepository userRepository;
     private final PromiseCategoryRepository promiseCategoryRepository;
-    public ResponseEntity<?> createPromise(Long id, String policyTitle) {
+    public ResponseEntity<?> createPromiseCategory(Long id, String policyTitle) {
         User user = userRepository.findById(id).get();
         PromiseCategory promiseCategory = PromiseCategory.builder()
                 .title(policyTitle)
@@ -36,7 +36,7 @@ public class PromiseService {
         return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<?> retrievePromise(Long id) {
+    public ResponseEntity<?> retrievePromiseCategory(Long id) {
         User user = userRepository.findById(id).get();
         List<PromiseCategory> promiseCategories = promiseCategoryRepository.findByUser(user);
         List<PolicyResponse> policies = promiseCategories.stream()
@@ -53,7 +53,7 @@ public class PromiseService {
         return ResponseEntity.ok(apiResponse);
     }
     @Transactional
-    public ResponseEntity<?> modifyPromise(Long id, Long policyId, String policyTitle) {
+    public ResponseEntity<?> modifyPromiseCategory(Long id, Long policyId, String policyTitle) {
         PromiseCategory promiseCategory = promiseCategoryRepository.findById(policyId).get();
         promiseCategory.updatePolicyTitle(policyTitle);
         ApiResponse apiResponse = ApiResponse.builder()
@@ -63,7 +63,7 @@ public class PromiseService {
         return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<?> deletePromise(Long id, Long policyId) {
+    public ResponseEntity<?> deletePromiseCategory(Long id, Long policyId) {
         PromiseCategory promiseCategory = promiseCategoryRepository.findById(policyId).get();
         promiseCategoryRepository.delete(promiseCategory);
         ApiResponse apiResponse = ApiResponse.builder()
