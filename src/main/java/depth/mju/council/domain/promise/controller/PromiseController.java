@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PromiseController {
     private final PromiseService promiseService;
-    @Operation(summary = "장책 추가 API", description = "정책 목록을 추가하는 API입니다.")
+    @Operation(summary = "정책 추가 API", description = "정책 목록을 추가하는 API입니다.")
     @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", description = "캐릭터 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyCharaterListRes.class) ) } ),
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
@@ -25,7 +25,7 @@ public class PromiseController {
             @PathVariable Long id, @PathVariable String policyTitle){
         return promiseService.createPromise(id, policyTitle);
     }
-    @Operation(summary = "장책 조회 API", description = "정책 목록을 조회하는 API입니다.")
+    @Operation(summary = "정책 조회 API", description = "정책 목록을 조회하는 API입니다.")
     @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", description = "캐릭터 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyCharaterListRes.class) ) } ),
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
@@ -36,7 +36,7 @@ public class PromiseController {
             @PathVariable Long id){
         return promiseService.retrievePromise(id);
     }
-    @Operation(summary = "장책 수정 API", description = "정책 목록을 수정하는 API입니다.")
+    @Operation(summary = "정책 수정 API", description = "정책 목록을 수정하는 API입니다.")
     @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", description = "캐릭터 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyCharaterListRes.class) ) } ),
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
@@ -49,7 +49,7 @@ public class PromiseController {
             @PathVariable String policyTitle){
         return promiseService.modifyPromise(id,policyId,policyTitle);
     }
-    @Operation(summary = "장책 삭제 API", description = "정책 목록을 삭제하는 API입니다.")
+    @Operation(summary = "정책 삭제 API", description = "정책 목록을 삭제하는 API입니다.")
     @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", description = "캐릭터 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyCharaterListRes.class) ) } ),
 //            @ApiResponse(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
@@ -61,4 +61,5 @@ public class PromiseController {
             @PathVariable Long policyId){
         return promiseService.deletePromise(id,policyId);
     }
+
 }
