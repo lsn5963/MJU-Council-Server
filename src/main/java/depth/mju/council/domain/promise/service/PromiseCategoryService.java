@@ -1,25 +1,22 @@
 package depth.mju.council.domain.promise.service;
 
-import depth.mju.council.domain.promise.dto.res.PolicyResponse;
+import depth.mju.council.domain.promise.dto.res.PolicyRes;
 import depth.mju.council.domain.promise.entity.PromiseCategory;
 import depth.mju.council.domain.promise.repository.PromiseCategoryRepository;
-import depth.mju.council.domain.promise.repository.PromiseRepository;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.payload.ApiResponse;
-import depth.mju.council.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PromiseService {
+public class PromiseCategoryService {
     private final UserRepository userRepository;
     private final PromiseCategoryRepository promiseCategoryRepository;
     public ResponseEntity<?> createPromiseCategory(Long id, String policyTitle) {
@@ -39,8 +36,8 @@ public class PromiseService {
     public ResponseEntity<?> retrievePromiseCategory(Long id) {
         User user = userRepository.findById(id).get();
         List<PromiseCategory> promiseCategories = promiseCategoryRepository.findByUser(user);
-        List<PolicyResponse> policies = promiseCategories.stream()
-                .map(promiseCategory -> PolicyResponse.builder()
+        List<PolicyRes> policies = promiseCategories.stream()
+                .map(promiseCategory -> PolicyRes.builder()
                         .id(promiseCategory.getId())
                         .title(promiseCategory.getTitle())
                         .build())

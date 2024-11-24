@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @Builder
-public class PolicyResponse {
+public class PolicyRes {
     private Long id;
     private String title;
 }
