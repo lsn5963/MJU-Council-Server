@@ -1,13 +1,51 @@
 package depth.mju.council.domain.regulation.controller;
 
 import depth.mju.council.domain.regulation.service.RegulationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/regulations")
 @RequiredArgsConstructor
 public class RegulationController {
     private final RegulationService regulationService;
+    @Operation(summary = "학생회칙 추가 API", description = "학생회칙을 추가하는 API입니다.")
+    @ApiResponses(value = {
+    })
+    @PostMapping("/{id}")
+    public ResponseEntity<?> createRegulation(
+            @PathVariable Long id,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        return regulationService.createRegulation(id, file);
+    }
+    @Operation(summary = "학생회칙 조회 API", description = "학생회칙 목록을 조회하는 API입니다.")
+    @ApiResponses(value = {
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<?> retrieveAllRegulation(
+            @PathVariable Long id) {
+        //페에징 필요
+        return regulationService.retrieveAllRegulation(id);
+    }
+    @Operation(summary = "학생회칙 수정 API", description = "학생회칙을 수정하는 API입니다.")
+    @ApiResponses(value = {
+    })
+    @PatchMapping("/{regulationId}")
+    public ResponseEntity<?> modifyRegulation(
+            @PathVariable Long regulationId,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        return regulationService.modifyRegulation(regulationId, file);
+    }
+    @Operation(summary = "학생회칙 삭제 API", description = "학생회칙을 삭제하는 API입니다.")
+    @ApiResponses(value = {
+    })
+    @DeleteMapping("/{regulationId}")
+    public ResponseEntity<?> deleteRegulation(
+            @PathVariable Long regulationId) {
+        return regulationService.deleteRegulation(regulationId);
+    }
 }
