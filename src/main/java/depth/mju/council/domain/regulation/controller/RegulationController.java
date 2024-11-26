@@ -1,6 +1,7 @@
 package depth.mju.council.domain.regulation.controller;
 
 import depth.mju.council.domain.regulation.service.RegulationService;
+import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,11 @@ public class RegulationController {
     public ResponseEntity<?> createRegulation(
             @PathVariable Long id,
             @RequestPart(value = "file", required = false) MultipartFile file) {
-        return regulationService.createRegulation(id, file);
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(regulationService.createRegulation(id, file))
+                .build();
+        return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 조회 API", description = "학생회칙 목록을 조회하는 API입니다.")
     @ApiResponses(value = {
@@ -29,7 +34,11 @@ public class RegulationController {
     public ResponseEntity<?> retrieveAllRegulation(
             @PathVariable Long id) {
         //페에징 필요
-        return regulationService.retrieveAllRegulation(id);
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(regulationService.retrieveAllRegulation(id))
+                .build();
+        return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 수정 API", description = "학생회칙을 수정하는 API입니다.")
     @ApiResponses(value = {
@@ -38,14 +47,23 @@ public class RegulationController {
     public ResponseEntity<?> modifyRegulation(
             @PathVariable Long regulationId,
             @RequestPart(value = "file", required = false) MultipartFile file) {
-        return regulationService.modifyRegulation(regulationId, file);
+
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(regulationService.modifyRegulation(regulationId, file))
+                .build();
+        return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 삭제 API", description = "학생회칙을 삭제하는 API입니다.")
     @ApiResponses(value = {
     })
-    @DeleteMapping("/{regulationId}")
+    @DeleteMapping("/{regulation-id}")
     public ResponseEntity<?> deleteRegulation(
             @PathVariable Long regulationId) {
-        return regulationService.deleteRegulation(regulationId);
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(regulationService.deleteRegulation(regulationId))
+                .build();
+        return ResponseEntity.ok(result);
     }
 }

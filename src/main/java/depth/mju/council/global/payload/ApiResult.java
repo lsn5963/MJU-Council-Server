@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @ToString
 @Data
-public class ApiResponse {
+public class ApiResult {
 
     //올바르게 로직을 처리했으면 True, 아니면 False를 반환합니다.
     private boolean check;
@@ -17,10 +17,10 @@ public class ApiResponse {
 
     private String message;
 
-    public ApiResponse(){};
+    public ApiResult(){};
 
     @Builder
-    public ApiResponse(boolean check, Object information, String message) {
+    public ApiResult(boolean check, Object information, String message) {
         this.check = check;
         this.information = information;
         this.message = message;
