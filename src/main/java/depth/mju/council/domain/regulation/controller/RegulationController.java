@@ -17,26 +17,26 @@ public class RegulationController {
     @Operation(summary = "학생회칙 추가 API", description = "학생회칙을 추가하는 API입니다.")
     @ApiResponses(value = {
     })
-    @PostMapping("/{id}")
+    @PostMapping("/{userId}")
     public ResponseEntity<?> createRegulation(
-            @PathVariable Long id,
+            @PathVariable Long userId,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.createRegulation(id, file))
+                .information(regulationService.createRegulation(userId, file))
                 .build();
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 조회 API", description = "학생회칙 목록을 조회하는 API입니다.")
     @ApiResponses(value = {
     })
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public ResponseEntity<?> retrieveAllRegulation(
-            @PathVariable Long id) {
+            @PathVariable Long userId) {
         //페에징 필요
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.retrieveAllRegulation(id))
+                .information(regulationService.retrieveAllRegulation(userId))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -57,7 +57,7 @@ public class RegulationController {
     @Operation(summary = "학생회칙 삭제 API", description = "학생회칙을 삭제하는 API입니다.")
     @ApiResponses(value = {
     })
-    @DeleteMapping("/{regulation-id}")
+    @DeleteMapping("/{regulationId}")
     public ResponseEntity<?> deleteRegulation(
             @PathVariable Long regulationId) {
         ApiResult result = ApiResult.builder()
