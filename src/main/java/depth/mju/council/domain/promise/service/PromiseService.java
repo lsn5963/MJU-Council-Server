@@ -26,7 +26,7 @@ public class PromiseService {
     private final PromiseCategoryRepository promiseCategoryRepository;
     private final PromiseRepository promiseRepository;
     @Transactional
-    public String createPromise(Long userId, String promiseTitle, CreatePromiseReq createPromiseReq) {
+    public void createPromise(Long userId, String promiseTitle, CreatePromiseReq createPromiseReq) {
         User user = userRepository.findById(userId).get();
         // 정책 가져오기
         PromiseCategory promiseCategory = promiseCategoryRepository.findByUserAndTitle(user,promiseTitle);
@@ -37,9 +37,7 @@ public class PromiseService {
                 .progress(createPromiseReq.getProgress())
                 .promiseCategory(promiseCategory)
                 .build();
-
         promiseRepository.save(promise);
-        return "공약을 추가했어요";
     }
 
     public List<PromiseRes> retrievePromise(Long userId, String promiseTitle) {
@@ -57,15 +55,13 @@ public class PromiseService {
         return promiseRes;
     }
     @Transactional
-    public String deletePromise(Long promiseId) {
+    public void deletePromise(Long promiseId) {
         Promise promise = promiseRepository.findById(promiseId).get();
         promiseRepository.delete(promise);
-        return "공약을 삭제했어요";
     }
     @Transactional
-    public String modifyPromise(Long promiseId, ModifyPromiseReq modifyPromiseReq) {
+    public void modifyPromise(Long promiseId, ModifyPromiseReq modifyPromiseReq) {
         Promise promise = promiseRepository.findById(promiseId).get();
         promise.update(modifyPromiseReq);
-        return "공약을 수정했어요";
     }
 }

@@ -25,9 +25,10 @@ public class PromiseController {
     public ResponseEntity<?> createPromise(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long userId, @PathVariable String promiseTitle, @RequestBody CreatePromiseReq createPromiseCategoryReq){
+        promiseService.createPromise(userId, promiseTitle,createPromiseCategoryReq);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.createPromise(userId, promiseTitle,createPromiseCategoryReq))
+                .message("공약을 추가했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -55,9 +56,10 @@ public class PromiseController {
     public ResponseEntity<?> modifyPromise(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long promiseId,@RequestBody ModifyPromiseReq modifyPromiseReq){
+        promiseService.modifyPromise(promiseId,modifyPromiseReq);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.modifyPromise(promiseId,modifyPromiseReq))
+                .message("공약을 수정했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -70,9 +72,10 @@ public class PromiseController {
     public ResponseEntity<?> deletePromise(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long promiseId){
+        promiseService.deletePromise(promiseId);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.deletePromise(promiseId))
+                .message("공약을 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
