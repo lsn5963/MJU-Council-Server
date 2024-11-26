@@ -1,6 +1,6 @@
 package depth.mju.council.global.error;
 
-import depth.mju.council.global.payload.ApiResponse;
+import depth.mju.council.global.payload.ApiResult;
 import depth.mju.council.global.payload.ErrorCode;
 import depth.mju.council.global.payload.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -26,8 +26,8 @@ public class ApiControllerAdvice {
                 .message(e.getMessage())
                 .build();
 
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -41,8 +41,8 @@ public class ApiControllerAdvice {
                 .fieldErrors(e.getFieldErrors())
                 .build();
 
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.OK);
     }
 
     @ExceptionHandler(InvalidParameterException.class)
@@ -56,8 +56,8 @@ public class ApiControllerAdvice {
                 .fieldErrors(e.getFieldErrors())
                 .build();
 
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.OK);
     }
 
     @ExceptionHandler(DefaultException.class)
@@ -72,8 +72,8 @@ public class ApiControllerAdvice {
                 .message(e.toString())
                 .build();
 
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.resolve(errorCode.getStatus()));
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.resolve(errorCode.getStatus()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -84,8 +84,8 @@ public class ApiControllerAdvice {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(e.toString())
                 .build();
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -96,8 +96,8 @@ public class ApiControllerAdvice {
                 .status(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED.value())
                 .message(e.getMessage())
                 .build();
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(DefaultAuthenticationException.class)
@@ -107,8 +107,8 @@ public class ApiControllerAdvice {
                 .status(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED.value())
                 .message(e.getMessage())
                 .build();
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
@@ -120,7 +120,7 @@ public class ApiControllerAdvice {
                 .message(e.getMessage())
                 .build();
 
-        ApiResponse apiResponse = ApiResponse.builder().check(false).information(response).build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        ApiResult apiResult = ApiResult.builder().check(false).information(response).build();
+        return new ResponseEntity<>(apiResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
