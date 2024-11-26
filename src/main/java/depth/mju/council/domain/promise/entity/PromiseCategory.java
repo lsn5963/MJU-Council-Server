@@ -22,7 +22,7 @@ public class PromiseCategory extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public void updatePolicyTitle(String policyTitle) {
-        this.title = policyTitle;
+    public void updatepromiseTitle(String promiseTitle) {
+        this.title = promiseTitle;
     }
 }

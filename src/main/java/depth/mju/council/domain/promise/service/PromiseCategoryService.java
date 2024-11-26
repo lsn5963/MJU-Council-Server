@@ -1,13 +1,11 @@
 package depth.mju.council.domain.promise.service;
 
-import depth.mju.council.domain.promise.dto.res.PolicyRes;
+import depth.mju.council.domain.promise.dto.res.PromiseCategoryRes;
 import depth.mju.council.domain.promise.entity.PromiseCategory;
 import depth.mju.council.domain.promise.repository.PromiseCategoryRepository;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
-import depth.mju.council.global.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,54 +17,39 @@ import java.util.stream.Collectors;
 public class PromiseCategoryService {
     private final UserRepository userRepository;
     private final PromiseCategoryRepository promiseCategoryRepository;
-    public ResponseEntity<?> createPromiseCategory(Long id, String policyTitle) {
-        User user = userRepository.findById(id).get();
+    public String createPromiseCategory(Long userId, String promiseTitle) {
+        User user = userRepository.findById(userId).get();
         PromiseCategory promiseCategory = PromiseCategory.builder()
-                .title(policyTitle)
+                .title(promiseTitle)
                 .user(user)
                 .build();
         promiseCategoryRepository.save(promiseCategory);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("정책 목록을 추가했어요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
 
-    public ResponseEntity<?> retrievePromiseCategory(Long id) {
-        User user = userRepository.findById(id).get();
+        return "정책 목록을 추가했어요";
+    }
+    public List<PromiseCategoryRes> retrievePromiseCategory(Long userId) {
+        User user = userRepository.findById(userId).get();
         List<PromiseCategory> promiseCategories = promiseCategoryRepository.findByUser(user);
-        List<PolicyRes> policies = promiseCategories.stream()
-                .map(promiseCategory -> PolicyRes.builder()
+        List<PromiseCategoryRes> promiseCategoryRes = promiseCategories.stream()
+                .map(promiseCategory -> PromiseCategoryRes.builder()
                         .id(promiseCategory.getId())
                         .title(promiseCategory.getTitle())
                         .build())
                 .collect(Collectors.toList());
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(policies)
-                .build();
-        return ResponseEntity.ok(apiResponse);
+
+        return promiseCategoryRes;
     }
     @Transactional
-    public ResponseEntity<?> modifyPromiseCategory(Long id, Long policyId, String policyTitle) {
-        PromiseCategory promiseCategory = promiseCategoryRepository.findById(policyId).get();
-        promiseCategory.updatePolicyTitle(policyTitle);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("정책 목록을 수정했어요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+    public String modifyPromiseCategory(Long promiseId, String promiseTitle) {
+        PromiseCategory promiseCategory = promiseCategoryRepository.findById(promiseId).get();
+        promiseCategory.updatepromiseTitle(promiseTitle);
+        return "정책 목록을 수정했어요";
     }
 
-    public ResponseEntity<?> deletePromiseCategory(Long id, Long policyId) {
-        PromiseCategory promiseCategory = promiseCategoryRepository.findById(policyId).get();
+    public String deletePromiseCategory(Long promiseId) {
+        PromiseCategory promiseCategory = promiseCategoryRepository.findById(promiseId).get();
         promiseCategoryRepository.delete(promiseCategory);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("정책 목록을 삭제했어요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        return "정책 목록을 삭제했어요";
     }
 }

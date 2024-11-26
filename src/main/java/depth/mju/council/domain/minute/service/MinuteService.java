@@ -8,7 +8,7 @@ import depth.mju.council.domain.minute.repository.MinuteRepository;
 import depth.mju.council.domain.minute.dto.res.RetrieveAllMinuteRes;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
-import depth.mju.council.global.payload.ApiResponse;
+import depth.mju.council.global.payload.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class MinuteService {
     private final UserRepository userRepository;
     private final MinuteRepository minuteRepository;
-    public ResponseEntity<?> createMinute(Long id, List<MultipartFile> imgs, CreateMinuteReq createMinuteReq) {
+    public String createMinute(Long id, List<MultipartFile> imgs, CreateMinuteReq createMinuteReq) {
         User user = userRepository.findById(id).get();
         // 회의록 저장 로직 필요
         Minute minute = Minute.builder()
@@ -32,11 +32,7 @@ public class MinuteService {
                 .user(user)
                 .build();
         minuteRepository.save(minute);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("공약을 삭제했어요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        return "공약을 삭제했어요";
     }
     public ResponseEntity<?> retrieveAllMinute(Long id) {
         User user = userRepository.findById(id).get();
@@ -50,11 +46,11 @@ public class MinuteService {
                         .build())
                 .collect(Collectors.toList());
 
-        ApiResponse apiResponse = ApiResponse.builder()
+        ApiResult result = ApiResult.builder()
                 .check(true)
                 .information(minutesRes)
                 .build();
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(result);
     }
     public ResponseEntity<?> retrieveMinute(Long id) {
         User user = userRepository.findById(id).get();
@@ -69,11 +65,11 @@ public class MinuteService {
                         .build())
                 .collect(Collectors.toList());
 
-        ApiResponse apiResponse = ApiResponse.builder()
+        ApiResult result = ApiResult.builder()
                 .check(true)
                 .information(minutesRes)
                 .build();
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(result);
     }
     @Transactional
     public ResponseEntity<?> modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> imgs) {
@@ -81,20 +77,20 @@ public class MinuteService {
         minute.update(modifyMinuteReq);
         //사진 수정 로직 필요
 
-        ApiResponse apiResponse = ApiResponse.builder()
+        ApiResult result = ApiResult.builder()
                 .check(true)
                 .information("회의록을 수정했어요")
                 .build();
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(result);
     }
     public ResponseEntity<?> deleteMinute(Long minuteId) {
         Minute minute = minuteRepository.findById(minuteId).get();
         minuteRepository.delete(minute);
 
-        ApiResponse apiResponse = ApiResponse.builder()
+        ApiResult result = ApiResult.builder()
                 .check(true)
                 .information("회의록을 삭제했어요")
                 .build();
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(result);
     }
 }

@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class PolicyRes {
+public class PromiseCategoryRes {
     @Schema(type = "integer", example = "1", description = "공약 ID")
     private Long id;
     @Schema(type = "string", example = "재수강 학점 A0 확대", description = "공약 제목")

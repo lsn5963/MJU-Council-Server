@@ -9,7 +9,7 @@ import depth.mju.council.domain.promise.repository.PromiseCategoryRepository;
 import depth.mju.council.domain.promise.repository.PromiseRepository;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
-import depth.mju.council.global.payload.ApiResponse;
+import depth.mju.council.global.payload.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,14 +20,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PromiseService {
     private final UserRepository userRepository;
     private final PromiseCategoryRepository promiseCategoryRepository;
     private final PromiseRepository promiseRepository;
-    public ResponseEntity<?> createPromise(Long id, String policyTitle, CreatePromiseReq createPromiseReq) {
-        User user = userRepository.findById(id).get();
+    @Transactional
+    public String createPromise(Long userId, String promiseTitle, CreatePromiseReq createPromiseReq) {
+        User user = userRepository.findById(userId).get();
         // 정책 가져오기
-        PromiseCategory promiseCategory = promiseCategoryRepository.findByUserAndTitle(user,policyTitle);
+        PromiseCategory promiseCategory = promiseCategoryRepository.findByUserAndTitle(user,promiseTitle);
         // 공약 생성
         Promise promise = Promise.builder()
                 .title(createPromiseReq.getTitle())
@@ -37,19 +39,14 @@ public class PromiseService {
                 .build();
 
         promiseRepository.save(promise);
-
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("공약을 추가했어요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        return "공약을 추가했어요";
     }
 
-    public ResponseEntity<?> retrievePromise(Long id, String policyTitle) {
-        User user = userRepository.findById(id).get();
-        PromiseCategory promiseCategory = promiseCategoryRepository.findByUserAndTitle(user, policyTitle);
+    public List<PromiseRes> retrievePromise(Long userId, String promiseTitle) {
+        User user = userRepository.findById(userId).get();
+        PromiseCategory promiseCategory = promiseCategoryRepository.findByUserAndTitle(user, promiseTitle);
         List<Promise> promises = promiseRepository.findByPromiseCategory(promiseCategory);
-        List<PromiseRes> promisesRes = promises.stream()
+        List<PromiseRes> promiseRes = promises.stream()
                 .map(promise -> PromiseRes.builder()
                         .id(promise.getId())
                         .title(promise.getTitle())
@@ -57,32 +54,18 @@ public class PromiseService {
                         .progress(promise.getProgress())
                         .build())
                 .collect(Collectors.toList());
-
-
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(promisesRes)
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-
-    public ResponseEntity<?> deletePromise(Long promiseId) {
-        Promise promise = promiseRepository.findById(promiseId).get();
-        promiseRepository.delete(promise);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("공약을 삭제했어요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        return promiseRes;
     }
     @Transactional
-    public ResponseEntity<?> modifyPromise(Long promiseId, ModifyPromiseReq modifyPromiseReq) {
+    public String deletePromise(Long promiseId) {
+        Promise promise = promiseRepository.findById(promiseId).get();
+        promiseRepository.delete(promise);
+        return "공약을 삭제했어요";
+    }
+    @Transactional
+    public String modifyPromise(Long promiseId, ModifyPromiseReq modifyPromiseReq) {
         Promise promise = promiseRepository.findById(promiseId).get();
         promise.update(modifyPromiseReq);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("공약을 수정했어요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        return "공약을 수정했어요";
     }
 }

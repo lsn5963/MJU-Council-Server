@@ -1,6 +1,7 @@
 package depth.mju.council.domain.banner.controller;
 
 import depth.mju.council.domain.banner.service.BannerService;
+import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -16,25 +17,40 @@ public class BannerController {
     @Operation(summary = "배너 추가 API", description = "배너를 추가하는 API입니다.")
     @ApiResponses(value = {
     })
-    @PostMapping("/{id}")
+    @PostMapping("/{userId}")
     public ResponseEntity<?> createBanner(
-            @PathVariable Long id,
+            @PathVariable Long userId,
             @RequestPart(value = "img", required = false) MultipartFile img){
-        return bannerService.createBanner(id, img);
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(bannerService.createBanner(userId, img))
+                .build();
+        return ResponseEntity.ok(result);
     }
     @Operation(summary = "배너 조회 API", description = "배너 목록을 조회하는 API입니다.")
     @ApiResponses(value = {
     })
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public ResponseEntity<?> retrieveBanner(
-            @PathVariable Long id) {
-        return bannerService.retrieveBanner(id);
+            @PathVariable Long userId) {
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(bannerService.retrieveBanner(userId))
+                .build();
+        return ResponseEntity.ok(result);
     }
+    @Operation(summary = "배너 수정 API", description = "배너 목록을 수정하는 API입니다.")
+    @ApiResponses(value = {
+    })
     @PatchMapping("/{bannerId}")
     public ResponseEntity<?> modifyBanner(
             @PathVariable Long bannerId,
             @RequestPart(value = "img", required = false) MultipartFile img) {
-        return bannerService.modifyBanner(bannerId, img);
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(bannerService.modifyBanner(bannerId, img))
+                .build();
+        return ResponseEntity.ok(result);
     }
     @Operation(summary = "배너 삭제 API", description = "배너를 삭제하는 API입니다.")
     @ApiResponses(value = {
@@ -42,7 +58,11 @@ public class BannerController {
     @DeleteMapping("/{bannerId}")
     public ResponseEntity<?> deleteBanner(
             @PathVariable Long bannerId) {
-        return bannerService.deleteBanner(bannerId);
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information(bannerService.deleteBanner(bannerId))
+                .build();
+        return ResponseEntity.ok(result);
     }
 
 }

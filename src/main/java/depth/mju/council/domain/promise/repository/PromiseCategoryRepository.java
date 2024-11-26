@@ -12,5 +12,5 @@ public interface PromiseCategoryRepository extends JpaRepository<PromiseCategory
 
     List<PromiseCategory> findByUser(User user);
 
-    PromiseCategory findByUserAndTitle(User user, String policyTitle);
+    PromiseCategory findByUserAndTitle(User user, String promiseTitle);
 }
