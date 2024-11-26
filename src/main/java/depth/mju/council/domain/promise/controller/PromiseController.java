@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/promise")
+@RequestMapping("/api/v1/promise")
 public class PromiseController {
     private final PromiseService promiseService;
     @Operation(summary = "공약 추가 API", description = "공약 목록을 추가하는 API입니다.")
@@ -28,7 +28,7 @@ public class PromiseController {
         promiseService.createPromise(userId, promiseTitle,createPromiseCategoryReq);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .message("공약을 추가했어요")
+                .information("공약을 추가했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -59,7 +59,7 @@ public class PromiseController {
         promiseService.modifyPromise(promiseId,modifyPromiseReq);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .message("공약을 수정했어요")
+                .information("공약을 수정했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -75,7 +75,7 @@ public class PromiseController {
         promiseService.deletePromise(promiseId);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .message("공약을 삭제했어요")
+                .information("공약을 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }

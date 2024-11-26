@@ -6,13 +6,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/promise-category")
+@Controller
+@RequestMapping("/api/v1/promise-category")
 @RequiredArgsConstructor
 public class PromiseCategoryController {
-    private final PromiseCategoryService promiseService;
+    private final PromiseCategoryService promiseCategoryService;
     @Operation(summary = "정책 추가 API", description = "정책 목록을 추가하는 API입니다.")
     @ApiResponses(value = {
 //            @ApiResult(responseCode = "200", description = "캐릭터 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyCharaterListRes.class) ) } ),
@@ -20,11 +21,12 @@ public class PromiseCategoryController {
     })
     @PostMapping("/{userId}/{promiseTitle}")
     public ResponseEntity<?> createPromiseCategory(
-//            @Parameter @CurrentUser UserPrincipal userPrincipal
-            @PathVariable Long userId, @PathVariable String promiseTitle){
+            @PathVariable Long userId,
+            @PathVariable String promiseTitle) {
+        promiseCategoryService.createPromiseCategory(userId, promiseTitle);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.createPromiseCategory(userId, promiseTitle))
+                .information("정책 목록을 추가했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -34,12 +36,10 @@ public class PromiseCategoryController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<?> retrievePromiseCategory(
-//            @Parameter @CurrentUser UserPrincipal userPrincipal
-            @PathVariable Long userId){
+    public ResponseEntity<?> retrievePromiseCategory(@PathVariable Long userId) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.retrievePromiseCategory(userId))
+                .information(promiseCategoryService.retrievePromiseCategory(userId))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -50,12 +50,12 @@ public class PromiseCategoryController {
     })
     @PatchMapping("/{promiseId}/{promiseTitle}")
     public ResponseEntity<?> modifyPromiseCategory(
-//            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long promiseId,
-            @PathVariable String promiseTitle){
+            @PathVariable String promiseTitle) {
+        promiseCategoryService.modifyPromiseCategory(promiseId, promiseTitle);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.modifyPromiseCategory(promiseId,promiseTitle))
+                .information("정책 목록을 수정했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -66,10 +66,11 @@ public class PromiseCategoryController {
     })
     @DeleteMapping("/{promiseId}")
     public ResponseEntity<?> deletePromiseCategory(
-            @PathVariable Long promiseId){
+            @PathVariable Long promiseId) {
+        promiseCategoryService.deletePromiseCategory(promiseId);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.deletePromiseCategory(promiseId))
+                .information("정책 목록을 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }

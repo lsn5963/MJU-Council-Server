@@ -19,15 +19,13 @@ public class PromiseCategoryService {
     private final UserRepository userRepository;
     private final PromiseCategoryRepository promiseCategoryRepository;
     @Transactional
-    public String createPromiseCategory(Long userId, String promiseTitle) {
+    public void createPromiseCategory(Long userId, String promiseTitle) {
         User user = userRepository.findById(userId).get();
         PromiseCategory promiseCategory = PromiseCategory.builder()
                 .title(promiseTitle)
                 .user(user)
                 .build();
         promiseCategoryRepository.save(promiseCategory);
-
-        return "정책 목록을 추가했어요";
     }
     public List<PromiseCategoryRes> retrievePromiseCategory(Long userId) {
         User user = userRepository.findById(userId).get();
@@ -38,20 +36,16 @@ public class PromiseCategoryService {
                         .title(promiseCategory.getTitle())
                         .build())
                 .collect(Collectors.toList());
-
-
         return promiseCategoryRes;
     }
     @Transactional
-    public String modifyPromiseCategory(Long promiseId, String promiseTitle) {
+    public void modifyPromiseCategory(Long promiseId, String promiseTitle) {
         PromiseCategory promiseCategory = promiseCategoryRepository.findById(promiseId).get();
         promiseCategory.updatepromiseTitle(promiseTitle);
-        return "정책 목록을 수정했어요";
     }
     @Transactional
-    public String deletePromiseCategory(Long promiseId) {
+    public void deletePromiseCategory(Long promiseId) {
         PromiseCategory promiseCategory = promiseCategoryRepository.findById(promiseId).get();
         promiseCategoryRepository.delete(promiseCategory);
-        return "정책 목록을 삭제했어요";
     }
 }

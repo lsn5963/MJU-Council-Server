@@ -22,17 +22,16 @@ public class RegulationService {
     private final UserRepository userRepository;
     private final RegulationRepository regulationRepository;
     @Transactional
-
-    public String createRegulation(Long userId, MultipartFile file) {
+    public void createRegulation(Long userId, MultipartFile file) {
         User user = userRepository.findById(userId).get();
         Regulation regulation = Regulation.builder()
                 .fileUrl("파일 URL 저장 로직 필요")
                 .user(user)
                 .build();
         regulationRepository.save(regulation);
-        return "학생회칙을 추가했어요";
     }
     public List<RetrieveAllRegulationRes> retrieveAllRegulation(Long userId) {
+        //페이징 추후 예정
         User user = userRepository.findById(userId).get();
         List<Regulation> regulations = regulationRepository.findByUser(user);
         List<RetrieveAllRegulationRes> regulationsRes = regulations.stream()
@@ -45,16 +44,14 @@ public class RegulationService {
         return regulationsRes;
     }
     @Transactional
-    public String modifyRegulation(Long regulationId, MultipartFile file) {
+    public void modifyRegulation(Long regulationId, MultipartFile file) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
         // 파일 URL 업데이트 로직 필요
         regulation.updateFileUrl("새로운 파일 URL");
-        return "학생회칙을 수정했어요";
     }
     @Transactional
-    public String deleteRegulation(Long regulationId) {
+    public void deleteRegulation(Long regulationId) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
         regulationRepository.delete(regulation);
-        return "학생회칙을 삭제했어요";
     }
 }

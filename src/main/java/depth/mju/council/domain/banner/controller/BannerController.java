@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/banners")
+@RequestMapping("/api/v1/banners")
 @RequiredArgsConstructor
 public class BannerController {
     private final BannerService bannerService;
@@ -20,10 +20,11 @@ public class BannerController {
     @PostMapping("/{userId}")
     public ResponseEntity<?> createBanner(
             @PathVariable Long userId,
-            @RequestPart(value = "img", required = false) MultipartFile img){
+            @RequestPart(value = "img", required = false) MultipartFile img) {
+        bannerService.createBanner(userId, img);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(bannerService.createBanner(userId, img))
+                .information("배너를 추가했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -46,9 +47,10 @@ public class BannerController {
     public ResponseEntity<?> modifyBanner(
             @PathVariable Long bannerId,
             @RequestPart(value = "img", required = false) MultipartFile img) {
+        bannerService.modifyBanner(bannerId, img);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(bannerService.modifyBanner(bannerId, img))
+                .information("배너를 수정했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -58,9 +60,10 @@ public class BannerController {
     @DeleteMapping("/{bannerId}")
     public ResponseEntity<?> deleteBanner(
             @PathVariable Long bannerId) {
+        bannerService.deleteBanner(bannerId);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(bannerService.deleteBanner(bannerId))
+                .information("배너를 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }

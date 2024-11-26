@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/minutes")
+@RequestMapping("/api/v1/minutes")
 @RequiredArgsConstructor
 public class MinuteController {
     private final MinuteService minuteService;
@@ -25,13 +25,13 @@ public class MinuteController {
     })
     @PostMapping("/{userId}")
     public ResponseEntity<?> createMinute(
-//            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long userId,
-            @RequestPart(value = "imgs", required = false) List<MultipartFile> imgs
-    , @RequestBody CreateMinuteReq createMinuteReq){
+            @RequestPart(value = "imgs", required = false) List<MultipartFile> imgs,
+            @RequestBody CreateMinuteReq createMinuteReq) {
+        minuteService.createMinute(userId, imgs, createMinuteReq);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.createMinute(userId,imgs,createMinuteReq))
+                .information("회의록을 추가했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -69,9 +69,10 @@ public class MinuteController {
             @PathVariable Long minuteId,
             @RequestBody ModifyMinuteReq modifyMinuteReq,
             @RequestPart(value = "imgs", required = false) List<MultipartFile> imgs) {
+        minuteService.modifyMinute(minuteId, modifyMinuteReq, imgs);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.modifyMinute(minuteId, modifyMinuteReq, imgs))
+                .information("회의록을 수정했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -82,9 +83,10 @@ public class MinuteController {
     @DeleteMapping("/{minuteId}")
     public ResponseEntity<?> deleteMinute(
             @PathVariable Long minuteId) {
+        minuteService.deleteMinute(minuteId);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.deleteMinute(minuteId))
+                .information("회의록을 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }

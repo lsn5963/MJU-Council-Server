@@ -25,7 +25,7 @@ public class MinuteService {
     private final UserRepository userRepository;
     private final MinuteRepository minuteRepository;
     @Transactional
-    public String createMinute(Long id, List<MultipartFile> imgs, CreateMinuteReq createMinuteReq) {
+    public void createMinute(Long id, List<MultipartFile> imgs, CreateMinuteReq createMinuteReq) {
         User user = userRepository.findById(id).get();
         // 회의록 저장 로직 필요
         Minute minute = Minute.builder()
@@ -34,7 +34,6 @@ public class MinuteService {
                 .user(user)
                 .build();
         minuteRepository.save(minute);
-        return "공약을 삭제했어요";
     }
     public ResponseEntity<?> retrieveAllMinute(Long id) {
         User user = userRepository.findById(id).get();
@@ -74,26 +73,14 @@ public class MinuteService {
         return ResponseEntity.ok(result);
     }
     @Transactional
-    public ResponseEntity<?> modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> imgs) {
+    public void modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> imgs) {
         Minute minute = minuteRepository.findById(minuteId).get();
         minute.update(modifyMinuteReq);
         //사진 수정 로직 필요
-
-        ApiResult result = ApiResult.builder()
-                .check(true)
-                .information("회의록을 수정했어요")
-                .build();
-        return ResponseEntity.ok(result);
     }
     @Transactional
-    public ResponseEntity<?> deleteMinute(Long minuteId) {
+    public void deleteMinute(Long minuteId) {
         Minute minute = minuteRepository.findById(minuteId).get();
         minuteRepository.delete(minute);
-
-        ApiResult result = ApiResult.builder()
-                .check(true)
-                .information("회의록을 삭제했어요")
-                .build();
-        return ResponseEntity.ok(result);
     }
 }

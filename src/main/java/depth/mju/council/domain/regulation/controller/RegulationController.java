@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/regulations")
+@RequestMapping("/api/v1/regulations")
 @RequiredArgsConstructor
 public class RegulationController {
     private final RegulationService regulationService;
@@ -21,9 +21,10 @@ public class RegulationController {
     public ResponseEntity<?> createRegulation(
             @PathVariable Long userId,
             @RequestPart(value = "file", required = false) MultipartFile file) {
+        regulationService.createRegulation(userId, file);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.createRegulation(userId, file))
+                .information("학생회칙을 추가했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -47,10 +48,10 @@ public class RegulationController {
     public ResponseEntity<?> modifyRegulation(
             @PathVariable Long regulationId,
             @RequestPart(value = "file", required = false) MultipartFile file) {
-
+        regulationService.modifyRegulation(regulationId, file);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.modifyRegulation(regulationId, file))
+                .information("학생회칙을 수정했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -60,9 +61,10 @@ public class RegulationController {
     @DeleteMapping("/{regulationId}")
     public ResponseEntity<?> deleteRegulation(
             @PathVariable Long regulationId) {
+        regulationService.deleteRegulation(regulationId);
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.deleteRegulation(regulationId))
+                .information("학생회칙을 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
