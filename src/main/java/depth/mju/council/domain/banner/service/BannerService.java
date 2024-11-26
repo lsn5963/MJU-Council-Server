@@ -17,9 +17,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BannerService {
     private final UserRepository userRepository;
     private final BannerRepository bannerRepository;
+    @Transactional
     public String createBanner(Long userId, MultipartFile img) {
         User user = userRepository.findById(userId).get();
         Banner banner = Banner.builder()
@@ -54,6 +56,7 @@ public class BannerService {
                 .build();
         return "배너를 수정했어요";
     }
+    @Transactional
     public String deleteBanner(Long bannerId) {
         Banner banner = bannerRepository.findById(bannerId).get();
         bannerRepository.delete(banner);

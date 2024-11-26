@@ -20,9 +20,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MinuteService {
     private final UserRepository userRepository;
     private final MinuteRepository minuteRepository;
+    @Transactional
     public String createMinute(Long id, List<MultipartFile> imgs, CreateMinuteReq createMinuteReq) {
         User user = userRepository.findById(id).get();
         // 회의록 저장 로직 필요
@@ -83,6 +85,7 @@ public class MinuteService {
                 .build();
         return ResponseEntity.ok(result);
     }
+    @Transactional
     public ResponseEntity<?> deleteMinute(Long minuteId) {
         Minute minute = minuteRepository.findById(minuteId).get();
         minuteRepository.delete(minute);

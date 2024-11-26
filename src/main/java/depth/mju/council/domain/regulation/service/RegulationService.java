@@ -17,9 +17,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RegulationService {
     private final UserRepository userRepository;
     private final RegulationRepository regulationRepository;
+    @Transactional
 
     public String createRegulation(Long userId, MultipartFile file) {
         User user = userRepository.findById(userId).get();
@@ -49,6 +51,7 @@ public class RegulationService {
         regulation.updateFileUrl("새로운 파일 URL");
         return "학생회칙을 수정했어요";
     }
+    @Transactional
     public String deleteRegulation(Long regulationId) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
         regulationRepository.delete(regulation);

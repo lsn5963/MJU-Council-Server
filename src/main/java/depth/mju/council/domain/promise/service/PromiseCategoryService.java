@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PromiseCategoryService {
     private final UserRepository userRepository;
     private final PromiseCategoryRepository promiseCategoryRepository;
+    @Transactional
     public String createPromiseCategory(Long userId, String promiseTitle) {
         User user = userRepository.findById(userId).get();
         PromiseCategory promiseCategory = PromiseCategory.builder()
@@ -46,7 +48,7 @@ public class PromiseCategoryService {
         promiseCategory.updatepromiseTitle(promiseTitle);
         return "정책 목록을 수정했어요";
     }
-
+    @Transactional
     public String deletePromiseCategory(Long promiseId) {
         PromiseCategory promiseCategory = promiseCategoryRepository.findById(promiseId).get();
         promiseCategoryRepository.delete(promiseCategory);
