@@ -81,12 +81,12 @@ public class S3Uploader {
 
     // fullPath 만들기(이미지)
     public String getImageFullPath(String fileName) {
-        return "https://" + bucket + ".s3.amazonaws.com/image/" + fileName;
+        return "https://" + bucket + ".s3.amazonaws.com/" + fileName;
     }
 
     // fullPath 만들기(파일)
     public String getFileFullPath(String fileName) {
-        return "https://" + bucket + ".s3.amazonaws.com/file/" + fileName;
+        return "https://" + bucket + ".s3.amazonaws.com/" + fileName;
     }
 
 
