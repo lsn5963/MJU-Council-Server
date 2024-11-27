@@ -8,10 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     @Modifying
     @Query("UPDATE Notice n SET n.isDeleted = :isDeleted")
     void updateIsDeletedForAll(@Param("isDeleted") boolean isDeleted);
+
+    Optional<Notice> findByIdAndIsDeleted(Long noticeId, boolean b);
 }

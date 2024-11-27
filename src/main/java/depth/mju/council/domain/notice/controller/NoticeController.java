@@ -1,6 +1,7 @@
 package depth.mju.council.domain.notice.controller;
 
 import depth.mju.council.domain.notice.dto.req.NoticeRequest;
+import depth.mju.council.domain.notice.dto.res.NoticeResponse;
 import depth.mju.council.domain.notice.service.NoticeService;
 import depth.mju.council.global.payload.ApiResult;
 import depth.mju.council.global.payload.ErrorResponse;
@@ -24,6 +25,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeController {
     private final NoticeService noticeService;
+
+    @Operation(summary = "공지사항 상세 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoticeResponse.class) ) } ),
+            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    } )
+    @GetMapping("/{noticeId}")
+    public ResponseEntity<ApiResult> retrieveNotice(
+            @Parameter(description = "조회하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(noticeService.retrieveNotice(noticeId))
+                .message("공지사항 " + noticeId +"번을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
 
     @Operation(summary = "공지사항 등록")
     @ApiResponses(value = {

@@ -2,6 +2,7 @@ package depth.mju.council.domain.notice.service;
 
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.notice.dto.req.NoticeRequest;
+import depth.mju.council.domain.notice.dto.res.NoticeResponse;
 import depth.mju.council.domain.notice.entity.Notice;
 import depth.mju.council.domain.notice.entity.NoticeFile;
 import depth.mju.council.domain.notice.repository.NoticeFileRepository;
@@ -9,6 +10,7 @@ import depth.mju.council.domain.notice.repository.NoticeRepository;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
+import depth.mju.council.domain.notice.dto.res.FileRes;
 import depth.mju.council.infrastructure.s3.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,20 @@ public class NoticeService {
     private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
     private final NoticeFileRepository noticeFileRepository;
+
+    public NoticeResponse retrieveNotice(Long noticeId) {
+        Notice notice = validNoticeById(noticeId);
+        List<FileRes> images = noticeFileRepository.findNoticeFilesByNoticeIdAndFileType(noticeId, FileType.IMAGE);
+        List<FileRes> files = noticeFileRepository.findNoticeFilesByNoticeIdAndFileType(noticeId, FileType.FILE);
+
+        return NoticeResponse.builder()
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .createdDate(notice.getCreatedAt().toLocalDate())
+                .images(images)
+                .files(files)
+                .build();
+    }
 
     @Transactional
     public void createNotice(
@@ -89,7 +105,7 @@ public class NoticeService {
     }
 
     private Notice validNoticeById(Long noticeId) {
-        Optional<Notice> noticeOptional = noticeRepository.findById(noticeId);
+        Optional<Notice> noticeOptional = noticeRepository.findByIdAndIsDeleted(noticeId, false);
         DefaultAssert.isOptionalPresent(noticeOptional);
         return noticeOptional.get();
     }
