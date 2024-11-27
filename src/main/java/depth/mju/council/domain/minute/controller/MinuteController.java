@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MinuteController {
     private final MinuteService minuteService;
-    @Operation(summary = "공약 추가 API", description = "공약 목록을 추가하는 API입니다.")
+    @Operation(summary = "회의록 추가 API", description = "공약 목록을 추가하는 API입니다.")
     @ApiResponses(value = {
 //            @ApiResult(responseCode = "200", description = "캐릭터 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyCharaterListRes.class) ) } ),
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
@@ -51,12 +51,12 @@ public class MinuteController {
     @Operation(summary = "회의록 상세 조회 API", description = "회의록 상세 내용을 조회하는 API입니다.")
     @ApiResponses(value = {
     })
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/{minuteId}")
     public ResponseEntity<?> retrieveMinute(
-            @PathVariable Long userId) {
+            @PathVariable Long userId, Long minuteId) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.retrieveMinute(userId))
+                .information(minuteService.retrieveMinute(userId,minuteId))
                 .build();
         return ResponseEntity.ok(result);
     }
