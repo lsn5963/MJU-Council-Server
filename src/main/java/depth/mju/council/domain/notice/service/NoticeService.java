@@ -8,6 +8,7 @@ import depth.mju.council.domain.notice.repository.NoticeFileRepository;
 import depth.mju.council.domain.notice.repository.NoticeRepository;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
+import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.infrastructure.s3.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +72,26 @@ public class NoticeService {
                 .fileType(fileType)
                 .notice(notice)
                 .build());
+    }
+
+    @Transactional
+    public void deleteNotice(Long noticeId) {
+        Notice notice = validNoticeById(noticeId);
+        // SOFT DELETE로 구현
+        notice.updateIsDeleted(true);
+        noticeFileRepository.updateIsDeletedByNoticeId(noticeId, true);
+    }
+
+    @Transactional
+    public void deleteAllNotice() {
+        noticeRepository.updateIsDeletedForAll(true);
+        noticeFileRepository.updateIsDeletedForAll(true);
+    }
+
+    private Notice validNoticeById(Long noticeId) {
+        Optional<Notice> noticeOptional = noticeRepository.findById(noticeId);
+        DefaultAssert.isOptionalPresent(noticeOptional);
+        return noticeOptional.get();
     }
 
 }
