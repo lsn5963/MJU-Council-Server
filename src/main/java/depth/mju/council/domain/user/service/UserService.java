@@ -1,9 +1,43 @@
 package depth.mju.council.domain.user.service;
 
+import depth.mju.council.domain.user.dto.req.RequestLogin;
+import depth.mju.council.domain.user.dto.req.RequestUser;
+import depth.mju.council.domain.user.dto.res.JWTAuthResponse;
+import depth.mju.council.domain.user.entity.UserEntity;
+import depth.mju.council.domain.user.repository.UserRepository;
+import depth.mju.council.global.config.JwtTokenProvider;
+import depth.mju.council.global.error.DefaultException;
+import depth.mju.council.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder pwdEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public String register(RequestUser requestUser) {
+
+        // add check for username exists in db
+        if (userRepository.existsByUsername(requestUser.getUsername())){
+            throw new DefaultException(ErrorCode.USERNAME_ALREADY_EXISTS);
+        }
+
+        UserEntity userEntity = UserEntity.builder()
+                .username(requestUser.getUsername())
+                .encryptedPwd(pwdEncoder.encode(requestUser.getPassword()))
+                .build();
+        userRepository.save(userEntity);
+
+        return "User registered successfully!";
+    }
 }

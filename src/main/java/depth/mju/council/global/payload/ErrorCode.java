@@ -18,7 +18,10 @@ public enum ErrorCode {
 
     /* 404 : NOT FOUND (Resource를 찾을 수 없음) */
     USER_NOT_FOUND(404, null, "사용자를 찾을 수 없습니다."),
-    CONTENTS_NOT_FOUND(404, null, "내용을 찾을 수 없습니다.");
+    CONTENTS_NOT_FOUND(404, null, "내용을 찾을 수 없습니다."),
+
+    /* 409 : CONFLICT (자원 충돌) */
+    USERNAME_ALREADY_EXISTS(409, null, "이미 존재하는 ID(username)입니다.");
 
     private final String code;
     private final String message;
