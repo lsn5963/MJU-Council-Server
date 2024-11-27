@@ -21,7 +21,10 @@ public interface NoticeFileRepository extends JpaRepository<NoticeFile, Long> {
     @Query("UPDATE NoticeFile nf SET nf.isDeleted = :isDeleted")
     void updateIsDeletedForAll(@Param("isDeleted") boolean isDeleted);
 
-    @Query("SELECT new depth.mju.council.domain.notice.dto.res.FileRes(nf.id, nf.fileName, nf.fileUrl) FROM NoticeFile nf WHERE nf.notice.id = :noticeId AND nf.fileType = :fileType")
+    @Query("SELECT new depth.mju.council.domain.notice.dto.res.FileRes(nf.id, nf.fileName, nf.fileUrl) " +
+            "FROM NoticeFile nf " +
+            "WHERE nf.notice.id = :noticeId AND nf.fileType = :fileType " +
+            "ORDER BY nf.createdAt ASC")
     List<FileRes> findNoticeFilesByNoticeIdAndFileType(@Param("noticeId") Long noticeId, @Param("fileType") FileType fileType);
 
 
