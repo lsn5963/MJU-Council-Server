@@ -14,5 +14,4 @@ public class JWTAuthResponse {
     private String accessToken;
     private String refreshToken;
     private Long accessTokenExpireDate;
-    private Long id;
 }
