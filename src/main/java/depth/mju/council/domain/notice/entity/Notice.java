@@ -1,7 +1,7 @@
 package depth.mju.council.domain.notice.entity;
 
 import depth.mju.council.domain.BaseEntity;
-import depth.mju.council.domain.user.entity.User;
+import depth.mju.council.domain.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -20,5 +20,5 @@ public class Notice extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 }
