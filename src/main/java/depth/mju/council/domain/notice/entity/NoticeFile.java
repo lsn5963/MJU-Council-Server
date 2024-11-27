@@ -1,6 +1,7 @@
 package depth.mju.council.domain.notice.entity;
 
-import depth.mju.council.domain.BaseEntity;
+import depth.mju.council.domain.common.BaseEntity;
+import depth.mju.council.domain.common.ContentType;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -12,7 +13,6 @@ public class NoticeFile extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
     private String fileUrl;
 
     @ManyToOne
@@ -20,4 +20,7 @@ public class NoticeFile extends BaseEntity {
     private Notice notice;
 
     private String fileName;
+
+    @Enumerated(value = EnumType.STRING)
+    private ContentType contentType;
 }
