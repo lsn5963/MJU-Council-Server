@@ -25,6 +25,16 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
+    public JWTAuthResponse login(RequestLogin requestLogin) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                requestLogin.getUsername(), requestLogin.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        JWTAuthResponse token = jwtTokenProvider.generateToken(requestLogin.getUsername(), authentication);
+        return token;
+    }
+
     public String register(RequestUser requestUser) {
 
         // add check for username exists in db

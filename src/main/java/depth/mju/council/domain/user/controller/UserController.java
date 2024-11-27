@@ -21,6 +21,12 @@ public class UserController {
         return "It's Working in User Service";
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<JWTAuthResponse> login(@RequestBody @Valid RequestLogin requestLogin) {
+        JWTAuthResponse token = userService.login(requestLogin);
+        return ResponseEntity.ok(token);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RequestUser requestUser) {
         String response = userService.register(requestUser);
