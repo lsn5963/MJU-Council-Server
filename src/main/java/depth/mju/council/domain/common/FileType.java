@@ -1,6 +1,6 @@
 package depth.mju.council.domain.common;
 
-public enum ContentType {
+public enum FileType {
 
     FILE, IMAGE
 }
