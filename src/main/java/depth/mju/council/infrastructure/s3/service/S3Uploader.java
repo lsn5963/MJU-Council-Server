@@ -1,4 +1,4 @@
-package depth.mju.council.infrastructure.s3.application;
+package depth.mju.council.infrastructure.s3.service;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
