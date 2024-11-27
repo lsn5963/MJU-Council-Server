@@ -28,4 +28,5 @@ public interface NoticeFileRepository extends JpaRepository<NoticeFile, Long> {
     List<FileRes> findNoticeFilesByNoticeIdAndFileType(@Param("noticeId") Long noticeId, @Param("fileType") FileType fileType);
 
 
+    void deleteAllByIdIn(List<Long> list);
 }

@@ -1,6 +1,7 @@
 package depth.mju.council.domain.notice.service;
 
 import depth.mju.council.domain.common.FileType;
+import depth.mju.council.domain.notice.dto.req.ModifyNoticeRequest;
 import depth.mju.council.domain.notice.dto.req.NoticeRequest;
 import depth.mju.council.domain.notice.dto.res.NoticeResponse;
 import depth.mju.council.domain.notice.entity.Notice;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,6 +104,42 @@ public class NoticeService {
     public void deleteAllNotice() {
         noticeRepository.updateIsDeletedForAll(true);
         noticeFileRepository.updateIsDeletedForAll(true);
+    }
+
+    @Transactional
+    public void modifyNotice(Long noticeId, List<MultipartFile> images, List<MultipartFile> files, ModifyNoticeRequest modifyNoticeRequest) {
+        Notice notice = validNoticeById(noticeId);
+        // Notice 정보 변경
+        notice.updateNotice(modifyNoticeRequest.getTitle(), modifyNoticeRequest.getContent());
+        // 지우고자 하는 이미지/파일 삭제
+        deleteNoticeFiles(modifyNoticeRequest.getDeleteImages(), modifyNoticeRequest.getDeleteFiles());
+        // 파일/이미지 업로드
+        uploadNoticeImages(images, notice);
+        uploadNoticeFiles(files, notice);
+    }
+
+    private void deleteNoticeFiles(List<Integer> images, List<Integer> files) {
+        List<NoticeFile> filesToDelete = new ArrayList<>();
+        if (images != null && !images.isEmpty()) {
+            filesToDelete.addAll(noticeFileRepository.findAllById(images.stream().map(Long::valueOf).toList()));
+        }
+        if (files != null && !files.isEmpty()) {
+            filesToDelete.addAll(noticeFileRepository.findAllById(files.stream().map(Long::valueOf).toList()));
+        }
+
+        filesToDelete.forEach(file -> {
+            // 저장 파일명 구하기
+            String saveFileName = extractSaveFileName(file.getFileUrl());
+            // S3에서 삭제
+            s3Uploader.deleteFile(saveFileName);
+            // DB에서 삭제
+            noticeFileRepository.delete(file);
+        });
+    }
+
+    public String extractSaveFileName(String fileUrl) {
+        String[] parts = fileUrl.split("/");
+        return parts[parts.length - 1]; // 마지막 부분 반환
     }
 
     private Notice validNoticeById(Long noticeId) {
