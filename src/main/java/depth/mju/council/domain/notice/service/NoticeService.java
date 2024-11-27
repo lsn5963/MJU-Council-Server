@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -112,21 +113,19 @@ public class NoticeService {
         // Notice 정보 변경
         notice.updateNotice(modifyNoticeRequest.getTitle(), modifyNoticeRequest.getContent());
         // 지우고자 하는 이미지/파일 삭제
-        deleteNoticeFiles(modifyNoticeRequest.getDeleteImages(), modifyNoticeRequest.getDeleteFiles());
+        deleteNoticeFiles(modifyNoticeRequest.getDeleteFiles());
+        deleteNoticeImages(modifyNoticeRequest.getDeleteImages());
         // 파일/이미지 업로드
         uploadNoticeImages(images, notice);
         uploadNoticeFiles(files, notice);
     }
 
-    private void deleteNoticeFiles(List<Integer> images, List<Integer> files) {
-        List<NoticeFile> filesToDelete = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            filesToDelete.addAll(noticeFileRepository.findAllById(images.stream().map(Long::valueOf).toList()));
+    private void deleteNoticeFiles(List<Integer> files) {
+        if (files == null || files.isEmpty()) {
+            return;
         }
-        if (files != null && !files.isEmpty()) {
-            filesToDelete.addAll(noticeFileRepository.findAllById(files.stream().map(Long::valueOf).toList()));
-        }
-
+        List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
+        List<NoticeFile> filesToDelete = noticeFileRepository.findAllById(fileIds);
         filesToDelete.forEach(file -> {
             // 저장 파일명 구하기
             String saveFileName = extractSaveFileName(file.getFileUrl());
@@ -137,9 +136,25 @@ public class NoticeService {
         });
     }
 
+    private void deleteNoticeImages(List<Integer> images) {
+        if (images == null || images.isEmpty()) {
+            return;
+        }
+        List<Long> fileIds = images.stream().map(Long::valueOf).collect(Collectors.toList());
+        List<NoticeFile> filesToDelete = noticeFileRepository.findAllById(fileIds);
+        filesToDelete.forEach(image -> {
+            // 저장 파일명 구하기
+            String saveFileName = extractSaveFileName(image.getFileUrl());
+            // S3에서 삭제
+            s3Uploader.deleteImage(saveFileName);
+            // DB에서 삭제
+            noticeFileRepository.delete(image);
+        });
+    }
+
     public String extractSaveFileName(String fileUrl) {
         String[] parts = fileUrl.split("/");
-        return parts[parts.length - 1]; // 마지막 부분 반환
+        return parts[parts.length - 1];
     }
 
     private Notice validNoticeById(Long noticeId) {

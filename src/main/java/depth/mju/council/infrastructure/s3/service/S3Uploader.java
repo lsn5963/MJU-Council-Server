@@ -93,7 +93,15 @@ public class S3Uploader {
     // 주의: 해당 메소드를 호출할 시 파일의 주소가 아닌 '이름'만 전달할 것
     public void deleteFile(String fileName) {
         try {
-            amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, "file/" + fileName));
+        } catch (AmazonServiceException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제에 실패했습니다.");
+        }
+    }
+
+    public void deleteImage(String imageName) {
+        try {
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, "image/" + imageName));
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제에 실패했습니다.");
         }
