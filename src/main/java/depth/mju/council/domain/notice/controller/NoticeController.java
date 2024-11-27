@@ -7,6 +7,7 @@ import depth.mju.council.domain.notice.service.NoticeService;
 import depth.mju.council.global.payload.ApiResult;
 import depth.mju.council.global.payload.ErrorResponse;
 import depth.mju.council.global.payload.Message;
+import depth.mju.council.global.payload.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/notices")
@@ -40,6 +42,25 @@ public class NoticeController {
                 .check(true)
                 .information(noticeService.retrieveNotice(noticeId))
                 .message("공지사항 " + noticeId +"번을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "공지사항 목록 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PageResponse.class) ) } ),
+            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    } )
+    @GetMapping("")
+    public ResponseEntity<ApiResult> retrieveAllNotice(
+            @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(noticeService.retrieveAllNotice(keyword, page, size))
+                .message("공지사항 목록을 조회합니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }

@@ -3,6 +3,7 @@ package depth.mju.council.domain.notice.service;
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.notice.dto.req.ModifyNoticeRequest;
 import depth.mju.council.domain.notice.dto.req.NoticeRequest;
+import depth.mju.council.domain.notice.dto.res.NoticeListResponse;
 import depth.mju.council.domain.notice.dto.res.NoticeResponse;
 import depth.mju.council.domain.notice.entity.Notice;
 import depth.mju.council.domain.notice.entity.NoticeFile;
@@ -12,13 +13,16 @@ import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.domain.notice.dto.res.FileRes;
+import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +49,24 @@ public class NoticeService {
                 .createdDate(notice.getCreatedAt().toLocalDate())
                 .images(images)
                 .files(files)
+                .build();
+    }
+
+    public PageResponse retrieveAllNotice(Optional<String> keyword, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+
+        Page<NoticeListResponse> noticeListResponses;
+        if (keyword.isPresent()) {
+            noticeListResponses = noticeRepository.findByTitleContaining(keyword.get(), pageRequest);
+        } else {
+            noticeListResponses = noticeRepository.findAllNotices(pageRequest);
+        }
+        return PageResponse.builder()
+                .totalElements(noticeListResponses.getTotalElements())
+                .totalPage(noticeListResponses.getTotalPages())
+                .currentPage(noticeListResponses.getNumber())
+                .pageSize(noticeListResponses.getSize())
+                .contents(noticeListResponses.getContent())
                 .build();
     }
 
