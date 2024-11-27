@@ -29,7 +29,7 @@ public enum ErrorCode {
 
     ErrorCode(final int status, final String code, final String message) {
         this.status = status;
+        this.code = code != null ? code : this.name();  // code가 null이면 Enum 이름으로 대체
         this.message = message;
-        this.code = code;
     }
 }
