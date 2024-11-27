@@ -27,7 +27,27 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadImage(MultipartFile file) {
+    // 이미지 업로드
+    public String uploadImage(MultipartFile image) {
+        String originalFileName = image.getOriginalFilename();
+        String saveFileName = createSaveFileName(originalFileName);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(image.getSize());
+        metadata.setContentType(image.getContentType());
+
+        try (InputStream inputStream = image.getInputStream()) {
+            // S3에 업로드 및 저장
+            amazonS3.putObject(new PutObjectRequest(bucket, saveFileName, inputStream, metadata));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+        }
+
+        return getImageFullPath(saveFileName);
+    }
+
+    // 파일 업로드
+    public String uploadFile(MultipartFile file) {
         String originalFileName = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFileName);
 
@@ -42,7 +62,7 @@ public class S3Uploader {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
 
-        return getFullPath(saveFileName);
+        return getFileFullPath(saveFileName);
     }
 
     // 파일 저장명 만들기
@@ -59,12 +79,18 @@ public class S3Uploader {
         return originalFileName.substring(pos + 1);
     }
 
-    // fullPath 만들기
-    public String getFullPath(String fileName) {
-        return "https://" + bucket + ".s3.amazonaws.com/" + fileName;
+    // fullPath 만들기(이미지)
+    public String getImageFullPath(String fileName) {
+        return "https://" + bucket + ".s3.amazonaws.com/image/" + fileName;
+    }
+
+    // fullPath 만들기(파일)
+    public String getFileFullPath(String fileName) {
+        return "https://" + bucket + ".s3.amazonaws.com/file/" + fileName;
     }
 
 
+    // 주의: 해당 메소드를 호출할 시 파일의 주소가 아닌 '이름'만 전달할 것
     public void deleteFile(String fileName) {
         try {
             amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
