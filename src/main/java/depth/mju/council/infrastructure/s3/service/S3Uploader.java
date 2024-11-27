@@ -30,7 +30,7 @@ public class S3Uploader {
     // 이미지 업로드
     public String uploadImage(MultipartFile image) {
         String originalFileName = image.getOriginalFilename();
-        String saveFileName = createSaveFileName(originalFileName);
+        String saveFileName = "image/" + createSaveFileName(originalFileName);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(image.getSize());
@@ -49,7 +49,7 @@ public class S3Uploader {
     // 파일 업로드
     public String uploadFile(MultipartFile file) {
         String originalFileName = file.getOriginalFilename();
-        String saveFileName = createSaveFileName(originalFileName);
+        String saveFileName = "file/" + createSaveFileName(originalFileName);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
