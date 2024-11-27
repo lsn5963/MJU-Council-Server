@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ModifyMinuteReq {
-    @Schema(type = "string", example = "뎁스 운영진 회의", description="회의 제목")
+    @Schema(type = "String", example = "뎁스 운영진 회의", description="회의 제목")
     private String title;
-    @Schema(type = "string", example = "회의했어욥", description="회의 내용")
+    @Schema(type = "String", example = "회의했어욥", description="회의 내용")
     private String content;
 }

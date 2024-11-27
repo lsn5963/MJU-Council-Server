@@ -9,15 +9,15 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class RetrieveAllMinuteRes {
-    @Schema(type = "integer", example = "1", description = "회의록 ID")
+    @Schema(type = "Long", example = "1", description = "회의록 ID")
     private Long id;
 
-    @Schema(type = "string", example = "관리자", description = "작성자")
+    @Schema(type = "String", example = "관리자", description = "작성자")
     private String writer;
 
-    @Schema(type = "string", example = "뎁스운영진회의", description = "회의록 제목")
+    @Schema(type = "String", example = "뎁스운영진회의", description = "회의록 제목")
     private String title;
 
-    @Schema(type = "string", example = "2024-11-17", description = "작성일")
+    @Schema(type = "LocalDate", example = "2024-11-17", description = "작성일")
     private LocalDate date;
 }
