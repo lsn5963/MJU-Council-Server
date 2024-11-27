@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,10 +36,10 @@ public class MinuteService {
                 .build();
         minuteRepository.save(minute);
     }
-    public ResponseEntity<?> retrieveAllMinute(Long id) {
+    public List<RetrieveAllMinuteRes> retrieveAllMinute(Long id) {
         User user = userRepository.findById(id).get();
         List<Minute> minutes = minuteRepository.findByUser(user);
-        List<RetrieveAllMinuteRes> minutesRes = minutes.stream()
+        return minutes.stream()
                 .map(minute -> RetrieveAllMinuteRes.builder()
                         .id(minute.getId())
                         .writer(user.getName())
@@ -46,31 +47,17 @@ public class MinuteService {
                         .date(minute.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
-
-        ApiResult result = ApiResult.builder()
-                .check(true)
-                .information(minutesRes)
-                .build();
-        return ResponseEntity.ok(result);
     }
-    public ResponseEntity<?> retrieveMinute(Long id) {
-        User user = userRepository.findById(id).get();
-        List<Minute> minutes = minuteRepository.findByUser(user);
-        List<RetrieveMinuteRes> minutesRes = minutes.stream()
-                .map(minute -> RetrieveMinuteRes.builder()
-                        .id(minute.getId())
-                        .writer(user.getName())
-                        .title(minute.getTitle())
-                        .content(minute.getContent())
-                        .date(minute.getCreatedAt())
-                        .build())
-                .collect(Collectors.toList());
-
-        ApiResult result = ApiResult.builder()
-                .check(true)
-                .information(minutesRes)
+    public RetrieveMinuteRes retrieveMinute(Long userId, Long minuteId) {
+        User user = userRepository.findById(userId).get();
+        Minute minutes = minuteRepository.findById(minuteId).get();
+        return RetrieveMinuteRes.builder()
+                .id(minutes.getId())
+                .writer(user.getName())
+                .title(minutes.getTitle())
+                .content(minutes.getContent())
+                .date(minutes.getCreatedAt())
                 .build();
-        return ResponseEntity.ok(result);
     }
     @Transactional
     public void modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> imgs) {
