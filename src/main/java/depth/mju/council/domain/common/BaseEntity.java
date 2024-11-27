@@ -1,4 +1,4 @@
-package depth.mju.council.domain;
+package depth.mju.council.domain.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
