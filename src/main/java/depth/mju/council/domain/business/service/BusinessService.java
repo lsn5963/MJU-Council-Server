@@ -2,6 +2,8 @@ package depth.mju.council.domain.business.service;
 
 import depth.mju.council.domain.business.dto.req.CreateBusinessReq;
 import depth.mju.council.domain.business.dto.req.ModifyBusinessReq;
+import depth.mju.council.domain.business.dto.res.BusinessListRes;
+import depth.mju.council.domain.business.dto.res.BusinessRes;
 import depth.mju.council.domain.business.entity.Business;
 import depth.mju.council.domain.business.entity.BusinessFile;
 import depth.mju.council.domain.business.repository.BusinessFileRepository;
@@ -9,13 +11,20 @@ import depth.mju.council.domain.business.repository.BusinessRepository;
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
 import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
+import depth.mju.council.domain.notice.dto.res.FileRes;
+import depth.mju.council.domain.notice.dto.res.NoticeListRes;
+import depth.mju.council.domain.notice.dto.res.NoticeRes;
 import depth.mju.council.domain.notice.entity.Notice;
 import depth.mju.council.domain.notice.entity.NoticeFile;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
+import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +43,37 @@ public class BusinessService {
     private final UserRepository userRepository;
     private final BusinessRepository businessRepository;
     private final BusinessFileRepository businessFileRepository;
+
+    public BusinessRes getBusiness(Long businessId) {
+        Business notice = validBusinessById(businessId);
+        List<FileRes> images = businessFileRepository.findBusinessFilesByBusinessIdAndFileType(businessId, FileType.IMAGE);
+        List<FileRes> files = businessFileRepository.findBusinessFilesByBusinessIdAndFileType(businessId, FileType.FILE);
+
+        return BusinessRes.builder()
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .createdAt(notice.getCreatedAt().toLocalDate())
+                .images(images)
+                .files(files)
+                .build();
+    }
+
+    public PageResponse<BusinessListRes> getAllBusiness(Optional<String> keyword, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+
+        Page<BusinessListRes> businessListResponses;
+        if (keyword.isPresent()) {
+            businessListResponses = businessRepository.findByTitleContaining(keyword.get(), pageRequest);
+        } else {
+            businessListResponses = businessRepository.findAllBusinesses(pageRequest);
+        }
+        return PageResponse.<BusinessListRes>builder()
+                .totalElements(businessListResponses.getTotalElements())
+                .totalPage(businessListResponses.getTotalPages())
+                .pageSize(businessListResponses.getSize())
+                .contents(businessListResponses.getContent())
+                .build();
+    }
 
     @Transactional
     public void createBusiness (

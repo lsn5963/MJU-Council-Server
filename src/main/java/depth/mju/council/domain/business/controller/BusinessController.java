@@ -15,12 +15,41 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/businesses")
 @RequiredArgsConstructor
 public class BusinessController {
     private final BusinessService businessService;
+
+    @Operation(summary = "사업 상세 조회")
+    @GetMapping("/{businessId}")
+    public ResponseEntity<ApiResult> getBusiness(
+            @Parameter(description = "조회하고자 하는 사업의 id를 입력해주세요.", required = true) @PathVariable Long businessId
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(businessService.getBusiness(businessId))
+                .message("사업 " + businessId +"번을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "사업 목록 조회")
+    @GetMapping("")
+    public ResponseEntity<ApiResult> getAllBusiness(
+            @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(businessService.getAllBusiness(keyword, page, size))
+                .message("사업 목록을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
 
     @Operation(summary = "사업 등록")
     @PostMapping()
