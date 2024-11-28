@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "event_notice_file")
+@Table(name = "event_guide_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EventNoticeFile extends BaseEntity {
+public class EventGuideFile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +22,7 @@ public class EventNoticeFile extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "event_notice_id", nullable = false)
-    private EventNotice eventNotice;
+    private EventGuide eventGuide;
 
     private String fileName;
 
@@ -30,10 +30,10 @@ public class EventNoticeFile extends BaseEntity {
     private FileType fileType;
 
     @Builder
-    public EventNoticeFile(String fileUrl, String fileName, EventNotice eventNotice, FileType fileType) {
+    public EventGuideFile(String fileUrl, String fileName, EventGuide eventGuide, FileType fileType) {
         this.fileUrl = fileUrl;
         this.fileName = fileName;
-        this.eventNotice = eventNotice;
+        this.eventGuide = eventGuide;
         this.fileType = fileType;
     }
 }

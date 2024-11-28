@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "event_notice")
+@Table(name = "event_guide")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EventNotice extends BaseEntity {
+public class EventGuide extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
