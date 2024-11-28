@@ -11,9 +11,9 @@ import java.time.LocalDate;
 public class RetrieveAllMinuteRes {
     @Schema(type = "Long", example = "1", description = "회의록 ID")
     private Long id;
-
-    @Schema(type = "String", example = "관리자", description = "작성자")
-    private String writer;
+// 추후 유지보수때 사용
+//    @Schema(type = "String", example = "관리자", description = "작성자")
+//    private String writer;
 
     @Schema(type = "String", example = "뎁스운영진회의", description = "회의록 제목")
     private String title;

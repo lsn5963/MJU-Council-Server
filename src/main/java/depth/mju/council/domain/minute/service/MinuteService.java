@@ -9,7 +9,11 @@ import depth.mju.council.domain.minute.dto.res.RetrieveAllMinuteRes;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.payload.ApiResult;
+import depth.mju.council.global.payload.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,24 +40,34 @@ public class MinuteService {
                 .build();
         minuteRepository.save(minute);
     }
-    public List<RetrieveAllMinuteRes> retrieveAllMinute(Long id) {
-        User user = userRepository.findById(id).get();
-        List<Minute> minutes = minuteRepository.findByUser(user);
-        return minutes.stream()
-                .map(minute -> RetrieveAllMinuteRes.builder()
-                        .id(minute.getId())
-                        .writer(user.getName())
-                        .title(minute.getTitle())
-                        .date(minute.getCreatedAt())
-                        .build())
-                .collect(Collectors.toList());
+    public PageResponse  retrieveAllMinute(Optional<String> keyword, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+        Page<Minute> pageResult;
+        if (keyword.isPresent()) {
+            pageResult = minuteRepository.findByTitleContaining(keyword.get(), pageRequest);
+        } else {
+            pageResult = minuteRepository.findAll(pageRequest);
+        }
+        return PageResponse.builder()
+                .totalElements(pageResult.getTotalElements())
+                .totalPage(pageResult.getTotalPages())
+                .pageSize(pageResult.getSize())
+                .contents(pageResult.getContent().stream()
+                        .map(retrieveMinute -> RetrieveAllMinuteRes.builder()
+                                .id(retrieveMinute.getId())
+                                .title(retrieveMinute.getTitle())
+                                .date(retrieveMinute.getCreatedAt())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
-    public RetrieveMinuteRes retrieveMinute(Long userId, Long minuteId) {
-        User user = userRepository.findById(userId).get();
+    public RetrieveMinuteRes retrieveMinute(Long minuteId) {
+        //회의록 파일들 가져오는 로직 필요함
+//        User user = userRepository.findById(userId).get();
         Minute minutes = minuteRepository.findById(minuteId).get();
         return RetrieveMinuteRes.builder()
                 .id(minutes.getId())
-                .writer(user.getName())
+//                .writer(user.getName())
                 .title(minutes.getTitle())
                 .content(minutes.getContent())
                 .date(minutes.getCreatedAt())

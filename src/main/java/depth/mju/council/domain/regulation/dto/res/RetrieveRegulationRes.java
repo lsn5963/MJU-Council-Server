@@ -1,7 +1,6 @@
 package depth.mju.council.domain.regulation.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class RetrieveAllRegulationRes {
+public class RetrieveRegulationRes {
     @Schema(type = "Long", example = "1", description = "회칙아이디")
     private Long id;
     @Schema(type = "String", example = "adsasd123123", description = "회칙url")

@@ -5,6 +5,7 @@ import depth.mju.council.domain.minute.dto.req.ModifyMinuteReq;
 import depth.mju.council.domain.minute.service.MinuteService;
 import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/minutes")
@@ -38,12 +40,14 @@ public class MinuteController {
     @Operation(summary = "회의록 전체 조회 API", description = "회의록 목록을 조회하는 API입니다.")
     @ApiResponses(value = {
     })
-    @GetMapping("/all/{userId}")
+    @GetMapping("/all")
     public ResponseEntity<?> retrieveAllMinute(
-            @PathVariable Long userId) {
+            @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.retrieveAllMinute(userId))
+                .information(minuteService.retrieveAllMinute(keyword, page, size))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -51,12 +55,12 @@ public class MinuteController {
     @Operation(summary = "회의록 상세 조회 API", description = "회의록 상세 내용을 조회하는 API입니다.")
     @ApiResponses(value = {
     })
-    @GetMapping("/{userId}/{minuteId}")
+    @GetMapping("/{minuteId}")
     public ResponseEntity<?> retrieveMinute(
-            @PathVariable Long userId, Long minuteId) {
+            @PathVariable Long minuteId) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.retrieveMinute(userId,minuteId))
+                .information(minuteService.retrieveMinute(minuteId))
                 .build();
         return ResponseEntity.ok(result);
     }
