@@ -18,7 +18,7 @@ public class BannerController {
     @ApiResponses(value = {
     })
     @PostMapping("/{userId}")
-    public ResponseEntity<?> createBanner(
+    public ResponseEntity<ApiResult> createBanner(
             @PathVariable Long userId,
             @RequestPart(value = "img", required = false) MultipartFile img) {
         bannerService.createBanner(userId, img);
@@ -32,11 +32,11 @@ public class BannerController {
     @ApiResponses(value = {
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<?> retrieveBanner(
+    public ResponseEntity<ApiResult> getBanner(
             @PathVariable Long userId) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(bannerService.retrieveBanner(userId))
+                .information(bannerService.getBanner(userId))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -44,7 +44,7 @@ public class BannerController {
     @ApiResponses(value = {
     })
     @PatchMapping("/{bannerId}")
-    public ResponseEntity<?> modifyBanner(
+    public ResponseEntity<ApiResult> modifyBanner(
             @PathVariable Long bannerId,
             @RequestPart(value = "img", required = false) MultipartFile img) {
         bannerService.modifyBanner(bannerId, img);
@@ -58,7 +58,7 @@ public class BannerController {
     @ApiResponses(value = {
     })
     @DeleteMapping("/{bannerId}")
-    public ResponseEntity<?> deleteBanner(
+    public ResponseEntity<ApiResult> deleteBanner(
             @PathVariable Long bannerId) {
         bannerService.deleteBanner(bannerId);
         ApiResult result = ApiResult.builder()

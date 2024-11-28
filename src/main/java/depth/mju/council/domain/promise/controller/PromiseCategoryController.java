@@ -20,7 +20,7 @@ public class PromiseCategoryController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PostMapping("/{userId}/{promiseTitle}")
-    public ResponseEntity<?> createPromiseCategory(
+    public ResponseEntity<ApiResult> createPromiseCategory(
             @PathVariable Long userId,
             @PathVariable String promiseTitle) {
         promiseCategoryService.createPromiseCategory(userId, promiseTitle);
@@ -36,10 +36,10 @@ public class PromiseCategoryController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<?> retrievePromiseCategory(@PathVariable Long userId) {
+    public ResponseEntity<ApiResult> getPromiseCategory(@PathVariable Long userId) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseCategoryService.retrievePromiseCategory(userId))
+                .information(promiseCategoryService.getPromiseCategory(userId))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -49,7 +49,7 @@ public class PromiseCategoryController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PatchMapping("/{promiseId}/{promiseTitle}")
-    public ResponseEntity<?> modifyPromiseCategory(
+    public ResponseEntity<ApiResult> modifyPromiseCategory(
             @PathVariable Long promiseId,
             @PathVariable String promiseTitle) {
         promiseCategoryService.modifyPromiseCategory(promiseId, promiseTitle);
@@ -65,7 +65,7 @@ public class PromiseCategoryController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @DeleteMapping("/{promiseId}")
-    public ResponseEntity<?> deletePromiseCategory(
+    public ResponseEntity<ApiResult> deletePromiseCategory(
             @PathVariable Long promiseId) {
         promiseCategoryService.deletePromiseCategory(promiseId);
         ApiResult result = ApiResult.builder()

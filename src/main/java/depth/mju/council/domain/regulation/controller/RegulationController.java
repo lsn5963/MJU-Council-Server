@@ -22,7 +22,7 @@ public class RegulationController {
     @ApiResponses(value = {
     })
     @PostMapping("/{userId}/{revisionDate}")
-    public ResponseEntity<?> createRegulation(
+    public ResponseEntity<ApiResult> createRegulation(
             @PathVariable Long userId,
             @PathVariable LocalDate revisionDate,
             @RequestPart(value = "file", required = false) MultipartFile file) {
@@ -37,7 +37,7 @@ public class RegulationController {
     @ApiResponses(value = {
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<?> retrieveAllRegulation(
+    public ResponseEntity<ApiResult> getAllRegulation(
             @PathVariable Long userId,
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
@@ -45,7 +45,7 @@ public class RegulationController {
         //페이징 필요
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.retrieveAllRegulation(keyword, page, size))
+                .information(regulationService.getAllRegulation(keyword, page, size))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -53,11 +53,11 @@ public class RegulationController {
     @ApiResponses(value = {
     })
     @GetMapping("/{regulationId}")
-    public ResponseEntity<?> retrieveRegulation(
+    public ResponseEntity<ApiResult> getRegulation(
             @PathVariable Long regulationId) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.retrieveRegulation(regulationId))
+                .information(regulationService.getRegulation(regulationId))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -65,7 +65,7 @@ public class RegulationController {
     @ApiResponses(value = {
     })
     @PatchMapping("/{regulationId}")
-    public ResponseEntity<?> modifyRegulation(
+    public ResponseEntity<ApiResult> modifyRegulation(
             @PathVariable Long regulationId,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         regulationService.modifyRegulation(regulationId, file);
@@ -79,7 +79,7 @@ public class RegulationController {
     @ApiResponses(value = {
     })
     @DeleteMapping("/{regulationId}")
-    public ResponseEntity<?> deleteRegulation(
+    public ResponseEntity<ApiResult> deleteRegulation(
             @PathVariable Long regulationId) {
         regulationService.deleteRegulation(regulationId);
         ApiResult result = ApiResult.builder()

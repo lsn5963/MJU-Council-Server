@@ -22,7 +22,7 @@ public class PromiseController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PostMapping("/{userId}/{promiseTitle}")
-    public ResponseEntity<?> createPromise(
+    public ResponseEntity<ApiResult> createPromise(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long userId, @PathVariable String promiseTitle, @RequestBody CreatePromiseReq createPromiseCategoryReq){
         promiseService.createPromise(userId, promiseTitle,createPromiseCategoryReq);
@@ -38,12 +38,12 @@ public class PromiseController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/{userId}/{promiseTitle}")
-    public ResponseEntity<?> retrievePromise(
+    public ResponseEntity<ApiResult> getPromise(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long userId, @PathVariable String promiseTitle){
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(promiseService.retrievePromise(userId, promiseTitle))
+                .information(promiseService.getPromise(userId, promiseTitle))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -53,7 +53,7 @@ public class PromiseController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PatchMapping("/{promiseId}")
-    public ResponseEntity<?> modifyPromise(
+    public ResponseEntity<ApiResult> modifyPromise(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long promiseId,@RequestBody ModifyPromiseReq modifyPromiseReq){
         promiseService.modifyPromise(promiseId,modifyPromiseReq);
@@ -69,7 +69,7 @@ public class PromiseController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @DeleteMapping("/{promiseId}")
-    public ResponseEntity<?> deletePromise(
+    public ResponseEntity<ApiResult> deletePromise(
 //            @Parameter @CurrentUser UserPrincipal userPrincipal
             @PathVariable Long promiseId){
         promiseService.deletePromise(promiseId);

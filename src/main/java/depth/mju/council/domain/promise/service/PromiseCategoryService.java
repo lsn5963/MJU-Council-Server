@@ -27,7 +27,7 @@ public class PromiseCategoryService {
                 .build();
         promiseCategoryRepository.save(promiseCategory);
     }
-    public List<PromiseCategoryRes> retrievePromiseCategory(Long userId) {
+    public List<PromiseCategoryRes> getPromiseCategory(Long userId) {
         User user = userRepository.findById(userId).get();
         List<PromiseCategory> promiseCategories = promiseCategoryRepository.findByUser(user);
         List<PromiseCategoryRes> promiseCategoryRes = promiseCategories.stream()

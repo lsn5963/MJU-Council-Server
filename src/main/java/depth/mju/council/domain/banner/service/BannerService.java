@@ -1,6 +1,6 @@
 package depth.mju.council.domain.banner.service;
 
-import depth.mju.council.domain.banner.dto.res.RetrieveBannerRes;
+import depth.mju.council.domain.banner.dto.res.GetBannerRes;
 import depth.mju.council.domain.banner.entity.Banner;
 import depth.mju.council.domain.banner.repository.BannerRepository;
 import depth.mju.council.domain.user.entity.User;
@@ -30,11 +30,11 @@ public class BannerService {
                 .build();
         bannerRepository.save(banner);
     }
-    public List<RetrieveBannerRes> retrieveBanner(Long userId) {
+    public List<GetBannerRes> getBanner(Long userId) {
         User user = userRepository.findById(userId).get();
         List<Banner> banners = bannerRepository.findByUser(user);
-        List<RetrieveBannerRes> bannersRes = banners.stream()
-                .map(banner -> RetrieveBannerRes.builder()
+        List<GetBannerRes> bannersRes = banners.stream()
+                .map(banner -> GetBannerRes.builder()
                         .id(banner.getId())
                         .imgUrl(banner.getImgUrl())
                         .date(banner.getCreatedAt())

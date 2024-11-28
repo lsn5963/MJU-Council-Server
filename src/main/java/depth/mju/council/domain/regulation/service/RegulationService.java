@@ -1,10 +1,10 @@
 package depth.mju.council.domain.regulation.service;
 
-import depth.mju.council.domain.minute.dto.res.RetrieveAllMinuteRes;
-import depth.mju.council.domain.minute.dto.res.RetrieveMinuteRes;
+import depth.mju.council.domain.minute.dto.res.GetAllMinuteRes;
+import depth.mju.council.domain.minute.dto.res.GetMinuteRes;
 import depth.mju.council.domain.minute.entity.Minute;
-import depth.mju.council.domain.regulation.dto.res.RetrieveAllRegulationRes;
-import depth.mju.council.domain.regulation.dto.res.RetrieveRegulationRes;
+import depth.mju.council.domain.regulation.dto.res.GetAllRegulationRes;
+import depth.mju.council.domain.regulation.dto.res.GetRegulationRes;
 import depth.mju.council.domain.regulation.entity.Regulation;
 import depth.mju.council.domain.regulation.repository.RegulationRepository;
 import depth.mju.council.domain.user.entity.User;
@@ -40,7 +40,7 @@ public class RegulationService {
                 .build();
         regulationRepository.save(regulation);
     }
-    public PageResponse retrieveAllRegulation(Optional<String> keyword, int page, int size) {
+    public PageResponse getAllRegulation(Optional<String> keyword, int page, int size) {
         //페이징 추후 예정
 //        User user = userRepository.findById(userId).get();
 //        List<Regulation> regulations = regulationRepository.findByUser(user);
@@ -56,7 +56,7 @@ public class RegulationService {
                 .totalPage(pageResult.getTotalPages())
                 .pageSize(pageResult.getSize())
                 .contents(pageResult.getContent().stream()
-                        .map(regulation -> RetrieveAllRegulationRes.builder()
+                        .map(regulation -> GetAllRegulationRes.builder()
                                 .id(regulation.getId())
                                 .imgUrl(regulation.getFileUrl())
                                 .date(regulation.getCreatedAt())
@@ -64,9 +64,9 @@ public class RegulationService {
                         .collect(Collectors.toList()))
                 .build();
     }
-    public RetrieveRegulationRes retrieveRegulation(Long regulationId) {
+    public GetRegulationRes getRegulation(Long regulationId) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
-        return RetrieveRegulationRes.builder()
+        return GetRegulationRes.builder()
                 .id(regulation.getId())
                 .imgUrl(regulation.getFileUrl())
                 .date(regulation.getCreatedAt())

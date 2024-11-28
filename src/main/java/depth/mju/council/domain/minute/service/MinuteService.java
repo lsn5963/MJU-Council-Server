@@ -2,10 +2,10 @@ package depth.mju.council.domain.minute.service;
 
 import depth.mju.council.domain.minute.dto.req.CreateMinuteReq;
 import depth.mju.council.domain.minute.dto.req.ModifyMinuteReq;
-import depth.mju.council.domain.minute.dto.res.RetrieveMinuteRes;
+import depth.mju.council.domain.minute.dto.res.GetMinuteRes;
 import depth.mju.council.domain.minute.entity.Minute;
 import depth.mju.council.domain.minute.repository.MinuteRepository;
-import depth.mju.council.domain.minute.dto.res.RetrieveAllMinuteRes;
+import depth.mju.council.domain.minute.dto.res.GetAllMinuteRes;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.payload.ApiResult;
@@ -40,7 +40,7 @@ public class MinuteService {
                 .build();
         minuteRepository.save(minute);
     }
-    public PageResponse  retrieveAllMinute(Optional<String> keyword, int page, int size) {
+    public PageResponse  getAllMinute(Optional<String> keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
         Page<Minute> pageResult;
         if (keyword.isPresent()) {
@@ -53,19 +53,19 @@ public class MinuteService {
                 .totalPage(pageResult.getTotalPages())
                 .pageSize(pageResult.getSize())
                 .contents(pageResult.getContent().stream()
-                        .map(retrieveMinute -> RetrieveAllMinuteRes.builder()
-                                .id(retrieveMinute.getId())
-                                .title(retrieveMinute.getTitle())
-                                .date(retrieveMinute.getCreatedAt())
+                        .map(getMinute -> GetAllMinuteRes.builder()
+                                .id(getMinute.getId())
+                                .title(getMinute.getTitle())
+                                .date(getMinute.getCreatedAt())
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
     }
-    public RetrieveMinuteRes retrieveMinute(Long minuteId) {
+    public GetMinuteRes getMinute(Long minuteId) {
         //회의록 파일들 가져오는 로직 필요함
 //        User user = userRepository.findById(userId).get();
         Minute minutes = minuteRepository.findById(minuteId).get();
-        return RetrieveMinuteRes.builder()
+        return GetMinuteRes.builder()
                 .id(minutes.getId())
 //                .writer(user.getName())
                 .title(minutes.getTitle())

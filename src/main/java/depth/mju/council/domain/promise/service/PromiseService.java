@@ -40,7 +40,7 @@ public class PromiseService {
         promiseRepository.save(promise);
     }
 
-    public List<PromiseRes> retrievePromise(Long userId, String promiseTitle) {
+    public List<PromiseRes> getPromise(Long userId, String promiseTitle) {
         User user = userRepository.findById(userId).get();
         PromiseCategory promiseCategory = promiseCategoryRepository.findByUserAndTitle(user, promiseTitle);
         List<Promise> promises = promiseRepository.findByPromiseCategory(promiseCategory);

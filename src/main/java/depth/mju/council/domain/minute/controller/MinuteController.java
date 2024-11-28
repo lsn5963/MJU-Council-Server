@@ -26,7 +26,7 @@ public class MinuteController {
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PostMapping("/{userId}")
-    public ResponseEntity<?> createMinute(
+    public ResponseEntity<ApiResult> createMinute(
             @PathVariable Long userId,
             @RequestPart(value = "imgs", required = false) List<MultipartFile> imgs,
             @RequestBody CreateMinuteReq createMinuteReq) {
@@ -41,13 +41,13 @@ public class MinuteController {
     @ApiResponses(value = {
     })
     @GetMapping("/all")
-    public ResponseEntity<?> retrieveAllMinute(
+    public ResponseEntity<ApiResult> getAllMinute(
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.retrieveAllMinute(keyword, page, size))
+                .information(minuteService.getAllMinute(keyword, page, size))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -56,11 +56,11 @@ public class MinuteController {
     @ApiResponses(value = {
     })
     @GetMapping("/{minuteId}")
-    public ResponseEntity<?> retrieveMinute(
+    public ResponseEntity<ApiResult> getMinute(
             @PathVariable Long minuteId) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.retrieveMinute(minuteId))
+                .information(minuteService.getMinute(minuteId))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -69,7 +69,7 @@ public class MinuteController {
     @ApiResponses(value = {
     })
     @PatchMapping("/{minuteId}")
-    public ResponseEntity<?> modifyMinute(
+    public ResponseEntity<ApiResult> modifyMinute(
             @PathVariable Long minuteId,
             @RequestBody ModifyMinuteReq modifyMinuteReq,
             @RequestPart(value = "imgs", required = false) List<MultipartFile> imgs) {
@@ -85,7 +85,7 @@ public class MinuteController {
     @ApiResponses(value = {
     })
     @DeleteMapping("/{minuteId}")
-    public ResponseEntity<?> deleteMinute(
+    public ResponseEntity<ApiResult> deleteMinute(
             @PathVariable Long minuteId) {
         minuteService.deleteMinute(minuteId);
         ApiResult result = ApiResult.builder()

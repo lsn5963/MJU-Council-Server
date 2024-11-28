@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class RetrieveBannerRes {
+public class GetBannerRes {
     @Schema(type = "Long", example = "1", description = "배너아이디")
     private Long id;
     @Schema(type = "String", example = "adsasd123123", description = "배너url")
