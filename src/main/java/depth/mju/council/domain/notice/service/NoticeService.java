@@ -124,14 +124,14 @@ public class NoticeService {
         // Notice 정보 변경
         notice.updateTitleAndContent(modifyNoticeReq.getTitle(), modifyNoticeReq.getContent());
         // 지우고자 하는 이미지/파일 삭제
-        deleteNoticeFiles(modifyNoticeReq.getDeleteFiles());
-        deleteNoticeImages(modifyNoticeReq.getDeleteImages());
+        deleteNoticeFiles(modifyNoticeReq.getDeleteFiles(), FileType.FILE);
+        deleteNoticeFiles(modifyNoticeReq.getDeleteImages(), FileType.IMAGE);
         // 파일/이미지 업로드
         uploadNoticeFiles(images, notice, FileType.IMAGE);
         uploadNoticeFiles(files, notice, FileType.FILE);
     }
 
-    private void deleteNoticeFiles(List<Integer> files) {
+    private void deleteNoticeFiles(List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
         }
@@ -141,22 +141,13 @@ public class NoticeService {
             // 저장 파일명 구하기
             String saveFileName = extractSaveFileName(file.getFileUrl());
             // S3에서 삭제
-            s3Uploader.deleteFile(saveFileName);
+            if (fileType == FileType.FILE) {
+                s3Uploader.deleteFile(saveFileName);
+            } else {
+                s3Uploader.deleteImage(saveFileName);
+            }
             // DB에서 삭제
             noticeFileRepository.delete(file);
-        });
-    }
-
-    private void deleteNoticeImages(List<Integer> images) {
-        if (images == null || images.isEmpty()) {
-            return;
-        }
-        List<Long> fileIds = images.stream().map(Long::valueOf).collect(Collectors.toList());
-        List<NoticeFile> filesToDelete = noticeFileRepository.findAllById(fileIds);
-        filesToDelete.forEach(image -> {
-            String saveFileName = extractSaveFileName(image.getFileUrl());
-            s3Uploader.deleteImage(saveFileName);
-            noticeFileRepository.delete(image);
         });
     }
 
