@@ -27,7 +27,7 @@ public class Business extends BaseEntity {
     private UserEntity userEntity;
 
     @Builder
-    public Business(String title, String content, UsUserEntityer userEntity) {
+    public Business(String title, String content, UserEntity userEntity) {
         this.title = title;
         this.content = content;
         this.userEntity = userEntity;

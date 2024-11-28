@@ -32,7 +32,7 @@ public class Alliance extends BaseEntity {
     private UserEntity userEntity;
 
     @Builder
-    public Alliance(String title, String content, LocalDate startDate, LocalDate endDate, UserEntity userEntity;) {
+    public Alliance(String title, String content, LocalDate startDate, LocalDate endDate, UserEntity userEntity) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;

@@ -9,14 +9,8 @@ import depth.mju.council.domain.business.entity.BusinessFile;
 import depth.mju.council.domain.business.repository.BusinessFileRepository;
 import depth.mju.council.domain.business.repository.BusinessRepository;
 import depth.mju.council.domain.common.FileType;
-import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
-import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
 import depth.mju.council.domain.notice.dto.res.FileRes;
-import depth.mju.council.domain.notice.dto.res.NoticeListRes;
-import depth.mju.council.domain.notice.dto.res.NoticeRes;
-import depth.mju.council.domain.notice.entity.Notice;
-import depth.mju.council.domain.notice.entity.NoticeFile;
-import depth.mju.council.domain.user.entity.User;
+import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.global.payload.PageResponse;
@@ -79,12 +73,12 @@ public class BusinessService {
     public void createBusiness (
             List<MultipartFile> images, List<MultipartFile> files, CreateBusinessReq createBusinessReq)
     {
-        User user = userRepository.findById(1L).get(); // 임시
+        UserEntity user = userRepository.findById(1L).get(); // 임시
 
         Business business = Business.builder()
                 .title(createBusinessReq.getTitle())
                 .content(createBusinessReq.getContent())
-                .user(user)
+                .userEntity(user)
                 .build();
         businessRepository.save(business);
 
