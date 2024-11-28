@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -35,6 +32,33 @@ public class BusinessController {
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("사업이 등록되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "사업 전체 삭제")
+    @DeleteMapping()
+    public ResponseEntity<ApiResult> deleteAllBusiness(
+            //@CurrentUser CustomUserDetails userDetails,
+    ) {
+        businessService.deleteAllBusiness();
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("사업이 전체 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "사업 삭제")
+    @DeleteMapping("/{businessId}")
+    public ResponseEntity<ApiResult> deleteAllBusiness(
+            //@CurrentUser CustomUserDetails userDetails,
+            @Parameter(description = "삭제하고자 하는 사업의 id를 입력해주세요.", required = true) @PathVariable Long businessId
+    ) {
+        businessService.deleteBusiness(businessId);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("사업이 삭제되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }

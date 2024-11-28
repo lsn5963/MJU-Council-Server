@@ -11,6 +11,7 @@ import depth.mju.council.domain.notice.entity.Notice;
 import depth.mju.council.domain.notice.entity.NoticeFile;
 import depth.mju.council.domain.user.entity.User;
 import depth.mju.council.domain.user.repository.UserRepository;
+import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.infrastructure.s3.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,5 +65,25 @@ public class BusinessService {
                 .fileType(fileType)
                 .business(business)
                 .build());
+    }
+
+    @Transactional
+    public void deleteBusiness(Long noticeId) {
+        Business business = validBusinessById(noticeId);
+        // SOFT DELETE로 구현
+        business.updateIsDeleted(true);
+        businessFileRepository.updateIsDeletedByBusinessId(noticeId, true);
+    }
+
+    @Transactional
+    public void deleteAllBusiness() {
+        businessRepository.updateIsDeletedForAll(true);
+        businessFileRepository.updateIsDeletedForAll(true);
+    }
+
+    private Business validBusinessById(Long businessId) {
+        Optional<Business> businessOptional = businessRepository.findByIdAndIsDeleted(businessId, false);
+        DefaultAssert.isOptionalPresent(businessOptional);
+        return businessOptional.get();
     }
 }
