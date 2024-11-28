@@ -1,6 +1,6 @@
 package depth.mju.council.domain.user.entity;
 
-import depth.mju.council.domain.BaseEntity;
+import depth.mju.council.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

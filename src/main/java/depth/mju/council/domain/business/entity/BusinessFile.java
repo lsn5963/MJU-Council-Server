@@ -1,6 +1,6 @@
 package depth.mju.council.domain.business.entity;
 
-import depth.mju.council.domain.BaseEntity;
+import depth.mju.council.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
