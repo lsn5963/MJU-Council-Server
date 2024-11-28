@@ -133,7 +133,7 @@ public class NoticeService {
     public void modifyNotice(Long noticeId, List<MultipartFile> images, List<MultipartFile> files, ModifyNoticeReq modifyNoticeReq) {
         Notice notice = validNoticeById(noticeId);
         // Notice 정보 변경
-        notice.updateNotice(modifyNoticeReq.getTitle(), modifyNoticeReq.getContent());
+        notice.updateTitleAndContent(modifyNoticeReq.getTitle(), modifyNoticeReq.getContent());
         // 지우고자 하는 이미지/파일 삭제
         deleteNoticeFiles(modifyNoticeReq.getDeleteFiles());
         deleteNoticeImages(modifyNoticeReq.getDeleteImages());

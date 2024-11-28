@@ -33,7 +33,7 @@ public class Notice extends BaseEntity {
         this.user = user;
     }
 
-    public void updateNotice(String title, String content) {
+    public void updateTitleAndContent(String title, String content) {
         this.title = title;
         this.content = content;
     }
