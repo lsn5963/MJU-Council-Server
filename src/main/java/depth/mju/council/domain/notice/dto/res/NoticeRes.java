@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-public class NoticeResponse {
+public class NoticeRes {
 
     @Schema(type = "String", example = "2024학년도 2학기 강의평가 실시 안내", description = "공지사항의 제목")
     public String title;
@@ -26,7 +26,7 @@ public class NoticeResponse {
     public List<FileRes> files;
 
     @Builder
-    public NoticeResponse(String title, String content, LocalDate createdDate, List<FileRes> images, List<FileRes> files) {
+    public NoticeRes(String title, String content, LocalDate createdDate, List<FileRes> images, List<FileRes> files) {
         this.title = title;
         this.content = content;
         this.createdDate = createdDate;

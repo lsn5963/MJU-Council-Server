@@ -1,8 +1,8 @@
 package depth.mju.council.domain.notice.controller;
 
-import depth.mju.council.domain.notice.dto.req.ModifyNoticeRequest;
-import depth.mju.council.domain.notice.dto.req.NoticeRequest;
-import depth.mju.council.domain.notice.dto.res.NoticeResponse;
+import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
+import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
+import depth.mju.council.domain.notice.dto.res.NoticeRes;
 import depth.mju.council.domain.notice.service.NoticeService;
 import depth.mju.council.global.payload.ApiResult;
 import depth.mju.council.global.payload.ErrorResponse;
@@ -31,7 +31,7 @@ public class NoticeController {
 
     @Operation(summary = "공지사항 상세 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoticeResponse.class) ) } ),
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoticeRes.class) ) } ),
             @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     } )
     @GetMapping("/{noticeId}")
@@ -75,9 +75,9 @@ public class NoticeController {
             //@CurrentUser CustomUserDetails userDetails,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> files,
-            @Parameter(description = "Schemas의 NoticeRequest를 참고해주세요.", required = true) @Valid @RequestPart NoticeRequest noticeRequest
+            @Parameter(description = "Schemas의 NoticeRequest를 참고해주세요.", required = true) @Valid @RequestPart CreateNoticeReq createNoticeReq
     ) {
-        noticeService.createNotice(images, files, noticeRequest);
+        noticeService.createNotice(images, files, createNoticeReq);
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("공지사항이 등록되었습니다.")
@@ -131,9 +131,9 @@ public class NoticeController {
             @Parameter(description = "수정하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> files,
-            @Parameter(description = "Schemas의 ModifyNoticeRequest를 참고해주세요.", required = true) @Valid @RequestPart ModifyNoticeRequest modifyNoticeRequest
+            @Parameter(description = "Schemas의 ModifyNoticeRequest를 참고해주세요.", required = true) @Valid @RequestPart ModifyNoticeReq modifyNoticeReq
             ) {
-        noticeService.modifyNotice(noticeId, images, files, modifyNoticeRequest);
+        noticeService.modifyNotice(noticeId, images, files, modifyNoticeReq);
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("공지사항이 수정되었습니다.")

@@ -1,7 +1,7 @@
 package depth.mju.council.domain.notice.repository;
 
 
-import depth.mju.council.domain.notice.dto.res.NoticeListResponse;
+import depth.mju.council.domain.notice.dto.res.NoticeListRes;
 import depth.mju.council.domain.notice.entity.Notice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +22,13 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     Optional<Notice> findByIdAndIsDeleted(Long noticeId, boolean b);
 
-    @Query("SELECT new depth.mju.council.domain.notice.dto.res.NoticeListResponse(n.id, n.title, n.createdAt) " +
+    @Query("SELECT new depth.mju.council.domain.notice.dto.res.NoticeListRes(n.id, n.title, n.createdAt) " +
             "FROM Notice n " +
             "WHERE n.title LIKE %:keyword% AND n.isDeleted = false")
-    Page<NoticeListResponse> findByTitleContaining(String keyword, Pageable pageable);
+    Page<NoticeListRes> findByTitleContaining(String keyword, Pageable pageable);
 
-    @Query("SELECT new depth.mju.council.domain.notice.dto.res.NoticeListResponse(n.id, n.title, n.createdAt) " +
+    @Query("SELECT new depth.mju.council.domain.notice.dto.res.NoticeListRes(n.id, n.title, n.createdAt) " +
             "FROM Notice n " +
             "WHERE n.isDeleted = false")
-    Page<NoticeListResponse> findAllNotices(Pageable pageable);
+    Page<NoticeListRes> findAllNotices(Pageable pageable);
 }

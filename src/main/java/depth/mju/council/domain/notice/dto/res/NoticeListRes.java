@@ -4,11 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-public class NoticeListResponse {
+public class NoticeListRes {
 
     @Schema(type = "Long", example = "1", description = "공지사항의 id")
     public Long id;
@@ -20,7 +19,7 @@ public class NoticeListResponse {
     public LocalDateTime createdDate;
 
     @Builder
-    public NoticeListResponse(Long noticeId, String title, LocalDateTime createdDate) {
+    public NoticeListRes(Long noticeId, String title, LocalDateTime createdDate) {
         this.id = noticeId;
         this.title = title;
         this.createdDate = createdDate;

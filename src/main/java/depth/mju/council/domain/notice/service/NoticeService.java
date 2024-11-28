@@ -1,10 +1,10 @@
 package depth.mju.council.domain.notice.service;
 
 import depth.mju.council.domain.common.FileType;
-import depth.mju.council.domain.notice.dto.req.ModifyNoticeRequest;
-import depth.mju.council.domain.notice.dto.req.NoticeRequest;
-import depth.mju.council.domain.notice.dto.res.NoticeListResponse;
-import depth.mju.council.domain.notice.dto.res.NoticeResponse;
+import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
+import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
+import depth.mju.council.domain.notice.dto.res.NoticeListRes;
+import depth.mju.council.domain.notice.dto.res.NoticeRes;
 import depth.mju.council.domain.notice.entity.Notice;
 import depth.mju.council.domain.notice.entity.NoticeFile;
 import depth.mju.council.domain.notice.repository.NoticeFileRepository;
@@ -38,12 +38,12 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final NoticeFileRepository noticeFileRepository;
 
-    public NoticeResponse retrieveNotice(Long noticeId) {
+    public NoticeRes retrieveNotice(Long noticeId) {
         Notice notice = validNoticeById(noticeId);
         List<FileRes> images = noticeFileRepository.findNoticeFilesByNoticeIdAndFileType(noticeId, FileType.IMAGE);
         List<FileRes> files = noticeFileRepository.findNoticeFilesByNoticeIdAndFileType(noticeId, FileType.FILE);
 
-        return NoticeResponse.builder()
+        return NoticeRes.builder()
                 .title(notice.getTitle())
                 .content(notice.getContent())
                 .createdDate(notice.getCreatedAt().toLocalDate())
@@ -55,7 +55,7 @@ public class NoticeService {
     public PageResponse retrieveAllNotice(Optional<String> keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
 
-        Page<NoticeListResponse> noticeListResponses;
+        Page<NoticeListRes> noticeListResponses;
         if (keyword.isPresent()) {
             noticeListResponses = noticeRepository.findByTitleContaining(keyword.get(), pageRequest);
         } else {
@@ -72,13 +72,13 @@ public class NoticeService {
 
     @Transactional
     public void createNotice(
-            List<MultipartFile> images, List<MultipartFile> files, NoticeRequest noticeRequest)
+            List<MultipartFile> images, List<MultipartFile> files, CreateNoticeReq createNoticeReq)
     {
         User user = userRepository.findById(1L).get(); // 임시
 
         Notice notice = Notice.builder()
-                .title(noticeRequest.getTitle())
-                .content(noticeRequest.getContent())
+                .title(createNoticeReq.getTitle())
+                .content(createNoticeReq.getContent())
                 .user(user)
                 .build();
         noticeRepository.save(notice);
@@ -130,13 +130,13 @@ public class NoticeService {
     }
 
     @Transactional
-    public void modifyNotice(Long noticeId, List<MultipartFile> images, List<MultipartFile> files, ModifyNoticeRequest modifyNoticeRequest) {
+    public void modifyNotice(Long noticeId, List<MultipartFile> images, List<MultipartFile> files, ModifyNoticeReq modifyNoticeReq) {
         Notice notice = validNoticeById(noticeId);
         // Notice 정보 변경
-        notice.updateNotice(modifyNoticeRequest.getTitle(), modifyNoticeRequest.getContent());
+        notice.updateNotice(modifyNoticeReq.getTitle(), modifyNoticeReq.getContent());
         // 지우고자 하는 이미지/파일 삭제
-        deleteNoticeFiles(modifyNoticeRequest.getDeleteFiles());
-        deleteNoticeImages(modifyNoticeRequest.getDeleteImages());
+        deleteNoticeFiles(modifyNoticeReq.getDeleteFiles());
+        deleteNoticeImages(modifyNoticeReq.getDeleteImages());
         // 파일/이미지 업로드
         uploadNoticeImages(images, notice);
         uploadNoticeFiles(files, notice);
