@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = "minute_file")
+@Table(name = "regulation_file")
 public class RegulationFile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +16,8 @@ public class RegulationFile extends BaseEntity {
     private String fileUrl;
 
     @ManyToOne
-    @JoinColumn(name = "minute_id", nullable = false)
-    private Regulation minute;
+    @JoinColumn(name = "regulation_id", nullable = false)
+    private Regulation regulation;
 
     private String fileName;
 }

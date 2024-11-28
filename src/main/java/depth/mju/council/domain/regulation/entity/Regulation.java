@@ -8,7 +8,7 @@ import lombok.*;
 
 @Getter
 @Entity
-@Table(name = "minute")
+@Table(name = "regulation")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
