@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -13,7 +14,7 @@ public class GetBannerRes {
     private Long bannerId;
     @Schema(type = "String", example = "adsasd123123", description = "배너url")
     private String imgUrl;
-    @Schema(type = "LocalDate", example = "2024-12-23", description = "배너만든시간")
-    private LocalDate date;
+    @Schema(type = "LocalDateTime", example = "2024-12-23", description = "배너만든시간")
+    private LocalDateTime date;
 
 }

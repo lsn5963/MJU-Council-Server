@@ -1,11 +1,10 @@
 package depth.mju.council.domain.regulation.entity;
 
 import depth.mju.council.domain.common.BaseEntity;
+import depth.mju.council.domain.minute.dto.req.ModifyMinuteReq;
 import depth.mju.council.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -18,15 +17,17 @@ public class Regulation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
-    private String fileUrl;
+    private String title;
 
-    private LocalDate revisionDate;
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public void updateFileUrl(String 새로운_파일_url) {
+    public void update(ModifyMinuteReq modifyMinuteReq) {
+        this.title = modifyMinuteReq.getTitle();
+        this.content = modifyMinuteReq.getContent();
     }
 }
