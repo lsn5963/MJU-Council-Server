@@ -17,7 +17,7 @@ public class NoticeRes {
     public String content;
 
     @Schema(type = "LocalDate", example = "2024-11-17", description = "공지사항의 작성일자")
-    public LocalDate createdDate;
+    public LocalDate createdAt;
 
     @Schema(description = "Schemas의 FileRes를 참고해주세요. 이미지의 리스트입니다.")
     public List<FileRes> images;
@@ -26,10 +26,10 @@ public class NoticeRes {
     public List<FileRes> files;
 
     @Builder
-    public NoticeRes(String title, String content, LocalDate createdDate, List<FileRes> images, List<FileRes> files) {
+    public NoticeRes(String title, String content, LocalDate createdAt, List<FileRes> images, List<FileRes> files) {
         this.title = title;
         this.content = content;
-        this.createdDate = createdDate;
+        this.createdAt = createdAt;
         this.images = images;
         this.files = files;
     }

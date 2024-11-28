@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,13 +16,13 @@ public class NoticeListRes {
     @Schema(type = "String", example = "2024학년도 2학기 강의평가 실시 안내", description = "공지사항의 제목")
     public String title;
 
-    @Schema(type = "LocalDateTime", example = "2024-11-17", description = "공지사항의 작성일자")
-    public LocalDateTime createdDate;
+    @Schema(type = "LocalDate", example = "2024-11-17", description = "공지사항의 작성일자")
+    public LocalDate createdAt;
 
     @Builder
-    public NoticeListRes(Long noticeId, String title, LocalDateTime createdDate) {
+    public NoticeListRes(Long noticeId, String title, LocalDateTime createdAt) {
         this.id = noticeId;
         this.title = title;
-        this.createdDate = createdDate;
+        this.createdAt = createdAt.toLocalDate();
     }
 }

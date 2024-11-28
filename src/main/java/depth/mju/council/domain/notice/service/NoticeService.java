@@ -46,7 +46,7 @@ public class NoticeService {
         return NoticeRes.builder()
                 .title(notice.getTitle())
                 .content(notice.getContent())
-                .createdDate(notice.getCreatedAt().toLocalDate())
+                .createdAt(notice.getCreatedAt().toLocalDate())
                 .images(images)
                 .files(files)
                 .build();
