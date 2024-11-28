@@ -1,8 +1,10 @@
 package depth.mju.council.domain.business.controller;
 
 import depth.mju.council.domain.business.dto.req.CreateBusinessReq;
+import depth.mju.council.domain.business.dto.req.ModifyBusinessReq;
 import depth.mju.council.domain.business.service.BusinessService;
 import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
+import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
 import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,6 +61,23 @@ public class BusinessController {
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("사업이 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "사업 수정")
+    @PutMapping("/{businessId}")
+    public ResponseEntity<ApiResult> modifyBusiness(
+            //@CurrentUser CustomUserDetails userDetails,
+            @Parameter(description = "수정하고자 하는 사업의 id를 입력해주세요.", required = true) @PathVariable Long businessId,
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> files,
+            @Parameter(description = "Schemas의 ModifyBusinessReq를 참고해주세요.", required = true) @Valid @RequestPart ModifyBusinessReq modifyBusinessReq
+    ) {
+        businessService.modifyBusiness(businessId, images, files, modifyBusinessReq);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("사업이 수정되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }

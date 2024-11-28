@@ -32,4 +32,10 @@ public class Business extends BaseEntity {
         this.content = content;
         this.user = user;
     }
+
+    public void updateTitleAndContent(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
 }
