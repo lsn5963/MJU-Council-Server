@@ -2,11 +2,14 @@ package depth.mju.council.domain.event.entity;
 
 import depth.mju.council.domain.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "event_notice")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EventNotice extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
