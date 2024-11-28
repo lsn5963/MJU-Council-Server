@@ -36,9 +36,8 @@ public class RegulationController {
     @Operation(summary = "학생회칙 전체 조회 API", description = "학생회칙 목록을 전체 조회하는 API입니다.")
     @ApiResponses(value = {
     })
-    @GetMapping("/{userId}")
+    @GetMapping
     public ResponseEntity<ApiResult> getAllRegulation(
-            @PathVariable Long userId,
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword) {

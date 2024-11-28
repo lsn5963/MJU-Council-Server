@@ -40,7 +40,7 @@ public class MinuteController {
     @Operation(summary = "회의록 전체 조회 API", description = "회의록 목록을 조회하는 API입니다.")
     @ApiResponses(value = {
     })
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<ApiResult> getAllMinute(
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
