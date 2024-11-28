@@ -91,8 +91,7 @@ public class NoticeService {
     private void uploadNoticeImages(List<MultipartFile> images, Notice notice) {
         for (MultipartFile image : images) {
             if (!image.isEmpty()) {
-                String fileUrl = s3Uploader.uploadImage(image);
-                saveNoticeFiles(fileUrl, image.getOriginalFilename(), FileType.IMAGE, notice);
+                saveNoticeFiles(s3Uploader.uploadImage(image), image.getOriginalFilename(), FileType.IMAGE, notice);
             }
         }
     }
@@ -100,8 +99,7 @@ public class NoticeService {
     private void uploadNoticeFiles(List<MultipartFile> files, Notice notice) {
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
-                String fileUrl = s3Uploader.uploadFile(file);
-                saveNoticeFiles(fileUrl, file.getOriginalFilename(), FileType.FILE, notice);
+                saveNoticeFiles(s3Uploader.uploadFile(file), file.getOriginalFilename(), FileType.FILE, notice);
             }
         }
     }
@@ -165,11 +163,8 @@ public class NoticeService {
         List<Long> fileIds = images.stream().map(Long::valueOf).collect(Collectors.toList());
         List<NoticeFile> filesToDelete = noticeFileRepository.findAllById(fileIds);
         filesToDelete.forEach(image -> {
-            // 저장 파일명 구하기
             String saveFileName = extractSaveFileName(image.getFileUrl());
-            // S3에서 삭제
             s3Uploader.deleteImage(saveFileName);
-            // DB에서 삭제
             noticeFileRepository.delete(image);
         });
     }
