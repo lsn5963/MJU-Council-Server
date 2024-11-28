@@ -1,7 +1,7 @@
 package depth.mju.council.domain.user.controller;
 
-import depth.mju.council.domain.user.dto.req.RequestLogin;
-import depth.mju.council.domain.user.dto.req.RequestUser;
+import depth.mju.council.domain.user.dto.req.LoginReq;
+import depth.mju.council.domain.user.dto.req.RegisterReq;
 import depth.mju.council.domain.user.dto.res.JWTAuthResponse;
 import depth.mju.council.domain.user.service.UserService;
 import jakarta.validation.Valid;
@@ -22,14 +22,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JWTAuthResponse> login(@RequestBody @Valid RequestLogin requestLogin) {
-        JWTAuthResponse token = userService.login(requestLogin);
+    public ResponseEntity<JWTAuthResponse> login(
+        JWTAuthResponse token = userService.login(loginReq);
         return ResponseEntity.ok(token);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RequestUser requestUser) {
-        String response = userService.register(requestUser);
+    public ResponseEntity<String> register(
+        String response = userService.register(registerReq);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

@@ -1,7 +1,7 @@
 package depth.mju.council.domain.user.service;
 
-import depth.mju.council.domain.user.dto.req.RequestLogin;
-import depth.mju.council.domain.user.dto.req.RequestUser;
+import depth.mju.council.domain.user.dto.req.LoginReq;
+import depth.mju.council.domain.user.dto.req.RegisterReq;
 import depth.mju.council.domain.user.dto.res.JWTAuthResponse;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
@@ -25,26 +25,26 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JWTAuthResponse login(RequestLogin requestLogin) {
+    public JWTAuthResponse login(LoginReq loginReq) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                requestLogin.getUsername(), requestLogin.getPassword()));
+                loginReq.getUsername(), loginReq.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        JWTAuthResponse token = jwtTokenProvider.generateToken(requestLogin.getUsername(), authentication);
+        JWTAuthResponse token = jwtTokenProvider.generateToken(loginReq.getUsername(), authentication);
         return token;
     }
 
-    public String register(RequestUser requestUser) {
+    public String register(RegisterReq registerReq) {
 
         // add check for username exists in db
-        if (userRepository.existsByUsername(requestUser.getUsername())){
+        if (userRepository.existsByUsername(registerReq.getUsername())){
             throw new DefaultException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
 
         UserEntity userEntity = UserEntity.builder()
-                .username(requestUser.getUsername())
-                .encryptedPwd(pwdEncoder.encode(requestUser.getPassword()))
+                .username(registerReq.getUsername())
+                .encryptedPwd(pwdEncoder.encode(registerReq.getPassword()))
                 .build();
         userRepository.save(userEntity);
 
