@@ -1,12 +1,16 @@
 package depth.mju.council.domain.banner.entity;
 
+
+import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.common.BaseEntity;
-import depth.mju.council.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "banner")
 public class Banner extends BaseEntity {
     @Id
@@ -18,5 +22,8 @@ public class Banner extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
+
+    public void updateImgUrl(String 새로운_이미지_url) {
+    }
 }

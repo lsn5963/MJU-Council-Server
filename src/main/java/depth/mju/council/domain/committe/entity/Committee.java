@@ -1,7 +1,7 @@
 package depth.mju.council.domain.committe.entity;
 
+import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.common.BaseEntity;
-import depth.mju.council.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -24,5 +24,5 @@ public class Committee extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 }

@@ -1,7 +1,7 @@
 package depth.mju.council.domain.business.entity;
 
+import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.common.BaseEntity;
-import depth.mju.council.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,13 +24,13 @@ public class Business extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 
     @Builder
-    public Business(String title, String content, User user) {
+    public Business(String title, String content, UsUserEntityer userEntity) {
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.userEntity = userEntity;
     }
 
     public void updateTitleAndContent(String title, String content) {
