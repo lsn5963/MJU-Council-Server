@@ -52,7 +52,7 @@ public class NoticeService {
                 .build();
     }
 
-    public PageResponse retrieveAllNotice(Optional<String> keyword, int page, int size) {
+    public PageResponse<NoticeListRes> retrieveAllNotice(Optional<String> keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
 
         Page<NoticeListRes> noticeListResponses;
@@ -61,10 +61,9 @@ public class NoticeService {
         } else {
             noticeListResponses = noticeRepository.findAllNotices(pageRequest);
         }
-        return PageResponse.builder()
+        return PageResponse.<NoticeListRes>builder()
                 .totalElements(noticeListResponses.getTotalElements())
                 .totalPage(noticeListResponses.getTotalPages())
-                .currentPage(noticeListResponses.getNumber())
                 .pageSize(noticeListResponses.getSize())
                 .contents(noticeListResponses.getContent())
                 .build();

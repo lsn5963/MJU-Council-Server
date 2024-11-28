@@ -11,10 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
-public class PageResponse {
-
-    @Schema(type = "Integer", example = "0", description = "현재 페이지. 0부터 시작합니다.")
-    private Integer currentPage;
+public class PageResponse<T> {
 
     @Schema(type = "Integer", example = "5", description = "전체 페이지 개수")
     private Integer totalPage;
@@ -25,8 +22,7 @@ public class PageResponse {
     @Schema(type = "Long", example = "33", description = "전체 요소 개수")
     private Long totalElements;
 
-    @Schema(type = "List<?>", description = "페이징 처리된 데이터의 리스트")
-    private List<?> contents = new ArrayList<>();
-
+    @Schema(type = "List<T>", description = "페이징 처리된 데이터의 리스트")
+    private List<T> contents = new ArrayList<>();
 
 }
