@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class NoticeListRes {
 
     @Schema(type = "Long", example = "1", description = "공지사항의 id")
-    public Long id;
+    public Long noticeId;
 
     @Schema(type = "String", example = "2024학년도 2학기 강의평가 실시 안내", description = "공지사항의 제목")
     public String title;
@@ -21,7 +21,7 @@ public class NoticeListRes {
 
     @Builder
     public NoticeListRes(Long noticeId, String title, LocalDateTime createdAt) {
-        this.id = noticeId;
+        this.noticeId = noticeId;
         this.title = title;
         this.createdAt = createdAt.toLocalDate();
     }
