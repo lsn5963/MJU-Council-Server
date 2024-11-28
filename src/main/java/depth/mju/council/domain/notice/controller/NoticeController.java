@@ -30,10 +30,6 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @Operation(summary = "공지사항 상세 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = NoticeRes.class) ) } ),
-            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-    } )
     @GetMapping("/{noticeId}")
     public ResponseEntity<ApiResult> retrieveNotice(
             @Parameter(description = "조회하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId
@@ -47,10 +43,6 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 목록 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PageResponse.class) ) } ),
-            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-    } )
     @GetMapping("")
     public ResponseEntity<ApiResult> retrieveAllNotice(
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
@@ -66,10 +58,6 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 등록")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-    } )
     @PostMapping()
     public ResponseEntity<ApiResult> createNotice(
             //@CurrentUser CustomUserDetails userDetails,
@@ -86,10 +74,6 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 전체 삭제")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-    } )
     @DeleteMapping()
     public ResponseEntity<ApiResult> deleteAllNotice(
             //@CurrentUser CustomUserDetails userDetails,
@@ -103,10 +87,6 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 삭제")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-    } )
     @DeleteMapping("/{noticeId}")
     public ResponseEntity<ApiResult> deleteAllNotice(
             //@CurrentUser CustomUserDetails userDetails,
@@ -121,10 +101,6 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 수정")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-            @ApiResponse(responseCode = "400", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-    } )
     @PutMapping("/{noticeId}")
     public ResponseEntity<ApiResult> modifyNotice(
             //@CurrentUser CustomUserDetails userDetails,
