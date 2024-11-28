@@ -82,23 +82,15 @@ public class NoticeService {
                 .build();
         noticeRepository.save(notice);
 
-        uploadNoticeImages(images, notice);
-        uploadNoticeFiles(files, notice);
+        uploadNoticeFiles(images, notice, FileType.IMAGE);
+        uploadNoticeFiles(files, notice, FileType.FILE);
 
     }
 
-    private void uploadNoticeImages(List<MultipartFile> images, Notice notice) {
-        for (MultipartFile image : images) {
-            if (!image.isEmpty()) {
-                saveNoticeFiles(s3Uploader.uploadImage(image), image.getOriginalFilename(), FileType.IMAGE, notice);
-            }
-        }
-    }
-
-    private void uploadNoticeFiles(List<MultipartFile> files, Notice notice) {
+    private void uploadNoticeFiles(List<MultipartFile> files, Notice notice, FileType fileType) {
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
-                saveNoticeFiles(s3Uploader.uploadFile(file), file.getOriginalFilename(), FileType.FILE, notice);
+                saveNoticeFiles(s3Uploader.uploadFile(file), file.getOriginalFilename(), fileType, notice);
             }
         }
     }
@@ -135,8 +127,8 @@ public class NoticeService {
         deleteNoticeFiles(modifyNoticeReq.getDeleteFiles());
         deleteNoticeImages(modifyNoticeReq.getDeleteImages());
         // 파일/이미지 업로드
-        uploadNoticeImages(images, notice);
-        uploadNoticeFiles(files, notice);
+        uploadNoticeFiles(images, notice, FileType.IMAGE);
+        uploadNoticeFiles(files, notice, FileType.FILE);
     }
 
     private void deleteNoticeFiles(List<Integer> files) {
