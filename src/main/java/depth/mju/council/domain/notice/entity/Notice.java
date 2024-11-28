@@ -1,7 +1,7 @@
 package depth.mju.council.domain.notice.entity;
 
+import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.common.BaseEntity;
-import depth.mju.council.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,13 +24,13 @@ public class Notice extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 
     @Builder
-    public Notice(String title, String content, User user) {
+    public Notice(String title, String content, UserEntity userEntity) {
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.userEntity = userEntity;
     }
 
     public void updateTitleAndContent(String title, String content) {

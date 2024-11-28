@@ -1,8 +1,8 @@
 package depth.mju.council.domain.minute.entity;
 
-import depth.mju.council.domain.common.BaseEntity;
+import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.minute.dto.req.ModifyMinuteReq;
-import depth.mju.council.domain.user.entity.User;
+import depth.mju.council.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,7 +24,7 @@ public class Minute extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 
     public void update(ModifyMinuteReq modifyMinuteReq) {
         this.title = modifyMinuteReq.getTitle();
