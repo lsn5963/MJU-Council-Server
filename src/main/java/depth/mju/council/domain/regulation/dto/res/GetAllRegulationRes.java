@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class RetrieveAllRegulationRes {
+public class GetAllRegulationRes {
     @Schema(type = "Long", example = "1", description = "회칙아이디")
     private Long id;
     @Schema(type = "String", example = "adsasd123123", description = "회칙url")

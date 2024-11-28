@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class RetrieveMinuteRes {
+public class GetMinuteRes {
     @Schema(type = "Long", example = "1", description = "회의록 ID")
     private Long id;
 
