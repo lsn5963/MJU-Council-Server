@@ -3,9 +3,9 @@ package depth.mju.council.domain.user.dto.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class LoginReq {
 
     @NotNull(message = "ID(username)을 입력해주세요")
