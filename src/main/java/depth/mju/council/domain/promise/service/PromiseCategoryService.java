@@ -32,7 +32,7 @@ public class PromiseCategoryService {
         List<PromiseCategory> promiseCategories = promiseCategoryRepository.findByUser(user);
         List<PromiseCategoryRes> promiseCategoryRes = promiseCategories.stream()
                 .map(promiseCategory -> PromiseCategoryRes.builder()
-                        .id(promiseCategory.getId())
+                        .promiseCategoryId(promiseCategory.getId())
                         .title(promiseCategory.getTitle())
                         .build())
                 .collect(Collectors.toList());

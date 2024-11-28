@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class GetAllRegulationRes {
     @Schema(type = "Long", example = "1", description = "회칙아이디")
-    private Long id;
+    private Long regulationId;
     @Schema(type = "String", example = "adsasd123123", description = "회칙url")
     private String imgUrl;
     @Schema(type = "LocalDate", example = "2024-12-23", description = "회칙만든시간")

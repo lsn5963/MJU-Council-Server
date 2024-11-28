@@ -54,7 +54,7 @@ public class MinuteService {
                 .pageSize(pageResult.getSize())
                 .contents(pageResult.getContent().stream()
                         .map(getMinute -> GetAllMinuteRes.builder()
-                                .id(getMinute.getId())
+                                .minuteId(getMinute.getId())
                                 .title(getMinute.getTitle())
                                 .date(getMinute.getCreatedAt())
                                 .build())
@@ -66,7 +66,7 @@ public class MinuteService {
 //        User user = userRepository.findById(userId).get();
         Minute minutes = minuteRepository.findById(minuteId).get();
         return GetMinuteRes.builder()
-                .id(minutes.getId())
+                .minuteId(minutes.getId())
 //                .writer(user.getName())
                 .title(minutes.getTitle())
                 .content(minutes.getContent())

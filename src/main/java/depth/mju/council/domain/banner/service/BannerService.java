@@ -35,7 +35,7 @@ public class BannerService {
         List<Banner> banners = bannerRepository.findByUser(user);
         List<GetBannerRes> bannersRes = banners.stream()
                 .map(banner -> GetBannerRes.builder()
-                        .id(banner.getId())
+                        .bannerId(banner.getId())
                         .imgUrl(banner.getImgUrl())
                         .date(banner.getCreatedAt())
                         .build())

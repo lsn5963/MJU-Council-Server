@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Builder
 public class GetMinuteRes {
     @Schema(type = "Long", example = "1", description = "회의록 ID")
-    private Long id;
+    private Long minuteId;
 
     @Schema(type = "String", example = "관리자", description = "작성자")
     private String writer;

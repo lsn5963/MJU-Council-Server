@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PromiseRes {
     @Schema(type = "Long", example = "1", description = "공약 ID")
-    private Long id;
+    private Long promiseCategoryId;
     @Schema(type = "String", example = "재수강 학점 A0 확대", description = "공약 제목")
     private String title;
 

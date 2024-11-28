@@ -46,7 +46,7 @@ public class PromiseService {
         List<Promise> promises = promiseRepository.findByPromiseCategory(promiseCategory);
         List<PromiseRes> promiseRes = promises.stream()
                 .map(promise -> PromiseRes.builder()
-                        .id(promise.getId())
+                        .promiseCategoryId(promise.getId())
                         .title(promise.getTitle())
                         .content(promise.getContent())
                         .progress(promise.getProgress())

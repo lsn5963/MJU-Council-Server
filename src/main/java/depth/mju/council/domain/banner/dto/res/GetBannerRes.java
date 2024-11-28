@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Builder
 public class GetBannerRes {
     @Schema(type = "Long", example = "1", description = "배너아이디")
-    private Long id;
+    private Long bannerId;
     @Schema(type = "String", example = "adsasd123123", description = "배너url")
     private String imgUrl;
     @Schema(type = "LocalDate", example = "2024-12-23", description = "배너만든시간")

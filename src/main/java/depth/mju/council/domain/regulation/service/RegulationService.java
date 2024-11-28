@@ -57,7 +57,7 @@ public class RegulationService {
                 .pageSize(pageResult.getSize())
                 .contents(pageResult.getContent().stream()
                         .map(regulation -> GetAllRegulationRes.builder()
-                                .id(regulation.getId())
+                                .regulationId(regulation.getId())
                                 .imgUrl(regulation.getFileUrl())
                                 .date(regulation.getCreatedAt())
                                 .build())
@@ -67,7 +67,7 @@ public class RegulationService {
     public GetRegulationRes getRegulation(Long regulationId) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
         return GetRegulationRes.builder()
-                .id(regulation.getId())
+                .regulationId(regulation.getId())
                 .imgUrl(regulation.getFileUrl())
                 .date(regulation.getCreatedAt())
                 .build();
