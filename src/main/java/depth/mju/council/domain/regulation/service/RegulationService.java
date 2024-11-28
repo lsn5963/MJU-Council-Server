@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class RegulationService {
     private final UserRepository userRepository;
     private final RegulationRepository regulationRepository;
     @Transactional
-    public void createRegulation(Long userId, MultipartFile file, LocalDate revisionDate) {
+    public void createRegulation(Long userId, MultipartFile file, LocalDateTime revisionDate) {
         User user = userRepository.findById(userId).get();
         //
         Regulation regulation = Regulation.builder()

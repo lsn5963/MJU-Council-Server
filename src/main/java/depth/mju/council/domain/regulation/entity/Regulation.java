@@ -1,11 +1,12 @@
 package depth.mju.council.domain.regulation.entity;
 
-import depth.mju.council.domain.BaseEntity;
+import depth.mju.council.domain.common.BaseEntity;
 import depth.mju.council.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -21,7 +22,7 @@ public class Regulation extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String fileUrl;
 
-    private LocalDate revisionDate;
+    private LocalDateTime revisionDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

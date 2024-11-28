@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -18,6 +19,6 @@ public class GetAllMinuteRes {
     @Schema(type = "String", example = "뎁스운영진회의", description = "회의록 제목")
     private String title;
 
-    @Schema(type = "LocalDate", example = "2024-11-17", description = "작성일")
-    private LocalDate date;
+    @Schema(type = "LocalDateTime", example = "2024-11-17", description = "작성일")
+    private LocalDateTime date;
 }
