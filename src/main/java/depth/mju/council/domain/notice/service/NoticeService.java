@@ -38,7 +38,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final NoticeFileRepository noticeFileRepository;
 
-    public NoticeRes retrieveNotice(Long noticeId) {
+    public NoticeRes getNotice(Long noticeId) {
         Notice notice = validNoticeById(noticeId);
         List<FileRes> images = noticeFileRepository.findNoticeFilesByNoticeIdAndFileType(noticeId, FileType.IMAGE);
         List<FileRes> files = noticeFileRepository.findNoticeFilesByNoticeIdAndFileType(noticeId, FileType.FILE);
@@ -52,7 +52,7 @@ public class NoticeService {
                 .build();
     }
 
-    public PageResponse<NoticeListRes> retrieveAllNotice(Optional<String> keyword, int page, int size) {
+    public PageResponse<NoticeListRes> getAllNotice(Optional<String> keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
 
         Page<NoticeListRes> noticeListResponses;

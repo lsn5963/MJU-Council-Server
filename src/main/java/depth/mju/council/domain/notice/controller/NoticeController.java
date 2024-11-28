@@ -31,12 +31,12 @@ public class NoticeController {
 
     @Operation(summary = "공지사항 상세 조회")
     @GetMapping("/{noticeId}")
-    public ResponseEntity<ApiResult> retrieveNotice(
+    public ResponseEntity<ApiResult> getNotice(
             @Parameter(description = "조회하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId
     ) {
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
-                .information(noticeService.retrieveNotice(noticeId))
+                .information(noticeService.getNotice(noticeId))
                 .message("공지사항 " + noticeId +"번을 조회합니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
@@ -44,14 +44,14 @@ public class NoticeController {
 
     @Operation(summary = "공지사항 목록 조회")
     @GetMapping("")
-    public ResponseEntity<ApiResult> retrieveAllNotice(
+    public ResponseEntity<ApiResult> getAllNotice(
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword
     ) {
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
-                .information(noticeService.retrieveAllNotice(keyword, page, size))
+                .information(noticeService.getAllNotice(keyword, page, size))
                 .message("공지사항 목록을 조회합니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
