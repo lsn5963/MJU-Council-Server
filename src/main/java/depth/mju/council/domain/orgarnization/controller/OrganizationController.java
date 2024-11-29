@@ -1,11 +1,15 @@
 package depth.mju.council.domain.orgarnization.controller;
 
 import depth.mju.council.domain.orgarnization.service.OrganizationService;
+import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RestController
@@ -23,5 +27,20 @@ public class OrganizationController {
                 .message("조직도를 성공적으로 조회했습니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "조직도 등록")
+    @PostMapping("")
+    public ResponseEntity<?> createOrganization(
+            @RequestPart("titles") List<String> titles,
+            @RequestPart("images") List<MultipartFile> images,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        organizationService.createOrganizations(titles, images, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("조직도가 등록되었습니다.")
+                        .build()
+        );
     }
 }
