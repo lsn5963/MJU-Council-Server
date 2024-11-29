@@ -23,6 +23,8 @@ public class OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+
+    @Transactional(readOnly = true)
     public List<OrganizationRes> getAllOrganizations() {
         List<Organization> organizations = organizationRepository.findAll();
 
@@ -35,6 +37,7 @@ public class OrganizationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void createOrganizations(List<String> titles, List<MultipartFile> images, UserPrincipal userPrincipal) {
         if (titles.size() != images.size()) {
             throw new DefaultException(ErrorCode.INVALID_PARAMETER, "제목의 개수와 이미지의 개수가 일치하지 않습니다.");
@@ -54,6 +57,7 @@ public class OrganizationService {
         }
     }
 
+    @Transactional
     public void updateOrganization(Long organizationId, String title, MultipartFile image, UserPrincipal userPrincipal) {
         Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "조직도를 찾을 수 없습니다."));
@@ -73,6 +77,8 @@ public class OrganizationService {
 
         organizationRepository.save(organization);
     }
+
+    @Transactional
     public void deleteOrganization(Long organizationId, UserPrincipal userPrincipal) {
         Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "조직도를 찾을 수 없습니다."));
