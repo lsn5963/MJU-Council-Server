@@ -14,7 +14,7 @@ import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.domain.notice.dto.res.FileRes;
 import depth.mju.council.global.payload.PageResponse;
-import depth.mju.council.infrastructure.s3.service.S3Uploader;
+import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class NoticeService {
 
-    private final S3Uploader s3Uploader;
+    private final S3Service s3Service;
 
     private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
@@ -90,7 +90,7 @@ public class NoticeService {
     private void uploadNoticeFiles(List<MultipartFile> files, Notice notice, FileType fileType) {
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
-                saveNoticeFiles(s3Uploader.uploadFile(file), file.getOriginalFilename(), fileType, notice);
+                saveNoticeFiles(s3Service.uploadFile(file), file.getOriginalFilename(), fileType, notice);
             }
         }
     }
@@ -142,9 +142,9 @@ public class NoticeService {
             String saveFileName = extractSaveFileName(file.getFileUrl());
             // S3에서 삭제
             if (fileType == FileType.FILE) {
-                s3Uploader.deleteFile(saveFileName);
+                s3Service.deleteFile(saveFileName);
             } else {
-                s3Uploader.deleteImage(saveFileName);
+                s3Service.deleteImage(saveFileName);
             }
             // DB에서 삭제
             noticeFileRepository.delete(file);

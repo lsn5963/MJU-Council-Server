@@ -14,7 +14,7 @@ import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.global.payload.PageResponse;
-import depth.mju.council.infrastructure.s3.service.S3Uploader;
+import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class BusinessService {
 
-    private final S3Uploader s3Uploader;
+    private final S3Service s3Service;
 
     private final UserRepository userRepository;
     private final BusinessRepository businessRepository;
@@ -90,7 +90,7 @@ public class BusinessService {
     private void uploadBusinessFiles(List<MultipartFile> files, Business business, FileType fileType) {
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
-                saveBusinessFiles(s3Uploader.uploadFile(file), file.getOriginalFilename(), fileType, business);
+                saveBusinessFiles(s3Service.uploadFile(file), file.getOriginalFilename(), fileType, business);
             }
         }
     }
@@ -142,9 +142,9 @@ public class BusinessService {
             String saveFileName = extractSaveFileName(file.getFileUrl());
             // S3에서 삭제
             if (fileType == FileType.FILE) {
-                s3Uploader.deleteFile(saveFileName);
+                s3Service.deleteFile(saveFileName);
             } else {
-                s3Uploader.deleteImage(saveFileName);
+                s3Service.deleteImage(saveFileName);
             }
             // DB에서 삭제
             businessFileRepository.delete(file);
