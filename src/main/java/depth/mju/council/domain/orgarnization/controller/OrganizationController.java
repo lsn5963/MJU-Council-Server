@@ -60,4 +60,16 @@ public class OrganizationController {
         );
     }
 
+    @Operation(summary = "조직도 삭제")
+    @DeleteMapping("/{organizationId}")
+    public ResponseEntity<?> deleteOrganization(@PathVariable Long organizationId,
+                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        organizationService.deleteOrganization(organizationId, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("조직도가 삭제되었습니다.")
+                        .build()
+        );
+    }
 }

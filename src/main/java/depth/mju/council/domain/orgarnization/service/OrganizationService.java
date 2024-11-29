@@ -73,4 +73,20 @@ public class OrganizationService {
 
         organizationRepository.save(organization);
     }
+    public void deleteOrganization(Long organizationId, UserPrincipal userPrincipal) {
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "조직도를 찾을 수 없습니다."));
+        userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 이미지 삭제
+        String imageUrl = organization.getImgUrl();
+        if (imageUrl != null) {
+            String imageName = s3Service.extractImageNameFromUrl(imageUrl);
+            s3Service.deleteImage(imageName);
+        }
+
+        // 조직도 삭제
+        organizationRepository.delete(organization);
+    }
 }
