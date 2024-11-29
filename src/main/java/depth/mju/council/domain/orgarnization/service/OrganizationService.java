@@ -11,6 +11,7 @@ import depth.mju.council.global.payload.ErrorCode;
 import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -53,4 +54,23 @@ public class OrganizationService {
         }
     }
 
+    public void updateOrganization(Long organizationId, String title, MultipartFile image, UserPrincipal userPrincipal) {
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "조직도를 찾을 수 없습니다."));
+        userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 기존 이미지 삭제
+        String oldImageUrl = organization.getImgUrl();
+        if (oldImageUrl != null) {
+            String oldImageName = s3Service.extractImageNameFromUrl(oldImageUrl);
+            s3Service.deleteImage(oldImageName);
+        }
+
+        // 새 이미지 업로드
+        String newImageUrl = s3Service.uploadImage(image);
+        organization.updateTitleAndImgUrl(title, newImageUrl);
+
+        organizationRepository.save(organization);
+    }
 }

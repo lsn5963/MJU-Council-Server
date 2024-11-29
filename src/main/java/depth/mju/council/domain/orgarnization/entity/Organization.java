@@ -27,4 +27,9 @@ public class Organization extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
+
+    public void updateTitleAndImgUrl(String title, String imgUrl) {
+        this.title = title;
+        this.imgUrl = imgUrl;
+    }
 }

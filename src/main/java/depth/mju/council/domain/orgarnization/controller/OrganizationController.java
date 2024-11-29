@@ -43,4 +43,21 @@ public class OrganizationController {
                         .build()
         );
     }
+
+    @Operation(summary = "조직도 수정")
+    @PutMapping("/{organizationId}")
+    public ResponseEntity<?> updateOrganization(
+            @PathVariable Long organizationId,
+            @RequestPart("title") String title,
+            @RequestPart("image") MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        organizationService.updateOrganization(organizationId, title, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("조직도가 수정되었습니다.")
+                        .build()
+        );
+    }
+
 }
