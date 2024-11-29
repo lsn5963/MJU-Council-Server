@@ -7,7 +7,7 @@
 //import depth.mju.council.domain.regulation.dto.res.GetRegulationRes;
 //import depth.mju.council.domain.regulation.entity.Regulation;
 //import depth.mju.council.domain.regulation.repository.RegulationRepository;
-//import depth.mju.council.domain.user.entity.User;
+//import depth.mju.council.domain.user.entity.UserEntity;
 //import depth.mju.council.domain.user.repository.UserRepository;
 //import depth.mju.council.global.payload.PageResponse;
 //import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@
 //    private final RegulationRepository regulationRepository;
 //    @Transactional
 //    public void createRegulation(Long userId, MultipartFile file, LocalDateTime revisionDate) {
-//        User user = userRepository.findById(userId).get();
+//        UserEntity user = userRepository.findById(userId).get();
 //        // 추후 수정
 ////        Regulation regulation = Regulation.builder()
 ////                .fileUrl("파일 URL 저장 로직 필요")
@@ -43,8 +43,8 @@
 //    }
 //    public PageResponse getAllRegulation(Optional<String> keyword, int page, int size) {
 //        //페이징 추후 예정
-////        User user = userRepository.findById(userId).get();
-////        List<Regulation> regulations = regulationRepository.findByUser(user);
+////        UserEntity user = userRepository.findById(userId).get();
+////        List<Regulation> regulations = regulationRepository.findByUserEntity(user);
 //        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
 //        Page<Regulation> pageResult;
 //        if (keyword.isPresent()) {

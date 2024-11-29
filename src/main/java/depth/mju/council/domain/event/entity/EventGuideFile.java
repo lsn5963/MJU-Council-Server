@@ -1,6 +1,5 @@
 package depth.mju.council.domain.event.entity;
 
-import depth.mju.council.domain.alliance.entity.Alliance;
 import depth.mju.council.domain.common.BaseEntity;
 import depth.mju.council.domain.common.FileType;
 import jakarta.persistence.*;
@@ -11,9 +10,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "event_file")
+@Table(name = "event_guide_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EventFile extends BaseEntity {
+public class EventGuideFile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,8 +21,8 @@ public class EventFile extends BaseEntity {
     private String fileUrl;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @JoinColumn(name = "event_notice_id", nullable = false)
+    private EventGuide eventGuide;
 
     private String fileName;
 
@@ -31,10 +30,10 @@ public class EventFile extends BaseEntity {
     private FileType fileType;
 
     @Builder
-    public EventFile(String fileUrl, String fileName, Event event, FileType fileType) {
+    public EventGuideFile(String fileUrl, String fileName, EventGuide eventGuide, FileType fileType) {
         this.fileUrl = fileUrl;
         this.fileName = fileName;
-        this.event = event;
+        this.eventGuide = eventGuide;
         this.fileType = fileType;
     }
 }
