@@ -2,6 +2,7 @@ package depth.mju.council.domain.event.controller;
 
 import depth.mju.council.domain.event.dto.req.CreateEventDetailReq;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
+import depth.mju.council.domain.event.dto.req.ModifyEventDetailReq;
 import depth.mju.council.domain.event.dto.req.ModifyEventReq;
 import depth.mju.council.domain.event.service.EventService;
 import depth.mju.council.global.config.UserPrincipal;
@@ -132,7 +133,24 @@ public class EventController {
         eventService.deleteEventDetail(eventId, eventDetailId);
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
-                .message("행사가 삭제되었습니다.")
+                .message("행사 세부사항이 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "행사 세부사항 수정")
+    @PutMapping("/{eventId}/detail/{eventDetailId}")
+    public ResponseEntity<ApiResult> modifyEventDetail(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "수정하고자 하는 세부사항의 행사 id를 입력해주세요.", required = true) @PathVariable Long eventId,
+            @Parameter(description = "수정하고자 하는 세부사항의 id를 입력해주세요.", required = true) @PathVariable Long eventDetailId,
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
+            @Parameter(description = "Schemas의 ModifyEventReq를 참고해주세요.", required = true) @Valid @RequestPart ModifyEventDetailReq modifyEventDetailReq
+    ) {
+        eventService.modifyEventDetail(eventId, eventDetailId, images, modifyEventDetailReq);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("행사 세부사항이 수정되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }

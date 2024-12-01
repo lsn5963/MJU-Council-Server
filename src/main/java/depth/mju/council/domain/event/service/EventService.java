@@ -3,6 +3,7 @@ package depth.mju.council.domain.event.service;
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.event.dto.req.CreateEventDetailReq;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
+import depth.mju.council.domain.event.dto.req.ModifyEventDetailReq;
 import depth.mju.council.domain.event.dto.res.EventDetailListRes;
 import depth.mju.council.domain.event.dto.res.EventListRes;
 import depth.mju.council.domain.event.dto.res.EventRes;
@@ -218,6 +219,30 @@ public class EventService {
         Optional<EventDetail> eventDetailOptional = eventDetailRepository.findById(eventDetailId);
         DefaultAssert.isOptionalPresent(eventDetailOptional);
         return eventDetailOptional.get();
+    }
+
+    @Transactional
+    public void modifyEventDetail(Long eventId, Long eventDetailId, List<MultipartFile> images, ModifyEventDetailReq modifyEventDetailReq) {
+        Event event = validEventById(eventId);
+        EventDetail eventDetail = validEventDetailById(eventDetailId);
+        DefaultAssert.isTrue(event == eventDetail.getEvent(), "잘못된 접근입니다.");
+        eventDetail.updateTitleAndContent(modifyEventDetailReq.getTitle(), modifyEventDetailReq.getContent());
+
+        deleteEventDetailFiles(modifyEventDetailReq.getDeleteImages(), FileType.IMAGE);
+        uploadEventDetailFiles(images, eventDetail, FileType.IMAGE);
+    }
+
+    private void deleteEventDetailFiles(List<Integer> files, FileType fileType) {
+        if (files == null || files.isEmpty()) {
+            return;
+        }
+        List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
+        List<EventFile> filesToDelete = eventFileRepository.findAllById(fileIds);
+        filesToDelete.forEach(file -> {
+            String saveFileName = extractSaveFileName(file.getFileUrl());
+            s3Service.deleteImage(saveFileName);
+            eventFileRepository.delete(file);
+        });
     }
 
 }

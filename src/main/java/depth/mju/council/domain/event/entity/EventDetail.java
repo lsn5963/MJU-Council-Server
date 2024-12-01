@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @Entity
 @Table(name = "event_detail")
@@ -30,5 +32,10 @@ public class EventDetail extends BaseEntity {
         this.title = title;
         this.content = content;
         this.event = event;
+    }
+
+    public void updateTitleAndContent(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }
