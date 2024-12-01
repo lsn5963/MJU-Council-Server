@@ -10,10 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -35,6 +32,33 @@ public class EventController {
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("행사가 등록되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "행사 전체 삭제")
+    @DeleteMapping()
+    public ResponseEntity<ApiResult> deleteAllEvent(
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        eventService.deleteAllEvent(userPrincipal);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("행사가 전체 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "행사 삭제")
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<ApiResult> deleteEvent(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "삭제하고자 하는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId
+    ) {
+        eventService.deleteEvent(userPrincipal, eventId);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("행사가 삭제되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }

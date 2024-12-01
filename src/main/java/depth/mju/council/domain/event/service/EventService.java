@@ -6,6 +6,8 @@ import depth.mju.council.domain.event.entity.Event;
 import depth.mju.council.domain.event.entity.EventFile;
 import depth.mju.council.domain.event.entity.EventGuide;
 import depth.mju.council.domain.event.repository.EventFileRepository;
+import depth.mju.council.domain.event.repository.EventGuideFileRepository;
+import depth.mju.council.domain.event.repository.EventGuideRepository;
 import depth.mju.council.domain.event.repository.EventRepository;
 import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
 import depth.mju.council.domain.notice.entity.Notice;
@@ -30,6 +32,8 @@ import java.util.Optional;
 public class EventService {
     private final EventRepository eventRepository;
     private final EventFileRepository eventFileRepository;
+    private final EventGuideRepository eventGuideRepository;
+    private final EventGuideFileRepository eventGuideFileRepository;
     private final UserRepository userRepository;
 
     private final S3Service s3Service;
@@ -49,7 +53,6 @@ public class EventService {
                 .userEntity(user)
                 .build();
         eventRepository.save(event);
-
         uploadEventFiles(images, event, FileType.IMAGE);
     }
 
@@ -73,12 +76,31 @@ public class EventService {
     private void validDateRange(LocalDate startDate, LocalDate endDate) {
         DefaultAssert.notNull(startDate, "시작 일자는 비어있으면 안 됩니다.");
         DefaultAssert.notNull(endDate, "종료 일자는 비어있으면 안 됩니다.");
-
         if (endDate.isBefore(startDate)) {
             throw new IllegalArgumentException("종료 일자는 시작 일자보다 빠를 수 없습니다.");
         }
     }
 
+    @Transactional
+    public void deleteEvent(UserPrincipal userPrincipal, Long eventId) {
+        UserEntity user = validUserById(userPrincipal.getId());
+        Event event = validEventById(eventId);
+        event.updateIsDeleted(true);
+        eventFileRepository.updateIsDeletedByEventId(eventId, true);
+        List<EventGuide> eventGuides = eventGuideRepository.findByEventId(eventId);
+        eventGuides.forEach(eventGuide -> {
+            eventGuide.updateIsDeleted(true);
+            eventGuideFileRepository.updateIsDeletedByEventGuideId(eventGuide.getId(), true);
+        });
+    }
+
+    @Transactional
+    public void deleteAllEvent(UserPrincipal userPrincipal) {
+        eventRepository.updateIsDeletedForAll(true);
+        eventFileRepository.updateIsDeletedForAll(true);
+        eventGuideRepository.updateIsDeletedForAll(true);
+        eventGuideFileRepository.updateIsDeletedForAll(true);
+    }
 
     private UserEntity validUserById(Long userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
