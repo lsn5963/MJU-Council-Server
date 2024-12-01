@@ -4,6 +4,7 @@ import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
 import depth.mju.council.domain.event.entity.Event;
 import depth.mju.council.domain.event.entity.EventFile;
+import depth.mju.council.domain.event.entity.EventGuide;
 import depth.mju.council.domain.event.repository.EventFileRepository;
 import depth.mju.council.domain.event.repository.EventRepository;
 import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
@@ -70,8 +71,8 @@ public class EventService {
     }
 
     private void validDateRange(LocalDate startDate, LocalDate endDate) {
-        DefaultAssert.isNull(startDate, "시작 일자는 비어있으면 안 됩니다.");
-        DefaultAssert.isNull(endDate, "종료 일자는 비어있으면 안 됩니다.");
+        DefaultAssert.notNull(startDate, "시작 일자는 비어있으면 안 됩니다.");
+        DefaultAssert.notNull(endDate, "종료 일자는 비어있으면 안 됩니다.");
 
         if (endDate.isBefore(startDate)) {
             throw new IllegalArgumentException("종료 일자는 시작 일자보다 빠를 수 없습니다.");
@@ -83,5 +84,11 @@ public class EventService {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         DefaultAssert.isOptionalPresent(userOptional);
         return userOptional.get();
+    }
+
+    private Event validEventById(Long eventId) {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        DefaultAssert.isOptionalPresent(eventOptional);
+        return eventOptional.get();
     }
 }
