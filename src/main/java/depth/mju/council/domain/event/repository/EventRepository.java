@@ -1,6 +1,5 @@
 package depth.mju.council.domain.event.repository;
 
-import depth.mju.council.domain.event.dto.res.EventGuideListRes;
 import depth.mju.council.domain.event.dto.res.EventListRes;
 import depth.mju.council.domain.event.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     void updateIsDeletedForAll(@Param("isDeleted") boolean isDeleted);
 
     @Query(value = "SELECT e.id AS eventId, e.title AS title, " +
-            "(SELECT ef.file_url FROM event__file ef WHERE ef.event_id = e.id ORDER BY ef.created_at ASC LIMIT 1) AS cover, " +
+            "(SELECT ef.file_url FROM event_file ef WHERE ef.event_id = e.id ORDER BY ef.created_at ASC LIMIT 1) AS cover, " +
             "e.start_date AS startDate, e.end_date AS endDate " +
             "FROM event e " +
             "WHERE e.is_deleted = :isDeleted", nativeQuery = true)

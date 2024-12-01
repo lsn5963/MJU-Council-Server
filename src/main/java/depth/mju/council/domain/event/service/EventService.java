@@ -2,15 +2,15 @@ package depth.mju.council.domain.event.service;
 
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
-import depth.mju.council.domain.event.dto.res.EventGuideListRes;
+import depth.mju.council.domain.event.dto.res.EventDetailListRes;
 import depth.mju.council.domain.event.dto.res.EventListRes;
 import depth.mju.council.domain.event.dto.res.EventRes;
 import depth.mju.council.domain.event.entity.Event;
 import depth.mju.council.domain.event.entity.EventFile;
-import depth.mju.council.domain.event.entity.EventGuide;
+import depth.mju.council.domain.event.entity.EventDetail;
 import depth.mju.council.domain.event.repository.EventFileRepository;
-import depth.mju.council.domain.event.repository.EventGuideFileRepository;
-import depth.mju.council.domain.event.repository.EventGuideRepository;
+import depth.mju.council.domain.event.repository.EventDetailFileRepository;
+import depth.mju.council.domain.event.repository.EventDetailRepository;
 import depth.mju.council.domain.event.repository.EventRepository;
 import depth.mju.council.domain.event.dto.req.ModifyEventReq;
 import depth.mju.council.domain.notice.dto.res.FileRes;
@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 public class EventService {
     private final EventRepository eventRepository;
     private final EventFileRepository eventFileRepository;
-    private final EventGuideRepository eventGuideRepository;
-    private final EventGuideFileRepository eventGuideFileRepository;
+    private final EventDetailRepository eventDetailRepository;
+    private final EventDetailFileRepository eventDetailFileRepository;
     private final UserRepository userRepository;
 
     private final S3Service s3Service;
@@ -50,12 +50,12 @@ public class EventService {
                 .startDate(event.getStartDate())
                 .endDate(event.getEndDate())
                 .images(images)
-                .eventGuides(findEventGuide(eventId))
+                .eventDetails(findEventDetail(eventId))
                 .build();
     }
 
-    private List<EventGuideListRes> findEventGuide(Long eventId) {
-        return eventGuideRepository.findEventGuidesByEventId(eventId, false);
+    private List<EventDetailListRes> findEventDetail(Long eventId) {
+        return eventDetailRepository.findEventDetailsByEventId(eventId, false);
     }
 
     public List<EventListRes> getAllEvent() {
@@ -110,10 +110,10 @@ public class EventService {
         Event event = validEventById(eventId);
         event.updateIsDeleted(true);
         eventFileRepository.updateIsDeletedByEventId(eventId, true);
-        List<EventGuide> eventGuides = eventGuideRepository.findByEventId(eventId);
-        eventGuides.forEach(eventGuide -> {
-            eventGuide.updateIsDeleted(true);
-            eventGuideFileRepository.updateIsDeletedByEventGuideId(eventGuide.getId(), true);
+        List<EventDetail> eventDetails = eventDetailRepository.findByEventId(eventId);
+        eventDetails.forEach(eventDetail -> {
+            eventDetail.updateIsDeleted(true);
+            eventDetailFileRepository.updateIsDeletedByEventDetailId(eventDetail.getId(), true);
         });
     }
 
@@ -121,8 +121,8 @@ public class EventService {
     public void deleteAllEvent() {
         eventRepository.updateIsDeletedForAll(true);
         eventFileRepository.updateIsDeletedForAll(true);
-        eventGuideRepository.updateIsDeletedForAll(true);
-        eventGuideFileRepository.updateIsDeletedForAll(true);
+        eventDetailRepository.updateIsDeletedForAll(true);
+        eventDetailFileRepository.updateIsDeletedForAll(true);
     }
 
     @Transactional
@@ -169,4 +169,5 @@ public class EventService {
         DefaultAssert.isOptionalPresent(eventOptional);
         return eventOptional.get();
     }
+
 }

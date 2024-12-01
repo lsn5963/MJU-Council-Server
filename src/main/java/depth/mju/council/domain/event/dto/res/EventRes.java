@@ -26,15 +26,15 @@ public class EventRes {
     @Schema(description = "Schemas의 FileRes를 참고해주세요. 이미지의 리스트입니다.")
     public List<FileRes> images;
 
-    @Schema(description = "Schemas의 EventGuideListRes를 참고해주세요. 행사 안내 목록의 리스트입니다.")
-    public List<EventGuideListRes> eventGuides;
+    @Schema(description = "Schemas의 EventDetailListRes를 참고해주세요. 행사 세부사항 목록의 리스트입니다.")
+    public List<EventDetailListRes> eventDetails;
     @Builder
-    public EventRes(String title, String content, LocalDate startDate, LocalDate endDate, List<FileRes> images, List<EventGuideListRes> eventGuides) {
+    public EventRes(String title, String content, LocalDate startDate, LocalDate endDate, List<FileRes> images, List<EventDetailListRes> eventDetails) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.images = images;
-        this.eventGuides = eventGuides;
+        this.eventDetails = eventDetails;
     }
 }
