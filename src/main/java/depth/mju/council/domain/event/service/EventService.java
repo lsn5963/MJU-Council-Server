@@ -205,4 +205,19 @@ public class EventService {
                 .build());
     }
 
+    @Transactional
+    public void deleteEventDetail(Long eventId, Long eventDetailId) {
+        Event event = validEventById(eventId);
+        EventDetail eventDetail = validEventDetailById(eventDetailId);
+        DefaultAssert.isTrue(event == eventDetail.getEvent(), "잘못된 접근입니다.");
+        eventDetail.updateIsDeleted(true);
+        eventDetailFileRepository.updateIsDeletedByEventDetailId(eventDetailId, true);
+    }
+
+    private EventDetail validEventDetailById(Long eventDetailId) {
+        Optional<EventDetail> eventDetailOptional = eventDetailRepository.findById(eventDetailId);
+        DefaultAssert.isOptionalPresent(eventDetailOptional);
+        return eventDetailOptional.get();
+    }
+
 }
