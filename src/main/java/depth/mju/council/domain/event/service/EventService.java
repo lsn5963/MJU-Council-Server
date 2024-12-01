@@ -5,6 +5,7 @@ import depth.mju.council.domain.event.dto.req.CreateEventDetailReq;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
 import depth.mju.council.domain.event.dto.req.ModifyEventDetailReq;
 import depth.mju.council.domain.event.dto.res.EventDetailListRes;
+import depth.mju.council.domain.event.dto.res.EventDetailRes;
 import depth.mju.council.domain.event.dto.res.EventListRes;
 import depth.mju.council.domain.event.dto.res.EventRes;
 import depth.mju.council.domain.event.entity.Event;
@@ -243,6 +244,19 @@ public class EventService {
             s3Service.deleteImage(saveFileName);
             eventFileRepository.delete(file);
         });
+    }
+
+    public EventDetailRes getEventDetail(Long eventId, Long eventDetailId) {
+        Event event = validEventById(eventId);
+        EventDetail eventDetail = validEventDetailById(eventDetailId);
+        DefaultAssert.isTrue(event == eventDetail.getEvent(), "잘못된 접근입니다.");
+        List<FileRes> images = eventDetailFileRepository.findEventDetailFilesByEventDetailIdAndFileType(eventDetailId, FileType.IMAGE);
+        return EventDetailRes.builder()
+                .title(eventDetail.getTitle())
+                .content(eventDetail.getContent())
+                .createdAt(eventDetail.getCreatedAt().toLocalDate())
+                .images(images)
+                .build();
     }
 
 }

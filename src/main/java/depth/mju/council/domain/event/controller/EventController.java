@@ -154,4 +154,18 @@ public class EventController {
                 .build();
         return ResponseEntity.ok(apiResult);
     }
+
+    @Operation(summary = "행사 상세 조회")
+    @GetMapping("/{eventId}/detail/{eventDetailId}")
+    public ResponseEntity<ApiResult> getEventDetail(
+            @Parameter(description = "조회하고자 하는 세부사항의 행사 id를 입력해주세요.", required = true) @PathVariable Long eventId,
+            @Parameter(description = "조회하고자 하는 세부사항의 id를 입력해주세요.", required = true) @PathVariable Long eventDetailId
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(eventService.getEventDetail(eventId, eventDetailId))
+                .message("행사 세부사항" + eventDetailId +"번을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
 }
