@@ -51,7 +51,7 @@ public class EventController {
     @Operation(summary = "행사 등록")
     @PostMapping()
     public ResponseEntity<ApiResult> createEvent(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
             @Parameter(description = "Schemas의 CreateEventReq를 참고해주세요.", required = true) @Valid @RequestPart CreateEventReq createEventReq
     ) {
@@ -66,7 +66,7 @@ public class EventController {
     @Operation(summary = "행사 전체 삭제")
     @DeleteMapping()
     public ResponseEntity<ApiResult> deleteAllEvent(
-            @AuthenticationPrincipal UserPrincipal userPrincipal
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         eventService.deleteAllEvent();
         ApiResult apiResult = ApiResult.builder()
@@ -79,7 +79,7 @@ public class EventController {
     @Operation(summary = "행사 삭제")
     @DeleteMapping("/{eventId}")
     public ResponseEntity<ApiResult> deleteEvent(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "삭제하고자 하는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId
     ) {
         eventService.deleteEvent(eventId);
@@ -93,7 +93,7 @@ public class EventController {
     @Operation(summary = "행사 수정")
     @PutMapping("/{eventId}")
     public ResponseEntity<ApiResult> modifyEvent(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "수정하고자 하는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
             @Parameter(description = "Schemas의 ModifyEventReq를 참고해주세요.", required = true) @Valid @RequestPart ModifyEventReq modifyEventReq
@@ -110,7 +110,7 @@ public class EventController {
     @Operation(summary = "행사 세부사항 등록")
     @PostMapping("/{eventId}/detail")
     public ResponseEntity<ApiResult> createEventDetail(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "세부사항을 등록하려는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
             @Parameter(description = "Schemas의 CreateEventDetailReq를 참고해주세요.", required = true) @Valid @RequestPart CreateEventDetailReq createEventDetailReq
@@ -126,7 +126,7 @@ public class EventController {
     @Operation(summary = "행사 세부사항 삭제")
     @DeleteMapping("/{eventId}/detail/{eventDetailId}")
     public ResponseEntity<ApiResult> deleteEvent(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "삭제하고자 하는 세부사항의 행사 id를 입력해주세요.", required = true) @PathVariable Long eventId,
             @Parameter(description = "삭제하고자 하는 세부사항의 id를 입력해주세요.", required = true) @PathVariable Long eventDetailId
     ) {
@@ -141,7 +141,7 @@ public class EventController {
     @Operation(summary = "행사 세부사항 수정")
     @PutMapping("/{eventId}/detail/{eventDetailId}")
     public ResponseEntity<ApiResult> modifyEventDetail(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "수정하고자 하는 세부사항의 행사 id를 입력해주세요.", required = true) @PathVariable Long eventId,
             @Parameter(description = "수정하고자 하는 세부사항의 id를 입력해주세요.", required = true) @PathVariable Long eventDetailId,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
