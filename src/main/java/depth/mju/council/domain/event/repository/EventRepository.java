@@ -20,7 +20,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "(SELECT ef.file_url FROM event_file ef WHERE ef.event_id = e.id ORDER BY ef.created_at ASC LIMIT 1) AS cover, " +
             "e.start_date AS startDate, e.end_date AS endDate " +
             "FROM event e " +
-            "WHERE e.is_deleted = :isDeleted", nativeQuery = true)
+            "WHERE e.is_deleted = :isDeleted " +
+            "ORDER BY e.createdAt DESC", nativeQuery = true)
     List<EventListRes> findEventsByIsDeleted(@Param("isDeleted") boolean isDeleted);
 
 

@@ -13,10 +13,6 @@ import java.util.List;
 @Repository
 public interface EventDetailRepository extends JpaRepository<EventDetail, Long> {
     @Modifying
-    @Query("UPDATE EventDetail ed SET ed.isDeleted = :isDeleted WHERE ed.event.id = :eventId")
-    void updateIsDeletedByEventId(@Param("eventId") Long eventId, @Param("isDeleted") boolean isDeleted);
-
-    @Modifying
     @Query("UPDATE EventDetail ed SET ed.isDeleted = :isDeleted")
     void updateIsDeletedForAll(@Param("isDeleted") boolean isDeleted);
 
@@ -26,7 +22,8 @@ public interface EventDetailRepository extends JpaRepository<EventDetail, Long> 
             "(SELECT edf.file_url FROM event_detail_file edf WHERE edf.event_detail_id = e.id ORDER BY edf.created_at ASC LIMIT 1) AS cover, " +
             "e.created_at AS createdAt " +
             "FROM event_detail e " +
-            "WHERE e.event_id = :eventId AND e.is_deleted = :isDeleted", nativeQuery = true)
+            "WHERE e.event_id = :eventId AND e.is_deleted = :isDeleted " +
+            "ORDER BY e.createdAt DESC", nativeQuery = true)
     List<EventDetailListRes> findEventDetailsByEventId(@Param("eventId") Long eventId, @Param("isDeleted") boolean isDeleted);
 
 
