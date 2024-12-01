@@ -164,7 +164,7 @@ public class EventController {
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .information(eventService.getEventDetail(eventId, eventDetailId))
-                .message("행사 세부사항" + eventDetailId +"번을 조회합니다.")
+                .message("행사 세부사항 " + eventDetailId +"번을 조회합니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EventDetailRepository extends JpaRepository<EventDetail, Long> {
@@ -27,4 +28,5 @@ public interface EventDetailRepository extends JpaRepository<EventDetail, Long> 
     List<EventDetailListRes> findEventDetailsByEventId(@Param("eventId") Long eventId, @Param("isDeleted") boolean isDeleted);
 
 
+    Optional<EventDetail> findByIdAndIsDeleted(Long eventDetailId, boolean b);
 }

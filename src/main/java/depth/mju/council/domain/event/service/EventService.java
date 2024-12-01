@@ -169,7 +169,7 @@ public class EventService {
     }
 
     private Event validEventById(Long eventId) {
-        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        Optional<Event> eventOptional = eventRepository.findByIdAndIsDeleted(eventId, false);
         DefaultAssert.isOptionalPresent(eventOptional);
         return eventOptional.get();
     }
@@ -217,7 +217,7 @@ public class EventService {
     }
 
     private EventDetail validEventDetailById(Long eventDetailId) {
-        Optional<EventDetail> eventDetailOptional = eventDetailRepository.findById(eventDetailId);
+        Optional<EventDetail> eventDetailOptional = eventDetailRepository.findByIdAndIsDeleted(eventDetailId, false);
         DefaultAssert.isOptionalPresent(eventDetailOptional);
         return eventDetailOptional.get();
     }
