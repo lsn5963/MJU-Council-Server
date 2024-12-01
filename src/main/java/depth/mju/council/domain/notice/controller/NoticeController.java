@@ -4,6 +4,7 @@ import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
 import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
 import depth.mju.council.domain.notice.dto.res.NoticeRes;
 import depth.mju.council.domain.notice.service.NoticeService;
+import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.ApiResult;
 import depth.mju.council.global.payload.ErrorResponse;
 import depth.mju.council.global.payload.Message;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,12 +62,12 @@ public class NoticeController {
     @Operation(summary = "공지사항 등록")
     @PostMapping()
     public ResponseEntity<ApiResult> createNotice(
-            //@CurrentUser CustomUserDetails userDetails,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> files,
             @Parameter(description = "Schemas의 NoticeRequest를 참고해주세요.", required = true) @Valid @RequestPart CreateNoticeReq createNoticeReq
     ) {
-        noticeService.createNotice(images, files, createNoticeReq);
+        noticeService.createNotice(userPrincipal, images, files, createNoticeReq);
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("공지사항이 등록되었습니다.")
@@ -76,7 +78,7 @@ public class NoticeController {
     @Operation(summary = "공지사항 전체 삭제")
     @DeleteMapping()
     public ResponseEntity<ApiResult> deleteAllNotice(
-            //@CurrentUser CustomUserDetails userDetails,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         noticeService.deleteAllNotice();
         ApiResult apiResult = ApiResult.builder()
@@ -89,7 +91,7 @@ public class NoticeController {
     @Operation(summary = "공지사항 삭제")
     @DeleteMapping("/{noticeId}")
     public ResponseEntity<ApiResult> deleteAllNotice(
-            //@CurrentUser CustomUserDetails userDetails,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "삭제하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId
     ) {
         noticeService.deleteNotice(noticeId);
@@ -103,7 +105,7 @@ public class NoticeController {
     @Operation(summary = "공지사항 수정")
     @PutMapping("/{noticeId}")
     public ResponseEntity<ApiResult> modifyNotice(
-            //@CurrentUser CustomUserDetails userDetails,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "수정하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> files,
