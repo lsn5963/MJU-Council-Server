@@ -1,11 +1,13 @@
 package depth.mju.council.domain.event.service;
 
 import depth.mju.council.domain.common.FileType;
+import depth.mju.council.domain.event.dto.req.CreateEventDetailReq;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
 import depth.mju.council.domain.event.dto.res.EventDetailListRes;
 import depth.mju.council.domain.event.dto.res.EventListRes;
 import depth.mju.council.domain.event.dto.res.EventRes;
 import depth.mju.council.domain.event.entity.Event;
+import depth.mju.council.domain.event.entity.EventDetailFile;
 import depth.mju.council.domain.event.entity.EventFile;
 import depth.mju.council.domain.event.entity.EventDetail;
 import depth.mju.council.domain.event.repository.EventFileRepository;
@@ -168,6 +170,39 @@ public class EventService {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         DefaultAssert.isOptionalPresent(eventOptional);
         return eventOptional.get();
+    }
+
+    // ------------- Event Detail -------------
+    @Transactional
+    public void createEventDetail(
+            Long eventId,
+            List<MultipartFile> images, CreateEventDetailReq createEventDetailReq)
+    {
+        Event event = validEventById(eventId);
+        EventDetail eventDetail = EventDetail.builder()
+                .title(createEventDetailReq.getTitle())
+                .content(createEventDetailReq.getContent())
+                .event(event)
+                .build();
+        eventDetailRepository.save(eventDetail);
+        uploadEventDetailFiles(images, eventDetail, FileType.IMAGE);
+    }
+
+    private void uploadEventDetailFiles(List<MultipartFile> files, EventDetail eventDetail, FileType fileType) {
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                saveEventDetailFiles(s3Service.uploadFile(file), file.getOriginalFilename(), fileType, eventDetail);
+            }
+        }
+    }
+
+    private void saveEventDetailFiles(String fileUrl, String originalFileName, FileType fileType, EventDetail eventDetail) {
+        eventDetailFileRepository.save(EventDetailFile.builder()
+                .fileUrl(fileUrl)
+                .fileName(originalFileName)
+                .fileType(fileType)
+                .eventDetail(eventDetail)
+                .build());
     }
 
 }

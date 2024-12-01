@@ -1,5 +1,6 @@
 package depth.mju.council.domain.event.controller;
 
+import depth.mju.council.domain.event.dto.req.CreateEventDetailReq;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
 import depth.mju.council.domain.event.dto.req.ModifyEventReq;
 import depth.mju.council.domain.event.service.EventService;
@@ -100,6 +101,23 @@ public class EventController {
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("행사가 수정되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    // ------------- Event Detail -------------
+    @Operation(summary = "행사 세부사항 등록")
+    @PostMapping("/{eventId}/detail")
+    public ResponseEntity<ApiResult> createEventDetail(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "세부사항을 등록하려는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId,
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
+            @Parameter(description = "Schemas의 CreateEventDetailReq를 참고해주세요.", required = true) @Valid @RequestPart CreateEventDetailReq createEventDetailReq
+    ) {
+        eventService.createEventDetail(eventId, images, createEventDetailReq);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("행사 세부사항이 등록되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }
