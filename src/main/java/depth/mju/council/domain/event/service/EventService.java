@@ -9,9 +9,7 @@ import depth.mju.council.domain.event.repository.EventFileRepository;
 import depth.mju.council.domain.event.repository.EventGuideFileRepository;
 import depth.mju.council.domain.event.repository.EventGuideRepository;
 import depth.mju.council.domain.event.repository.EventRepository;
-import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
-import depth.mju.council.domain.notice.entity.Notice;
-import depth.mju.council.domain.notice.entity.NoticeFile;
+import depth.mju.council.domain.event.dto.req.ModifyEventReq;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
@@ -25,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,8 +81,7 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(UserPrincipal userPrincipal, Long eventId) {
-        UserEntity user = validUserById(userPrincipal.getId());
+    public void deleteEvent(Long eventId) {
         Event event = validEventById(eventId);
         event.updateIsDeleted(true);
         eventFileRepository.updateIsDeletedByEventId(eventId, true);
@@ -95,11 +93,44 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteAllEvent(UserPrincipal userPrincipal) {
+    public void deleteAllEvent() {
         eventRepository.updateIsDeletedForAll(true);
         eventFileRepository.updateIsDeletedForAll(true);
         eventGuideRepository.updateIsDeletedForAll(true);
         eventGuideFileRepository.updateIsDeletedForAll(true);
+    }
+
+    @Transactional
+    public void modifyEvent(Long eventId, List<MultipartFile> images, ModifyEventReq modifyEventReq) {
+        Event event = validEventById(eventId);
+        validDateRange(modifyEventReq.getStartDate(), modifyEventReq.getEndDate());
+        event.updateTitleAndContentAndStartAndEndDate(modifyEventReq.getTitle(), modifyEventReq.getContent(), modifyEventReq.getStartDate(), modifyEventReq.getEndDate());
+
+        deleteEventFiles(modifyEventReq.getDeleteImages(), FileType.IMAGE);
+        uploadEventFiles(images, event, FileType.IMAGE);
+    }
+
+    private void deleteEventFiles(List<Integer> files, FileType fileType) {
+        if (files == null || files.isEmpty()) {
+            return;
+        }
+        List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
+        List<EventFile> filesToDelete = eventFileRepository.findAllById(fileIds);
+        filesToDelete.forEach(file -> {
+            String saveFileName = extractSaveFileName(file.getFileUrl());
+            // if (fileType == FileType.FILE) {
+            //     s3Service.deleteFile(saveFileName);
+            // } else {
+                s3Service.deleteImage(saveFileName);
+            // }
+            // DB에서 삭제
+            eventFileRepository.delete(file);
+        });
+    }
+
+    public String extractSaveFileName(String fileUrl) {
+        String[] parts = fileUrl.split("/");
+        return parts[parts.length - 1];
     }
 
     private UserEntity validUserById(Long userId) {

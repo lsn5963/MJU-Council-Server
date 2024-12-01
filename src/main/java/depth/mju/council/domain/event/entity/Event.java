@@ -39,4 +39,11 @@ public class Event extends BaseEntity {
         this.endDate = endDate;
         this.userEntity = userEntity;
     }
+
+    public void updateTitleAndContentAndStartAndEndDate(String title, String content, LocalDate startDate, LocalDate endDate) {
+        this.title = title;
+        this.content = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

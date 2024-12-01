@@ -1,7 +1,9 @@
 package depth.mju.council.domain.event.controller;
 
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
+import depth.mju.council.domain.event.dto.req.ModifyEventReq;
 import depth.mju.council.domain.event.service.EventService;
+import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
 import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +43,7 @@ public class EventController {
     public ResponseEntity<ApiResult> deleteAllEvent(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        eventService.deleteAllEvent(userPrincipal);
+        eventService.deleteAllEvent();
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("행사가 전체 삭제되었습니다.")
@@ -55,10 +57,26 @@ public class EventController {
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "삭제하고자 하는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId
     ) {
-        eventService.deleteEvent(userPrincipal, eventId);
+        eventService.deleteEvent(eventId);
         ApiResult apiResult = ApiResult.builder()
                 .check(true)
                 .message("행사가 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "행사 수정")
+    @PutMapping("/{eventId}")
+    public ResponseEntity<ApiResult> modifyEvent(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "수정하고자 하는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId,
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart List<MultipartFile> images,
+            @Parameter(description = "Schemas의 ModifyEventReq를 참고해주세요.", required = true) @Valid @RequestPart ModifyEventReq modifyEventReq
+    ) {
+        eventService.modifyEvent(eventId, images, modifyEventReq);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("행사가 수정되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResult);
     }
