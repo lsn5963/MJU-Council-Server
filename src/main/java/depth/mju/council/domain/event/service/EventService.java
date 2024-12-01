@@ -2,6 +2,9 @@ package depth.mju.council.domain.event.service;
 
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
+import depth.mju.council.domain.event.dto.res.EventGuideListRes;
+import depth.mju.council.domain.event.dto.res.EventListRes;
+import depth.mju.council.domain.event.dto.res.EventRes;
 import depth.mju.council.domain.event.entity.Event;
 import depth.mju.council.domain.event.entity.EventFile;
 import depth.mju.council.domain.event.entity.EventGuide;
@@ -10,6 +13,7 @@ import depth.mju.council.domain.event.repository.EventGuideFileRepository;
 import depth.mju.council.domain.event.repository.EventGuideRepository;
 import depth.mju.council.domain.event.repository.EventRepository;
 import depth.mju.council.domain.event.dto.req.ModifyEventReq;
+import depth.mju.council.domain.notice.dto.res.FileRes;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
@@ -36,6 +40,27 @@ public class EventService {
     private final UserRepository userRepository;
 
     private final S3Service s3Service;
+
+    public EventRes getEvent(Long eventId) {
+        Event event = validEventById(eventId);
+        List<FileRes> images = eventFileRepository.findEventFilesByEventIdAndFileType(eventId, FileType.IMAGE);
+        return EventRes.builder()
+                .title(event.getTitle())
+                .content(event.getContent())
+                .startDate(event.getStartDate())
+                .endDate(event.getEndDate())
+                .images(images)
+                .eventGuides(findEventGuide(eventId))
+                .build();
+    }
+
+    private List<EventGuideListRes> findEventGuide(Long eventId) {
+        return eventGuideRepository.findEventGuidesByEventId(eventId, false);
+    }
+
+    public List<EventListRes> getAllEvent() {
+        return eventRepository.findEventsByIsDeleted(false);
+    }
 
     @Transactional
     public void createEvent(

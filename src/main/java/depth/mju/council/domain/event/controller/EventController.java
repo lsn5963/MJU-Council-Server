@@ -3,7 +3,6 @@ package depth.mju.council.domain.event.controller;
 import depth.mju.council.domain.event.dto.req.CreateEventReq;
 import depth.mju.council.domain.event.dto.req.ModifyEventReq;
 import depth.mju.council.domain.event.service.EventService;
-import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
 import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,12 +15,37 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/events")
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
+
+    @Operation(summary = "행사 상세 조회")
+    @GetMapping("/{eventId}")
+    public ResponseEntity<ApiResult> getEvent(
+            @Parameter(description = "조회하고자 하는 행사의 id를 입력해주세요.", required = true) @PathVariable Long eventId
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(eventService.getEvent(eventId))
+                .message("행사 " + eventId +"번을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "행사 목록 조회")
+    @GetMapping("")
+    public ResponseEntity<ApiResult> getAllEvent() {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(eventService.getAllEvent())
+                .message("행사 목록을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
 
     @Operation(summary = "행사 등록")
     @PostMapping()
