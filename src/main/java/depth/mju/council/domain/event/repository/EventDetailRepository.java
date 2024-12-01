@@ -23,7 +23,7 @@ public interface EventDetailRepository extends JpaRepository<EventDetail, Long> 
             "e.created_at AS createdAt " +
             "FROM event_detail e " +
             "WHERE e.event_id = :eventId AND e.is_deleted = :isDeleted " +
-            "ORDER BY e.createdAt DESC", nativeQuery = true)
+            "ORDER BY e.created_at DESC", nativeQuery = true)
     List<EventDetailListRes> findEventDetailsByEventId(@Param("eventId") Long eventId, @Param("isDeleted") boolean isDeleted);
 
 
