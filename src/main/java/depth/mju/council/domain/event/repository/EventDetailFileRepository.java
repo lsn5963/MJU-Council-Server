@@ -23,7 +23,7 @@ public interface EventDetailFileRepository extends JpaRepository<EventDetailFile
 
     @Query("SELECT new depth.mju.council.domain.notice.dto.res.FileRes(edf.id, edf.fileName, edf.fileUrl) " +
             "FROM EventDetailFile edf " +
-            "WHERE edf.eventDetail.id = :eventId AND edf.fileType = :fileType " +
+            "WHERE edf.eventDetail.id = :eventDetailId AND edf.fileType = :fileType " +
             "ORDER BY edf.createdAt ASC")
     List<FileRes> findEventDetailFilesByEventDetailIdAndFileType(@Param("eventDetailId") Long eventDetailId, @Param("fileType") FileType fileType);
 
