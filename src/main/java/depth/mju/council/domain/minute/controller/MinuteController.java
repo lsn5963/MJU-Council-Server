@@ -28,7 +28,7 @@ public class MinuteController {
     @PostMapping("/{userId}")
     public ResponseEntity<ApiResult> createMinute(
             @PathVariable Long userId,
-            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @Parameter(description = "Schemas의 CreateMinuteReq를 참고해주세요.", required = true) @RequestPart(value = "createMinuteReq") CreateMinuteReq createMinuteReq) {
         minuteService.createMinute(userId, files, createMinuteReq);
         ApiResult result = ApiResult.builder()
