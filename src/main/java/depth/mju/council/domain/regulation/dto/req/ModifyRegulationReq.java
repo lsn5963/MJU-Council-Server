@@ -16,6 +16,6 @@ public class ModifyRegulationReq {
     private String title;
     @Schema(type = "String", example = "회칙했어욥", description="회칙 내용")
     private String content;
-    @Schema(type = "List<Integer>", example = "[1, 2, 3]", description = "공지사항 수정 시 지우고자 하는 파일의 리스트")
+    @Schema(type = "List<Integer>", example = "[1, 2, 3]", description = "회칙 수정 시 지우고자 하는 파일의 리스트")
     public List<Integer> deleteFiles;
 }

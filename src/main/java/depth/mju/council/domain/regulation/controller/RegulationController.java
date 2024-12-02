@@ -29,6 +29,7 @@ public class RegulationController {
             @PathVariable Long userId,
             @PathVariable LocalDateTime revisionDate,
             @Parameter(description = "Schemas의 CreateRegulationReq를 참고해주세요.", required = true) @RequestBody CreateRegulationReq createRegulationReq,
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true)
             @RequestPart(value = "file", required = false) List<MultipartFile> file) {
         regulationService.createRegulation(userId, file, revisionDate,createRegulationReq);
         ApiResult result = ApiResult.builder()
@@ -43,12 +44,11 @@ public class RegulationController {
     @GetMapping
     public ResponseEntity<ApiResult> getAllRegulation(
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
-            @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword) {
-        //페이징 필요
+            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size){
+//            @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword) {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(regulationService.getAllRegulation(keyword, page, size))
+                .information(regulationService.getAllRegulation(page, size))
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -89,6 +89,18 @@ public class RegulationController {
         ApiResult result = ApiResult.builder()
                 .check(true)
                 .information("학생회칙을 삭제했어요")
+                .build();
+        return ResponseEntity.ok(result);
+    }
+    @Operation(summary = "학생회칙 전체 삭제 API", description = "학생회칙을 전체 삭제하는 API입니다.")
+    @ApiResponses(value = {
+    })
+    @DeleteMapping
+    public ResponseEntity<ApiResult> deleteAllMinute() {
+        regulationService.deleteAllRegulation();
+        ApiResult result = ApiResult.builder()
+                .check(true)
+                .information("학생회칙을 모두 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }

@@ -13,6 +13,7 @@ import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.domain.notice.dto.res.FileRes;
+import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -71,10 +72,9 @@ public class NoticeService {
 
     @Transactional
     public void createNotice(
-            List<MultipartFile> images, List<MultipartFile> files, CreateNoticeReq createNoticeReq)
+            UserPrincipal userPrincipal, List<MultipartFile> images, List<MultipartFile> files, CreateNoticeReq createNoticeReq)
     {
-        UserEntity user = userRepository.findById(1L).get(); // 임시
-
+        UserEntity user = validUserById(userPrincipal.getId());
         Notice notice = Notice.builder()
                 .title(createNoticeReq.getTitle())
                 .content(createNoticeReq.getContent())
@@ -84,7 +84,6 @@ public class NoticeService {
 
         uploadNoticeFiles(images, notice, FileType.IMAGE);
         uploadNoticeFiles(files, notice, FileType.FILE);
-
     }
 
     private void uploadNoticeFiles(List<MultipartFile> files, Notice notice, FileType fileType) {
@@ -160,6 +159,12 @@ public class NoticeService {
         Optional<Notice> noticeOptional = noticeRepository.findByIdAndIsDeleted(noticeId, false);
         DefaultAssert.isOptionalPresent(noticeOptional);
         return noticeOptional.get();
+    }
+
+    private UserEntity validUserById(Long userId) {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        DefaultAssert.isOptionalPresent(userOptional);
+        return userOptional.get();
     }
 
 }

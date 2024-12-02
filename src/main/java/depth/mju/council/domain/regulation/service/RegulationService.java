@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +36,7 @@ public class RegulationService {
     private final RegulationFile regulationFile;
     private final S3Service s3Service;
     @Transactional
-    public void createRegulation(Long userId, List<MultipartFile> imgs, LocalDateTime revisionDate, CreateRegulationReq createRegulationReq) {
+    public void createRegulation(Long userId, List<MultipartFile> files, LocalDateTime revisionDate, CreateRegulationReq createRegulationReq) {
         UserEntity user = userRepository.findById(userId).get();
 
         Regulation regulation = Regulation.builder()
@@ -46,16 +45,17 @@ public class RegulationService {
                 .userEntity(user)
                 .build();
         regulationRepository.save(regulation);
-        uploadRegulationFiles(imgs, regulation);
+        uploadRegulationFiles(files, regulation);
     }
-    public PageResponse getAllRegulation(Optional<String> keyword, int page, int size) {
+    public PageResponse getAllRegulation(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
         Page<Regulation> pageResult;
-        if (keyword.isPresent()) {
-            pageResult = regulationRepository.findByTitleContaining(keyword.get(), pageRequest);
-        } else {
-            pageResult = regulationRepository.findAll(pageRequest);
-        }
+        pageResult = regulationRepository.findAll(pageRequest);
+//        if (keyword.isPresent()) {
+//            pageResult = regulationRepository.findByTitleContaining(keyword.get(), pageRequest);
+//        } else {
+//            pageResult = regulationRepository.findAll(pageRequest);
+//        }
         return PageResponse.builder()
                 .totalElements(pageResult.getTotalElements())
                 .totalPage(pageResult.getTotalPages())
@@ -92,22 +92,39 @@ public class RegulationService {
 
     }
     @Transactional
-    public void modifyRegulation(Long regulationId, List<MultipartFile> imgs, ModifyRegulationReq modifyRegulationReq) {
+    public void modifyRegulation(Long regulationId, List<MultipartFile> files, ModifyRegulationReq modifyRegulationReq) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
         regulation.update(modifyRegulationReq);
         deleteRegulationFiles(modifyRegulationReq.getDeleteFiles(), FileType.FILE);
-        uploadRegulationFiles(imgs, regulation);
+        uploadRegulationFiles(files, regulation);
     }
 
     @Transactional
     public void deleteRegulation(Long regulationId) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
+        List<RegulationFile> regulationFiles = regulationRepository.findByRegulation(regulation);
+        List<Integer> fileIds = regulationFiles.stream()
+                .map(file -> file.getId().intValue())  // Long을 Integer로 변환
+                .toList();
+        deleteRegulationFiles(fileIds,FileType.FILE);
         regulationRepository.delete(regulation);
     }
+    @Transactional
+    public void deleteAllRegulation() {
+        List<RegulationFile> regulationFiles = regulationFileRepository.findAll();
+        // regulationFiles의 ID 리스트를 Integer로 추출
+        List<Integer> fileIds = regulationFiles.stream()
+                .map(file -> file.getId().intValue())  // Long을 Integer로 변환
+                .collect(Collectors.toList());
+        deleteRegulationFiles(fileIds, FileType.FILE);
+        regulationRepository.deleteAll();
+    }
     private void uploadRegulationFiles(List<MultipartFile> files, Regulation regulation) {
-        for (MultipartFile file : files) {
-            if (!file.isEmpty()) {
-                saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), regulation);
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), regulation);
+                }
             }
         }
     }
@@ -118,10 +135,6 @@ public class RegulationService {
                 .regulation(regulation)
                 .build());
     }
-    private String extractSaveFileName(String fileUrl) {
-        String[] parts = fileUrl.split("/");
-        return parts[parts.length - 1];
-    }
     private void deleteRegulationFiles(List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
@@ -130,7 +143,7 @@ public class RegulationService {
         List<RegulationFile> filesToDelete = regulationFileRepository.findAllById(fileIds);
         filesToDelete.forEach(file -> {
             // 저장 파일명 구하기
-            String saveFileName = extractSaveFileName(file.getFileUrl());
+            String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             // S3에서 삭제
             if (fileType == FileType.FILE) {
                 s3Service.deleteFile(saveFileName);
