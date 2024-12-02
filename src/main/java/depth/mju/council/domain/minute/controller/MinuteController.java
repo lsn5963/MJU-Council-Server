@@ -28,8 +28,8 @@ public class MinuteController {
     @PostMapping("/{userId}")
     public ResponseEntity<ApiResult> createMinute(
             @PathVariable Long userId,
-            @RequestPart(value = "imgs", required = false) List<MultipartFile> imgs,
-            @RequestBody CreateMinuteReq createMinuteReq) {
+            @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 이미지의 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true) @RequestPart(value = "imgs", required = false) List<MultipartFile> imgs,
+            @Parameter(description = "Schemas의 CreateMinuteReq를 참고해주세요.", required = true) @RequestBody CreateMinuteReq createMinuteReq) {
         minuteService.createMinute(userId, imgs, createMinuteReq);
         ApiResult result = ApiResult.builder()
                 .check(true)

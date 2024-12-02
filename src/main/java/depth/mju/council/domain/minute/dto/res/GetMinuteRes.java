@@ -1,11 +1,13 @@
 package depth.mju.council.domain.minute.dto.res;
 
+import depth.mju.council.domain.notice.dto.res.FileRes;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -22,4 +24,5 @@ public class GetMinuteRes {
     private String content;
     @Schema(type = "apiResult", example = "2024-11-17", description = "작성일")
     private LocalDateTime date;
+    private List<GetMinuteFileRes> files;  // MinuteFile 정보를 담는 DTO 리스트
 }
