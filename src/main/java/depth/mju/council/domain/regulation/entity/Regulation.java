@@ -1,8 +1,8 @@
 package depth.mju.council.domain.regulation.entity;
 
+import depth.mju.council.domain.regulation.dto.req.ModifyRegulationReq;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.common.BaseEntity;
-import depth.mju.council.domain.minute.dto.req.ModifyMinuteReq;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +26,7 @@ public class Regulation extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
-    public void update(ModifyMinuteReq modifyMinuteReq) {
+    public void update(ModifyRegulationReq modifyMinuteReq) {
         this.title = modifyMinuteReq.getTitle();
         this.content = modifyMinuteReq.getContent();
     }
