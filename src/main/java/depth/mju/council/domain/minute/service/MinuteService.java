@@ -106,7 +106,6 @@ public class MinuteService {
                 .map(file -> file.getId().intValue())  // Long을 Integer로 변환
                 .collect(Collectors.toList());
         deleteMinuteFiles(fileIds,FileType.FILE);
-        minuteFileRepository.deleteAll(minuteFiles);
         minuteRepository.delete(minute);
     }
     @Transactional
@@ -117,7 +116,6 @@ public class MinuteService {
                 .map(file -> file.getId().intValue())  // Long을 Integer로 변환
                 .collect(Collectors.toList());
         deleteMinuteFiles(fileIds,FileType.FILE);
-        minuteFileRepository.deleteAll();
         minuteRepository.deleteAll();
     }
     private void uploadMinuteFiles(List<MultipartFile> files, Minute minute) {
