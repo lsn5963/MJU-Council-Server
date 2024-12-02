@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MinuteController {
     private final MinuteService minuteService;
-    @Operation(summary = "회의록 추가 API", description = "공약 목록을 추가하는 API입니다.")
+    @Operation(summary = "회의록 추가 API", description = "회의록 목록을 추가하는 API입니다.")
     @ApiResponses(value = {
 //            @ApiResult(responseCode = "200", description = "캐릭터 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MyCharaterListRes.class) ) } ),
 //            @ApiResult(responseCode = "400", description = "캐릭터 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
