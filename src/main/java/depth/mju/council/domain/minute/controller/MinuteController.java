@@ -102,7 +102,7 @@ public class MinuteController {
         minuteService.deleteAllMinute();
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information("학생회칙을 모두 삭제했어요")
+                .information("회의록을 모두 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }
