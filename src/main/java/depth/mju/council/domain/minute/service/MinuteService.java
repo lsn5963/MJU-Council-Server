@@ -10,25 +10,19 @@ import depth.mju.council.domain.minute.entity.MinuteFile;
 import depth.mju.council.domain.minute.repository.MinuteFileRepository;
 import depth.mju.council.domain.minute.repository.MinuteRepository;
 import depth.mju.council.domain.minute.dto.res.GetAllMinuteRes;
-import depth.mju.council.domain.notice.dto.res.FileRes;
-import depth.mju.council.domain.notice.entity.Notice;
-import depth.mju.council.domain.notice.entity.NoticeFile;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
-import depth.mju.council.global.payload.ApiResult;
 import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -114,6 +108,17 @@ public class MinuteService {
         deleteMinuteFiles(fileIds,FileType.FILE);
         minuteFileRepository.deleteAll(minuteFiles);
         minuteRepository.delete(minute);
+    }
+    @Transactional
+    public void deleteAllMinute() {
+        List<MinuteFile> minuteFiles = minuteFileRepository.findAll();
+        // minuteFiles의 ID 리스트를 Integer로 추출
+        List<Integer> fileIds = minuteFiles.stream()
+                .map(file -> file.getId().intValue())  // Long을 Integer로 변환
+                .collect(Collectors.toList());
+        deleteMinuteFiles(fileIds,FileType.FILE);
+        minuteFileRepository.deleteAll();
+        minuteRepository.deleteAll();
     }
     private void uploadMinuteFiles(List<MultipartFile> files, Minute minute) {
         if (files != null && !files.isEmpty()) {
