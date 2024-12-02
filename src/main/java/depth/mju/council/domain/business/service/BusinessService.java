@@ -13,6 +13,7 @@ import depth.mju.council.domain.notice.dto.res.FileRes;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
+import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -71,10 +72,9 @@ public class BusinessService {
 
     @Transactional
     public void createBusiness (
-            List<MultipartFile> images, List<MultipartFile> files, CreateBusinessReq createBusinessReq)
+            UserPrincipal userPrincipal, List<MultipartFile> images, List<MultipartFile> files, CreateBusinessReq createBusinessReq)
     {
-        UserEntity user = userRepository.findById(1L).get(); // 임시
-
+        UserEntity user = validUserById(userPrincipal.getId());
         Business business = Business.builder()
                 .title(createBusinessReq.getTitle())
                 .content(createBusinessReq.getContent())
@@ -84,7 +84,6 @@ public class BusinessService {
 
         uploadBusinessFiles(images, business, FileType.IMAGE);
         uploadBusinessFiles(files, business, FileType.FILE);
-
     }
 
     private void uploadBusinessFiles(List<MultipartFile> files, Business business, FileType fileType) {
@@ -160,5 +159,11 @@ public class BusinessService {
         Optional<Business> businessOptional = businessRepository.findByIdAndIsDeleted(businessId, false);
         DefaultAssert.isOptionalPresent(businessOptional);
         return businessOptional.get();
+    }
+
+    private UserEntity validUserById(Long userId) {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        DefaultAssert.isOptionalPresent(userOptional);
+        return userOptional.get();
     }
 }
