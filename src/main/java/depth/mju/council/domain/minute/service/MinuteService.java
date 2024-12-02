@@ -98,13 +98,20 @@ public class MinuteService {
     public void modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> files) {
         Minute minute = minuteRepository.findById(minuteId).get();
         minute.update(modifyMinuteReq);
+        List<MinuteFile> minuteFiles = minuteFileRepository.findByMinute(minute);
         deleteMinuteFiles(modifyMinuteReq.getDeleteFiles(), FileType.FILE);
+        minuteFileRepository.deleteAll(minuteFiles);
         uploadMinuteFiles(files, minute);
     }
     @Transactional
     public void deleteMinute(Long minuteId) {
         Minute minute = minuteRepository.findById(minuteId).get();
         List<MinuteFile> minuteFiles = minuteFileRepository.findByMinute(minute);
+        // minuteFiles의 ID 리스트를 Integer로 추출
+        List<Integer> fileIds = minuteFiles.stream()
+                .map(file -> file.getId().intValue())  // Long을 Integer로 변환
+                .collect(Collectors.toList());
+        deleteMinuteFiles(fileIds,FileType.FILE);
         minuteFileRepository.deleteAll(minuteFiles);
         minuteRepository.delete(minute);
     }
@@ -125,10 +132,6 @@ public class MinuteService {
                 .minute(minute)
                 .build());
     }
-    private String extractSaveFileName(String fileUrl) {
-        String[] parts = fileUrl.split("/");
-        return parts[parts.length - 1];
-    }
     private void deleteMinuteFiles(List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
@@ -137,7 +140,7 @@ public class MinuteService {
         List<MinuteFile> filesToDelete = minuteFileRepository.findAllById(fileIds);
         filesToDelete.forEach(file -> {
             // 저장 파일명 구하기
-            String saveFileName = extractSaveFileName(file.getFileUrl());
+            String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             // S3에서 삭제
             if (fileType == FileType.FILE) {
                 s3Service.deleteFile(saveFileName);
