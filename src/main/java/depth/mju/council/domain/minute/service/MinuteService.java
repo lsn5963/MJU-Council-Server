@@ -40,7 +40,7 @@ public class MinuteService {
     private final MinuteFileRepository minuteFileRepository;
     private final S3Service s3Service;
     @Transactional
-    public void createMinute(Long id, List<MultipartFile> imgs, CreateMinuteReq createMinuteReq) {
+    public void createMinute(Long id, List<MultipartFile> files, CreateMinuteReq createMinuteReq) {
         UserEntity user = userRepository.findById(id).get();
         Minute minute = Minute.builder()
                 .title(createMinuteReq.getTitle())
@@ -48,16 +48,18 @@ public class MinuteService {
                 .userEntity(user)
                 .build();
         minuteRepository.save(minute);
-        uploadMinuteFiles(imgs, minute);
+        uploadMinuteFiles(files, minute);
     }
-    public PageResponse  getAllMinute(Optional<String> keyword, int page, int size) {
+    public PageResponse  getAllMinute(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
         Page<Minute> pageResult;
-        if (keyword.isPresent()) {
-            pageResult = minuteRepository.findByTitleContaining(keyword.get(), pageRequest);
-        } else {
-            pageResult = minuteRepository.findAll(pageRequest);
-        }
+        pageResult = minuteRepository.findAll(pageRequest);
+        //혹시 추후 리펙토링으로 KEYWORD가 나올 수 있어서 주석으로 남겨두겠습니다
+//        if (keyword.isPresent()) {
+//            pageResult = minuteRepository.findByTitleContaining(keyword.get(), pageRequest);
+//        } else {
+//            pageResult = minuteRepository.findAll(pageRequest);
+//        }
         return PageResponse.builder()
                 .totalElements(pageResult.getTotalElements())
                 .totalPage(pageResult.getTotalPages())
@@ -93,23 +95,28 @@ public class MinuteService {
                 .build();
     }
     @Transactional
-    public void modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> imgs) {
+    public void modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> files) {
         Minute minute = minuteRepository.findById(minuteId).get();
         minute.update(modifyMinuteReq);
         deleteMinuteFiles(modifyMinuteReq.getDeleteFiles(), FileType.FILE);
-        uploadMinuteFiles(imgs, minute);
+        uploadMinuteFiles(files, minute);
     }
     @Transactional
     public void deleteMinute(Long minuteId) {
         Minute minute = minuteRepository.findById(minuteId).get();
+        List<MinuteFile> minuteFiles = minuteFileRepository.findByMinute(minute);
+        minuteFileRepository.deleteAll(minuteFiles);
         minuteRepository.delete(minute);
     }
     private void uploadMinuteFiles(List<MultipartFile> files, Minute minute) {
-        for (MultipartFile file : files) {
-            if (!file.isEmpty()) {
-                saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), minute);
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), minute);
+                }
             }
         }
+
     }
     private void saveUploadFiles(String fileUrl, String originalFileName,Minute minute) {
         minuteFileRepository.save(MinuteFile.builder()
