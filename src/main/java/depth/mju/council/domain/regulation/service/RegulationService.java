@@ -36,7 +36,7 @@ public class RegulationService {
     private final RegulationFile regulationFile;
     private final S3Service s3Service;
     @Transactional
-    public void createRegulation(Long userId, List<MultipartFile> files, LocalDateTime revisionDate, CreateRegulationReq createRegulationReq) {
+    public void createRegulation(Long userId, List<MultipartFile> files, CreateRegulationReq createRegulationReq) {
         UserEntity user = userRepository.findById(userId).get();
 
         Regulation regulation = Regulation.builder()

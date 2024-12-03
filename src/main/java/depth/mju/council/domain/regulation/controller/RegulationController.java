@@ -24,14 +24,13 @@ public class RegulationController {
     @Operation(summary = "학생회칙 추가 API", description = "학생회칙을 추가하는 API입니다.")
     @ApiResponses(value = {
     })
-    @PostMapping("/{userId}/{revisionDate}")
+    @PostMapping("/{userId}")
     public ResponseEntity<ApiResult> createRegulation(
             @PathVariable Long userId,
-            @PathVariable LocalDateTime revisionDate,
             @Parameter(description = "Schemas의 CreateRegulationReq를 참고해주세요.", required = true) @RequestBody CreateRegulationReq createRegulationReq,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true)
             @RequestPart(value = "file", required = false) List<MultipartFile> file) {
-        regulationService.createRegulation(userId, file, revisionDate,createRegulationReq);
+        regulationService.createRegulation(userId, file,createRegulationReq);
         ApiResult result = ApiResult.builder()
                 .check(true)
                 .information("학생회칙을 추가했어요")
