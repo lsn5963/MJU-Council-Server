@@ -26,8 +26,8 @@ public class Regulation extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
-    public void update(ModifyRegulationReq modifyMinuteReq) {
-        this.title = modifyMinuteReq.getTitle();
-        this.content = modifyMinuteReq.getContent();
+    public void update(ModifyRegulationReq modifyRegulationReq) {
+        this.title = modifyRegulationReq.getTitle();
+        this.content = modifyRegulationReq.getContent();
     }
 }

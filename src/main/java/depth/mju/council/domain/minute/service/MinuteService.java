@@ -117,14 +117,11 @@ public class MinuteService {
         minuteRepository.deleteAll();
     }
     private void uploadMinuteFiles(List<MultipartFile> files, Minute minute) {
-        if (files != null && !files.isEmpty()) {
-            for (MultipartFile file : files) {
-                if (!file.isEmpty()) {
-                    saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), minute);
-                }
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), minute);
             }
         }
-
     }
     private void saveUploadFiles(String fileUrl, String originalFileName,Minute minute) {
         minuteFileRepository.save(MinuteFile.builder()

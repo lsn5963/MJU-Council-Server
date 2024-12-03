@@ -96,7 +96,7 @@ public class RegulationController {
     @ApiResponses(value = {
     })
     @DeleteMapping
-    public ResponseEntity<ApiResult> deleteAllMinute() {
+    public ResponseEntity<ApiResult> deleteAllRegulation() {
         regulationService.deleteAllRegulation();
         ApiResult result = ApiResult.builder()
                 .check(true)

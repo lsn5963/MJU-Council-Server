@@ -19,5 +19,5 @@ public class GetRegulationRes {
     private String content;
     @Schema(type = "apiResult", example = "2024-11-17", description = "작성일")
     private LocalDateTime date;
-    private List<GetRegulationFileRes> files;  // MinuteFile 정보를 담는 DTO 리스트
+    private List<GetRegulationFileRes> files;  // Regulation 정보를 담는 DTO 리스트
 }

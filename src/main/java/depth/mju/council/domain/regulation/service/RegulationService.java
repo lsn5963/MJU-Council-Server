@@ -120,11 +120,9 @@ public class RegulationService {
         regulationRepository.deleteAll();
     }
     private void uploadRegulationFiles(List<MultipartFile> files, Regulation regulation) {
-        if (files != null && !files.isEmpty()) {
-            for (MultipartFile file : files) {
-                if (!file.isEmpty()) {
-                    saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), regulation);
-                }
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), regulation);
             }
         }
     }
