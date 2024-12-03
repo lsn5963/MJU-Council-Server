@@ -82,4 +82,22 @@ public class CommitteeService {
 
         committeeRepository.save(committee);
     }
+
+    @Transactional
+    public void deleteCommittee(Long committeeId, UserPrincipal userPrincipal) {
+        Committee committee = committeeRepository.findById(committeeId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "중운위(단과대)를 찾을 수 없습니다."));
+        userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 이미지 삭제
+        String imageUrl = committee.getImgUrl();
+        if (imageUrl != null) {
+            String imageName = s3Service.extractImageNameFromUrl(imageUrl);
+            s3Service.deleteImage(imageName);
+        }
+
+        // 중운위(단과대) 삭제
+        committeeRepository.delete(committee);
+    }
 }

@@ -58,4 +58,17 @@ public class CommitteeController {
                         .build()
         );
     }
+
+    @Operation(summary = "중운위(단과대) 삭제")
+    @DeleteMapping("/{committeeId}")
+    public ResponseEntity<?> deleteCommittee(@PathVariable Long committeeId,
+                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        committeeService.deleteCommittee(committeeId, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("중운위(단과대)가 삭제되었습니다.")
+                        .build()
+        );
+    }
 }
