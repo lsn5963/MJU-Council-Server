@@ -92,9 +92,7 @@ public class MinuteService {
     public void modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> files) {
         Minute minute = minuteRepository.findById(minuteId).get();
         minute.update(modifyMinuteReq);
-        List<MinuteFile> minuteFiles = minuteFileRepository.findByMinute(minute);
         deleteMinuteFiles(modifyMinuteReq.getDeleteFiles(), FileType.FILE);
-        minuteFileRepository.deleteAll(minuteFiles);
         uploadMinuteFiles(files, minute);
     }
     @Transactional
@@ -119,14 +117,11 @@ public class MinuteService {
         minuteRepository.deleteAll();
     }
     private void uploadMinuteFiles(List<MultipartFile> files, Minute minute) {
-        if (files != null && !files.isEmpty()) {
-            for (MultipartFile file : files) {
-                if (!file.isEmpty()) {
-                    saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), minute);
-                }
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                saveUploadFiles(s3Service.uploadFile(file), file.getOriginalFilename(), minute);
             }
         }
-
     }
     private void saveUploadFiles(String fileUrl, String originalFileName,Minute minute) {
         minuteFileRepository.save(MinuteFile.builder()

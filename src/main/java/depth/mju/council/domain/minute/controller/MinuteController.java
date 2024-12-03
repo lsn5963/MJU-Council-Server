@@ -94,7 +94,7 @@ public class MinuteController {
                 .build();
         return ResponseEntity.ok(result);
     }
-    @Operation(summary = "회의록 전체 삭제 API", description = "회의록을 삭제하는 API입니다.")
+    @Operation(summary = "회의록 전체 삭제 API", description = "회의록을 전체 삭제하는 API입니다.")
     @ApiResponses(value = {
     })
     @DeleteMapping
@@ -102,7 +102,7 @@ public class MinuteController {
         minuteService.deleteAllMinute();
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information("회의록을 삭제했어요")
+                .information("회의록을 모두 삭제했어요")
                 .build();
         return ResponseEntity.ok(result);
     }

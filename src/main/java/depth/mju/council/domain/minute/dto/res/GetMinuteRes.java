@@ -15,8 +15,8 @@ public class GetMinuteRes {
     @Schema(type = "Long", example = "1", description = "회의록 ID")
     private Long minuteId;
 
-    @Schema(type = "String", example = "관리자", description = "작성자")
-    private String writer;
+//    @Schema(type = "String", example = "관리자", description = "작성자")
+//    private String writer;
 
     @Schema(type = "String", example = "뎁스운영진회의", description = "회의록 제목")
     private String title;
