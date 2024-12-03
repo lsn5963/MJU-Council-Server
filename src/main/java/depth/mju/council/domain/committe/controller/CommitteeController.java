@@ -42,4 +42,20 @@ public class CommitteeController {
                         .build()
         );
     }
+
+    @Operation(summary = "중운위(단과대) 수정")
+    @PutMapping("/{committeeId}")
+    public ResponseEntity<?> updateCommittee(
+            @PathVariable Long committeeId,
+            @RequestPart("request") CreateCommitteeReq request,
+            @RequestPart("image") MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        committeeService.updateCommittee(committeeId, request, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("중운위(단과대)가 수정되었습니다.")
+                        .build()
+        );
+    }
 }

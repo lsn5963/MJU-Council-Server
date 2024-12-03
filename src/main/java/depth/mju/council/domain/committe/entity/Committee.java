@@ -31,4 +31,13 @@ public class Committee extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
+
+    public void update(String description, String college, String name, String pageUrl, String snsUrl, String imgUrl) {
+        this.description = description;
+        this.college = college;
+        this.name = name;
+        this.pageUrl = pageUrl;
+        this.snsUrl = snsUrl;
+        this.imgUrl = imgUrl;
+    }
 }

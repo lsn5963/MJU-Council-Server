@@ -59,4 +59,27 @@ public class CommitteeService {
                 .build();
         committeeRepository.save(committee);
     }
+
+    @Transactional
+    public void updateCommittee(Long committeeId, CreateCommitteeReq request, MultipartFile image,
+                                UserPrincipal userPrincipal) {
+        Committee committee = committeeRepository.findById(committeeId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "중운위(단과대)를 찾을 수 없습니다."));
+        userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 기존 이미지 삭제
+        String oldImageUrl = committee.getImgUrl();
+        if (oldImageUrl != null) {
+            String oldImageName = s3Service.extractImageNameFromUrl(oldImageUrl);
+            s3Service.deleteImage(oldImageName);
+        }
+
+        // 새 이미지 업로드
+        String newImageUrl = s3Service.uploadImage(image);
+        committee.update(request.description, request.college, request.name, request.pageUrl, request.snsUrl,
+                newImageUrl);
+
+        committeeRepository.save(committee);
+    }
 }
