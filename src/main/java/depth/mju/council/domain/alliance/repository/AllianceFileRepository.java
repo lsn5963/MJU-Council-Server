@@ -10,8 +10,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AllianceFileRepository extends JpaRepository<AllianceFile, Long> {
-
     @Modifying
     @Query("DELETE FROM AllianceFile af WHERE af.alliance = :alliance")
     void deleteFilesByAlliance(@Param("alliance") Alliance alliance);
+
+    @Modifying
+    @Query("UPDATE AllianceFile af SET af.isDeleted = :isDeleted")
+    void updateIsDeletedForAll(@Param("isDeleted") boolean isDeleted);
 }

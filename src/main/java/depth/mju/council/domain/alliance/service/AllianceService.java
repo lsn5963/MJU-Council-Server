@@ -83,6 +83,19 @@ public class AllianceService {
     }
 
     @Transactional
+    public void deleteAlliance(Long allianceId) {
+        Alliance alliance = validAllianceById(allianceId);
+        allianceFileRepository.deleteFilesByAlliance(alliance);
+        allianceRepository.delete(alliance);
+    }
+
+    @Transactional
+    public void deleteAllAlliance() {
+        allianceRepository.updateIsDeletedForAll(true);
+        allianceFileRepository.updateIsDeletedForAll(true);
+    }
+
+    @Transactional
     public void modifyAlliance(Long allianceId, List<MultipartFile> images, List<MultipartFile> files, ModifyAllianceReq modifyAllianceReq) {
         Alliance alliance = validAllianceById(allianceId);
         validDateRange(modifyAllianceReq.getStartDate(), modifyAllianceReq.getEndDate());

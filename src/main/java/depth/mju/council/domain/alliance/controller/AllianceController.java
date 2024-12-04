@@ -38,6 +38,33 @@ public class AllianceController {
         return ResponseEntity.ok(apiResult);
     }
 
+    @Operation(summary = "제휴 전체 삭제")
+    @DeleteMapping()
+    public ResponseEntity<ApiResult> deleteAllAlliance(
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        allianceService.deleteAllAlliance();
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("제휴가 전체 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "제휴 삭제")
+    @DeleteMapping("/{allianceId}")
+    public ResponseEntity<ApiResult> deleteAlliance(
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "삭제하고자 하는 제휴의 id를 입력해주세요.", required = true) @PathVariable Long allianceId
+    ) {
+        allianceService.deleteAlliance(allianceId);
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .message("제휴가 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
     @Operation(summary = "제휴 수정")
     @PutMapping("/{allianceId}")
     public ResponseEntity<ApiResult> modifyAlliance(
