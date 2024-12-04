@@ -138,7 +138,7 @@ public class BusinessService {
         List<BusinessFile> filesToDelete = businessFileRepository.findAllById(fileIds);
         filesToDelete.forEach(file -> {
             // 저장 파일명 구하기
-            String saveFileName = extractSaveFileName(file.getFileUrl());
+            String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             // S3에서 삭제
             if (fileType == FileType.FILE) {
                 s3Service.deleteFile(saveFileName);
@@ -148,11 +148,6 @@ public class BusinessService {
             // DB에서 삭제
             businessFileRepository.delete(file);
         });
-    }
-
-    public String extractSaveFileName(String fileUrl) {
-        String[] parts = fileUrl.split("/");
-        return parts[parts.length - 1];
     }
 
     private Business validBusinessById(Long businessId) {

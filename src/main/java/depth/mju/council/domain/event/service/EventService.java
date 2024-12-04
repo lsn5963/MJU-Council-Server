@@ -146,7 +146,7 @@ public class EventService {
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<EventFile> filesToDelete = eventFileRepository.findAllById(fileIds);
         filesToDelete.forEach(file -> {
-            String saveFileName = extractSaveFileName(file.getFileUrl());
+            String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             // if (fileType == FileType.FILE) {
             //     s3Service.deleteFile(saveFileName);
             // } else {
@@ -155,11 +155,6 @@ public class EventService {
             // DB에서 삭제
             eventFileRepository.delete(file);
         });
-    }
-
-    public String extractSaveFileName(String fileUrl) {
-        String[] parts = fileUrl.split("/");
-        return parts[parts.length - 1];
     }
 
     private UserEntity validUserById(Long userId) {
@@ -240,7 +235,7 @@ public class EventService {
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<EventFile> filesToDelete = eventFileRepository.findAllById(fileIds);
         filesToDelete.forEach(file -> {
-            String saveFileName = extractSaveFileName(file.getFileUrl());
+            String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             s3Service.deleteImage(saveFileName);
             eventFileRepository.delete(file);
         });
