@@ -41,14 +41,14 @@ public class BusinessService {
     private final BusinessFileRepository businessFileRepository;
 
     public BusinessRes getBusiness(Long businessId) {
-        Business notice = validBusinessById(businessId);
+        Business business = validBusinessById(businessId);
         List<FileRes> images = businessFileRepository.findBusinessFilesByBusinessIdAndFileType(businessId, FileType.IMAGE);
         List<FileRes> files = businessFileRepository.findBusinessFilesByBusinessIdAndFileType(businessId, FileType.FILE);
 
         return BusinessRes.builder()
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .createdAt(notice.getCreatedAt().toLocalDate())
+                .title(business.getTitle())
+                .content(business.getContent())
+                .createdAt(business.getCreatedAt().toLocalDate())
                 .images(images)
                 .files(files)
                 .build();
