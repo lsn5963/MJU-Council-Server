@@ -1,5 +1,6 @@
 package depth.mju.council.domain.business.repository;
 
+import depth.mju.council.domain.business.entity.Business;
 import depth.mju.council.domain.business.entity.BusinessFile;
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.notice.dto.res.FileRes;
@@ -13,11 +14,6 @@ import java.util.List;
 
 @Repository
 public interface BusinessFileRepository extends JpaRepository<BusinessFile, Long> {
-
-    @Modifying
-    @Query("UPDATE BusinessFile bf SET bf.isDeleted = :isDeleted WHERE bf.business.id = :businessId")
-    void updateIsDeletedByBusinessId(@Param("businessId") Long businessId, @Param("isDeleted") boolean isDeleted);
-
     @Modifying
     @Query("UPDATE BusinessFile bf SET bf.isDeleted = :isDeleted")
     void updateIsDeletedForAll(@Param("isDeleted") boolean isDeleted);
@@ -28,4 +24,9 @@ public interface BusinessFileRepository extends JpaRepository<BusinessFile, Long
             "ORDER BY bf.createdAt ASC")
     List<FileRes> findBusinessFilesByBusinessIdAndFileType(@Param("businessId") Long businessId, @Param("fileType") FileType fileType);
 
+    @Modifying
+    @Query("DELETE FROM BusinessFile bf WHERE bf.business = :business")
+    void deleteFilesByBusiness(@Param("business") Business business);
+
+    List<BusinessFile> findByBusiness(Business business);
 }

@@ -1,6 +1,7 @@
 package depth.mju.council.domain.event.repository;
 
 import depth.mju.council.domain.event.dto.res.EventDetailListRes;
+import depth.mju.council.domain.event.entity.Event;
 import depth.mju.council.domain.event.entity.EventDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,6 +28,9 @@ public interface EventDetailRepository extends JpaRepository<EventDetail, Long> 
             "ORDER BY e.created_at DESC", nativeQuery = true)
     List<EventDetailListRes> findEventDetailsByEventId(@Param("eventId") Long eventId, @Param("isDeleted") boolean isDeleted);
 
-
     Optional<EventDetail> findByIdAndIsDeleted(Long eventDetailId, boolean b);
+
+    @Modifying
+    @Query("DELETE FROM EventDetail ed WHERE ed.event = :event")
+    void deleteEventDetailsByEvent(@Param("event") Event event);
 }

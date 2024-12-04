@@ -1,6 +1,7 @@
 package depth.mju.council.domain.notice.repository;
 
 import depth.mju.council.domain.common.FileType;
+import depth.mju.council.domain.notice.entity.Notice;
 import depth.mju.council.domain.notice.entity.NoticeFile;
 import depth.mju.council.domain.notice.dto.res.FileRes;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +14,6 @@ import java.util.List;
 
 @Repository
 public interface NoticeFileRepository extends JpaRepository<NoticeFile, Long> {
-    @Modifying
-    @Query("UPDATE NoticeFile nf SET nf.isDeleted = :isDeleted WHERE nf.notice.id = :noticeId")
-    void updateIsDeletedByNoticeId(@Param("noticeId") Long noticeId, @Param("isDeleted") boolean isDeleted);
 
     @Modifying
     @Query("UPDATE NoticeFile nf SET nf.isDeleted = :isDeleted")
@@ -27,4 +25,9 @@ public interface NoticeFileRepository extends JpaRepository<NoticeFile, Long> {
             "ORDER BY nf.createdAt ASC")
     List<FileRes> findNoticeFilesByNoticeIdAndFileType(@Param("noticeId") Long noticeId, @Param("fileType") FileType fileType);
 
+    @Modifying
+    @Query("DELETE FROM NoticeFile nf WHERE nf.notice = :notice")
+    void deleteFilesByNotice(@Param("notice") Notice notice);
+
+    List<NoticeFile> findByNotice(Notice notice);
 }

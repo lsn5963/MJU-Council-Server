@@ -106,9 +106,11 @@ public class NoticeService {
     @Transactional
     public void deleteNotice(Long noticeId) {
         Notice notice = validNoticeById(noticeId);
-        // SOFT DELETE로 구현
-        notice.updateIsDeleted(true);
-        noticeFileRepository.updateIsDeletedByNoticeId(noticeId, true);
+        List<NoticeFile> noticeFiles = noticeFileRepository.findByNotice(notice);
+        deleteNoticeFiles(notice, noticeFiles, FileType.FILE);
+        deleteNoticeFiles(notice, noticeFiles, FileType.IMAGE);
+
+        noticeRepository.delete(notice);
     }
 
     @Transactional
@@ -120,23 +122,26 @@ public class NoticeService {
     @Transactional
     public void modifyNotice(Long noticeId, List<MultipartFile> images, List<MultipartFile> files, ModifyNoticeReq modifyNoticeReq) {
         Notice notice = validNoticeById(noticeId);
-        // Notice 정보 변경
         notice.updateTitleAndContent(modifyNoticeReq.getTitle(), modifyNoticeReq.getContent());
         // 지우고자 하는 이미지/파일 삭제
-        deleteNoticeFiles(modifyNoticeReq.getDeleteFiles(), FileType.FILE);
-        deleteNoticeFiles(modifyNoticeReq.getDeleteImages(), FileType.IMAGE);
+        findNoticeFilesByIds(notice, modifyNoticeReq.getDeleteFiles(), FileType.FILE);
+        findNoticeFilesByIds(notice, modifyNoticeReq.getDeleteImages(), FileType.IMAGE);
         // 파일/이미지 업로드
         uploadNoticeFiles(images, notice, FileType.IMAGE);
         uploadNoticeFiles(files, notice, FileType.FILE);
     }
 
-    private void deleteNoticeFiles(List<Integer> files, FileType fileType) {
+    private void findNoticeFilesByIds(Notice notice, List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
         }
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<NoticeFile> filesToDelete = noticeFileRepository.findAllById(fileIds);
-        filesToDelete.forEach(file -> {
+        deleteNoticeFiles(notice, filesToDelete, fileType);
+    }
+
+    private void deleteNoticeFiles(Notice notice, List<NoticeFile> files, FileType fileType) {
+        files.forEach(file -> {
             // 저장 파일명 구하기
             String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             // S3에서 삭제
@@ -145,9 +150,8 @@ public class NoticeService {
             } else {
                 s3Service.deleteImage(saveFileName);
             }
-            // DB에서 삭제
-            noticeFileRepository.delete(file);
         });
+        noticeFileRepository.deleteFilesByNotice(notice);
     }
 
     private Notice validNoticeById(Long noticeId) {

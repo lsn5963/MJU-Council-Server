@@ -1,6 +1,7 @@
 package depth.mju.council.domain.event.repository;
 
 import depth.mju.council.domain.common.FileType;
+import depth.mju.council.domain.event.entity.EventDetail;
 import depth.mju.council.domain.event.entity.EventDetailFile;
 import depth.mju.council.domain.notice.dto.res.FileRes;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,9 @@ public interface EventDetailFileRepository extends JpaRepository<EventDetailFile
     List<FileRes> findEventDetailFilesByEventDetailIdAndFileType(@Param("eventDetailId") Long eventDetailId, @Param("fileType") FileType fileType);
 
 
+    @Modifying
+    @Query("DELETE FROM EventDetailFile edf WHERE edf.eventDetail = :eventDetail")
+    void deleteFilesByEventDetail(@Param("eventDetail") EventDetail eventDetail);
+
+    List<EventDetailFile> findByEventDetail(EventDetail eventDetail);
 }
