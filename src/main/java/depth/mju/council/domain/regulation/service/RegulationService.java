@@ -33,7 +33,6 @@ public class RegulationService {
     private final UserRepository userRepository;
     private final RegulationRepository regulationRepository;
     private final RegulationFileRepository regulationFileRepository;
-    private final RegulationFile regulationFile;
     private final S3Service s3Service;
     @Transactional
     public void createRegulation(Long userId, List<MultipartFile> files, CreateRegulationReq createRegulationReq) {
@@ -102,7 +101,7 @@ public class RegulationService {
     @Transactional
     public void deleteRegulation(Long regulationId) {
         Regulation regulation = regulationRepository.findById(regulationId).get();
-        List<RegulationFile> regulationFiles = regulationRepository.findByRegulation(regulation);
+        List<RegulationFile> regulationFiles = regulationFileRepository.findByRegulation(regulation);
         List<Integer> fileIds = regulationFiles.stream()
                 .map(file -> file.getId().intValue())  // Long을 Integer로 변환
                 .toList();
