@@ -90,7 +90,7 @@ public class NoticeController {
 
     @Operation(summary = "공지사항 삭제")
     @DeleteMapping("/{noticeId}")
-    public ResponseEntity<ApiResult> deleteAllNotice(
+    public ResponseEntity<ApiResult> deleteNotice(
             @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "삭제하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId
     ) {
