@@ -14,9 +14,6 @@ import java.util.List;
 
 @Repository
 public interface EventDetailFileRepository extends JpaRepository<EventDetailFile, Long> {
-    @Modifying
-    @Query("UPDATE EventDetailFile edf SET edf.isDeleted = :isDeleted WHERE edf.eventDetail.id = :eventDetailId")
-    void updateIsDeletedByEventDetailId(@Param("eventDetailId") Long eventDetailId, @Param("isDeleted") boolean isDeleted);
 
     @Modifying
     @Query("UPDATE EventDetailFile edf SET edf.isDeleted = :isDeleted")
