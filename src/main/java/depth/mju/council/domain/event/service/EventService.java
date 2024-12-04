@@ -136,13 +136,13 @@ public class EventService {
     public void modifyEvent(Long eventId, List<MultipartFile> images, ModifyEventReq modifyEventReq) {
         Event event = validEventById(eventId);
         validDateRange(modifyEventReq.getStartDate(), modifyEventReq.getEndDate());
-        event.updateTitleAndContentAndStartAndEndDate(modifyEventReq.getTitle(), modifyEventReq.getContent(), modifyEventReq.getStartDate(), modifyEventReq.getEndDate());
+        event.update(modifyEventReq.getTitle(), modifyEventReq.getContent(), modifyEventReq.getStartDate(), modifyEventReq.getEndDate());
 
-        findFilesByIds(event, modifyEventReq.getDeleteImages(), FileType.IMAGE);
+        findEventFilesByIds(event, modifyEventReq.getDeleteImages(), FileType.IMAGE);
         uploadEventFiles(images, event, FileType.IMAGE);
     }
 
-    private void findFilesByIds(Event event, List<Integer> files, FileType fileType) {
+    private void findEventFilesByIds(Event event, List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
         }

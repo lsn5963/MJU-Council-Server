@@ -10,7 +10,6 @@ import java.util.List;
 
 @Getter
 public class ModifyEventReq {
-
     @Schema(type = "String", example = "2024년 명지대학교 축제", description = "행사의 제목")
     @NotBlank
     public String title;

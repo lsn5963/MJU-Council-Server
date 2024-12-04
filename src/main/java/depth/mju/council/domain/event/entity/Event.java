@@ -40,7 +40,7 @@ public class Event extends BaseEntity {
         this.userEntity = userEntity;
     }
 
-    public void updateTitleAndContentAndStartAndEndDate(String title, String content, LocalDate startDate, LocalDate endDate) {
+    public void update(String title, String content, LocalDate startDate, LocalDate endDate) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
