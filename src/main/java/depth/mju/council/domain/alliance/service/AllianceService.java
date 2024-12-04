@@ -2,22 +2,24 @@ package depth.mju.council.domain.alliance.service;
 
 import depth.mju.council.domain.alliance.dto.req.CreateAllianceReq;
 import depth.mju.council.domain.alliance.dto.req.ModifyAllianceReq;
+import depth.mju.council.domain.alliance.dto.res.AllianceListRes;
+import depth.mju.council.domain.alliance.dto.res.AllianceRes;
 import depth.mju.council.domain.alliance.entity.Alliance;
 import depth.mju.council.domain.alliance.entity.AllianceFile;
 import depth.mju.council.domain.alliance.repository.AllianceFileRepository;
 import depth.mju.council.domain.alliance.repository.AllianceRepository;
 import depth.mju.council.domain.common.FileType;
-import depth.mju.council.domain.event.dto.req.CreateEventReq;
-import depth.mju.council.domain.event.dto.req.ModifyEventReq;
-import depth.mju.council.domain.event.entity.Event;
-import depth.mju.council.domain.event.entity.EventDetail;
-import depth.mju.council.domain.event.entity.EventFile;
+import depth.mju.council.domain.notice.dto.res.FileRes;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.global.config.UserPrincipal;
+import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +39,31 @@ public class AllianceService {
     private final UserRepository userRepository;
 
     private final S3Service s3Service;
+
+    public AllianceRes getAlliance(Long allianceId) {
+        Alliance alliance = validAllianceById(allianceId);
+        List<FileRes> images = allianceFileRepository.findAllianceFilesByAllianceIdAndFileType(allianceId, FileType.IMAGE);
+        List<FileRes> files = allianceFileRepository.findAllianceFilesByAllianceIdAndFileType(allianceId, FileType.FILE);
+        return AllianceRes.builder()
+                .title(alliance.getTitle())
+                .content(alliance.getContent())
+                .startDate(alliance.getStartDate())
+                .endDate(alliance.getEndDate())
+                .images(images)
+                .files(files)
+                .build();
+    }
+
+    public PageResponse<AllianceListRes> getAllAlliance(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+        Page<AllianceListRes> AllianceListResponses = allianceRepository.findAlliancesByIsDeleted(false, pageRequest);
+        return PageResponse.<AllianceListRes>builder()
+                .totalElements(AllianceListResponses.getTotalElements())
+                .totalPage(AllianceListResponses.getTotalPages())
+                .pageSize(AllianceListResponses.getSize())
+                .contents(AllianceListResponses.getContent())
+                .build();
+    }
 
     @Transactional
     public void createAlliance(

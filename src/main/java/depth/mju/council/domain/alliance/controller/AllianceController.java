@@ -22,6 +22,33 @@ import java.util.List;
 public class AllianceController {
     private final AllianceService allianceService;
 
+    @Operation(summary = "제휴 상세 조회")
+    @GetMapping("/{allianceId}")
+    public ResponseEntity<ApiResult> getAlliance(
+            @Parameter(description = "조회하고자 하는 제휴의 id를 입력해주세요.", required = true) @PathVariable Long allianceId
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(allianceService.getAlliance(allianceId))
+                .message("제휴 " + allianceId +"번을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "제휴 목록 조회")
+    @GetMapping("")
+    public ResponseEntity<ApiResult> getAllAlliance(
+            @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "9") int size
+    ) {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(allianceService.getAllAlliance(page, size))
+                .message("제휴 목록을 조회합니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
     @Operation(summary = "제휴 등록")
     @PostMapping()
     public ResponseEntity<ApiResult> createAlliance(
