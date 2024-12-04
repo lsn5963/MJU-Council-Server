@@ -17,5 +17,5 @@ public interface RegulationRepository extends JpaRepository<Regulation,Long> {
 
     Page<Regulation> findByTitleContaining(String s, PageRequest pageRequest);
 
-    List<RegulationFile> findByRegulation(Regulation regulation);
+//    List<RegulationFile> findByRegulation(Regulation regulation);
 }
