@@ -3,12 +3,14 @@ package depth.mju.council.domain.regulation.controller;
 import depth.mju.council.domain.regulation.dto.req.CreateRegulationReq;
 import depth.mju.council.domain.regulation.dto.req.ModifyRegulationReq;
 import depth.mju.council.domain.regulation.service.RegulationService;
+import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,15 +24,13 @@ import java.util.Optional;
 public class RegulationController {
     private final RegulationService regulationService;
     @Operation(summary = "학생회칙 추가 API", description = "학생회칙을 추가하는 API입니다.")
-    @ApiResponses(value = {
-    })
-    @PostMapping("/{userId}")
+    @PostMapping
     public ResponseEntity<ApiResult> createRegulation(
-            @PathVariable Long userId,
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "Schemas의 CreateRegulationReq를 참고해주세요.", required = true) @RequestBody CreateRegulationReq createRegulationReq,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true)
             @RequestPart(value = "file", required = false) List<MultipartFile> file) {
-        regulationService.createRegulation(userId, file,createRegulationReq);
+        regulationService.createRegulation(userPrincipal.getId(), file,createRegulationReq);
         ApiResult result = ApiResult.builder()
                 .check(true)
                 .information("학생회칙을 추가했어요")
@@ -38,8 +38,6 @@ public class RegulationController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 전체 조회 API", description = "학생회칙 목록을 전체 조회하는 API입니다.")
-    @ApiResponses(value = {
-    })
     @GetMapping
     public ResponseEntity<ApiResult> getAllRegulation(
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
@@ -52,8 +50,6 @@ public class RegulationController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 상세 조회 API", description = "학생회칙 상세 내용을 조회하는 API입니다.")
-    @ApiResponses(value = {
-    })
     @GetMapping("/{regulationId}")
     public ResponseEntity<ApiResult> getRegulation(
             @PathVariable Long regulationId) {
@@ -64,10 +60,9 @@ public class RegulationController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 수정 API", description = "학생회칙을 수정하는 API입니다.")
-    @ApiResponses(value = {
-    })
     @PatchMapping("/{regulationId}")
     public ResponseEntity<ApiResult> modifyRegulation(
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long regulationId,
             @RequestBody ModifyRegulationReq modifyRegulationReq,
             @RequestPart(value = "file", required = false) List<MultipartFile> file) {
@@ -79,10 +74,9 @@ public class RegulationController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 삭제 API", description = "학생회칙을 삭제하는 API입니다.")
-    @ApiResponses(value = {
-    })
     @DeleteMapping("/{regulationId}")
     public ResponseEntity<ApiResult> deleteRegulation(
+            @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long regulationId) {
         regulationService.deleteRegulation(regulationId);
         ApiResult result = ApiResult.builder()
@@ -92,10 +86,8 @@ public class RegulationController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "학생회칙 전체 삭제 API", description = "학생회칙을 전체 삭제하는 API입니다.")
-    @ApiResponses(value = {
-    })
     @DeleteMapping
-    public ResponseEntity<ApiResult> deleteAllRegulation() {
+    public ResponseEntity<ApiResult> deleteAllRegulation(@Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal) {
         regulationService.deleteAllRegulation();
         ApiResult result = ApiResult.builder()
                 .check(true)
