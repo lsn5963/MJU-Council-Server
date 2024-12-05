@@ -5,12 +5,14 @@ import depth.mju.council.domain.banner.entity.Banner;
 import depth.mju.council.domain.banner.repository.BannerRepository;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
+import depth.mju.council.global.DefaultAssert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +23,7 @@ public class BannerService {
     private final BannerRepository bannerRepository;
     @Transactional
     public void createBanner(Long userId, MultipartFile img) {
-        UserEntity user = userRepository.findById(userId).get();
+        UserEntity user = validUserById(userId);;
         Banner banner = Banner.builder()
                 .imgUrl("이미지 URL 저장 로직 필요")
                 .userEntity(user)
@@ -42,13 +44,23 @@ public class BannerService {
     }
     @Transactional
     public void modifyBanner(Long bannerId, MultipartFile img) {
-        Banner banner = bannerRepository.findById(bannerId).get();
+        Banner banner = validaBannerById(bannerId);
         // 이미지 URL 업데이트 로직 필요
         banner.updateImgUrl("새로운 이미지 URL");
     }
     @Transactional
     public void deleteBanner(Long bannerId) {
-        Banner banner = bannerRepository.findById(bannerId).get();
+        Banner banner = validaBannerById(bannerId);
         bannerRepository.delete(banner);
+    }
+    private UserEntity validUserById(Long userId) {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        DefaultAssert.isOptionalPresent(userOptional);
+        return userOptional.get();
+    }
+    private Banner validaBannerById(Long bannerId) {
+        Optional<Banner> bannerOptional = bannerRepository.findById(bannerId);
+        DefaultAssert.isOptionalPresent(bannerOptional);
+        return bannerOptional.get();
     }
 }

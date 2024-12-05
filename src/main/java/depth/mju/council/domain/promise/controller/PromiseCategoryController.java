@@ -39,12 +39,12 @@ public class PromiseCategoryController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "정책 수정 API", description = "정책 목록을 수정하는 API입니다.")
-    @PatchMapping("/{promiseId}/{promiseTitle}")
+    @PatchMapping("/{promiseCategoryId}/{promiseTitle}")
     public ResponseEntity<ApiResult> modifyPromiseCategory(
             @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @PathVariable Long promiseId,
+            @PathVariable Long promiseCategoryId,
             @PathVariable String promiseTitle) {
-        promiseCategoryService.modifyPromiseCategory(promiseId, promiseTitle);
+        promiseCategoryService.modifyPromiseCategory(promiseCategoryId, promiseTitle);
         ApiResult result = ApiResult.builder()
                 .check(true)
                 .information("정책 목록을 수정했어요")
@@ -52,11 +52,11 @@ public class PromiseCategoryController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "정책 삭제 API", description = "정책 목록을 삭제하는 API입니다.")
-    @DeleteMapping("/{promiseId}")
+    @DeleteMapping("/{promiseCategoryId}")
     public ResponseEntity<ApiResult> deletePromiseCategory(
             @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @PathVariable Long promiseId) {
-        promiseCategoryService.deletePromiseCategory(promiseId);
+            @PathVariable Long promiseCategoryId) {
+        promiseCategoryService.deletePromiseCategory(promiseCategoryId);
         ApiResult result = ApiResult.builder()
                 .check(true)
                 .information("정책 목록을 삭제했어요")
