@@ -30,12 +30,11 @@ public class BannerController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "배너 조회 API", description = "배너 목록을 조회하는 API입니다.")
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResult> getBanner(
-            @PathVariable Long userId) {
+    @GetMapping
+    public ResponseEntity<ApiResult> getBanner() {
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(bannerService.getBanner(userId))
+                .information(bannerService.getBanner())
                 .build();
         return ResponseEntity.ok(result);
     }
@@ -64,5 +63,4 @@ public class BannerController {
                 .build();
         return ResponseEntity.ok(result);
     }
-
 }
