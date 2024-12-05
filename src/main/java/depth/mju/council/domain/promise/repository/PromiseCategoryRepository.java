@@ -13,4 +13,6 @@ public interface PromiseCategoryRepository extends JpaRepository<PromiseCategory
     List<PromiseCategory> findByUserEntity(UserEntity user);
 
     PromiseCategory findByUserEntityAndTitle(UserEntity user, String promiseTitle);
+
+    PromiseCategory findByTitle(String promiseTitle);
 }
