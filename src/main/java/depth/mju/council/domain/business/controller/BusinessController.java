@@ -84,7 +84,7 @@ public class BusinessController {
 
     @Operation(summary = "사업 삭제")
     @DeleteMapping("/{businessId}")
-    public ResponseEntity<ApiResult> deleteAllBusiness(
+    public ResponseEntity<ApiResult> deleteBusiness(
             @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "삭제하고자 하는 사업의 id를 입력해주세요.", required = true) @PathVariable Long businessId
     ) {

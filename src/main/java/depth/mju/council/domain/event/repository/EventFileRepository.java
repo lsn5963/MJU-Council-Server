@@ -1,6 +1,7 @@
 package depth.mju.council.domain.event.repository;
 
 import depth.mju.council.domain.common.FileType;
+import depth.mju.council.domain.event.entity.Event;
 import depth.mju.council.domain.event.entity.EventFile;
 import depth.mju.council.domain.notice.dto.res.FileRes;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +14,6 @@ import java.util.List;
 
 @Repository
 public interface EventFileRepository extends JpaRepository<EventFile, Long> {
-    @Modifying
-    @Query("UPDATE EventFile ef SET ef.isDeleted = :isDeleted WHERE ef.event.id = :eventId")
-    void updateIsDeletedByEventId(@Param("eventId") Long eventId, @Param("isDeleted") boolean isDeleted);
 
     @Modifying
     @Query("UPDATE EventFile ef SET ef.isDeleted = :isDeleted")
@@ -27,4 +25,7 @@ public interface EventFileRepository extends JpaRepository<EventFile, Long> {
             "ORDER BY ef.createdAt ASC")
     List<FileRes> findEventFilesByEventIdAndFileType(@Param("eventId") Long eventId, @Param("fileType") FileType fileType);
 
+    @Modifying
+    @Query("DELETE FROM EventFile ef WHERE ef.event = :event")
+    void deleteFilesByEvent(@Param("event") Event event);
 }
