@@ -44,18 +44,23 @@ public class BannerService {
     }
     @Transactional
     public void modifyBanner(Long bannerId, MultipartFile img) {
-        Banner banner = bannerRepository.findById(bannerId).get();
+        Banner banner = validaBannerById(bannerId);
         // 이미지 URL 업데이트 로직 필요
         banner.updateImgUrl("새로운 이미지 URL");
     }
     @Transactional
     public void deleteBanner(Long bannerId) {
-        Banner banner = bannerRepository.findById(bannerId).get();
+        Banner banner = validaBannerById(bannerId);
         bannerRepository.delete(banner);
     }
     private UserEntity validUserById(Long userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         DefaultAssert.isOptionalPresent(userOptional);
         return userOptional.get();
+    }
+    private Banner validaBannerById(Long bannerId) {
+        Optional<Banner> bannerOptional = bannerRepository.findById(bannerId);
+        DefaultAssert.isOptionalPresent(bannerOptional);
+        return bannerOptional.get();
     }
 }

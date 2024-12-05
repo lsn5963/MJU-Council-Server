@@ -1,5 +1,6 @@
 package depth.mju.council.domain.minute.service;
 
+import depth.mju.council.domain.banner.entity.Banner;
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.minute.dto.req.CreateMinuteReq;
 import depth.mju.council.domain.minute.dto.req.ModifyMinuteReq;
@@ -70,7 +71,7 @@ public class MinuteService {
                 .build();
     }
     public GetMinuteRes getMinute(Long minuteId) {
-        Minute minutes = minuteRepository.findById(minuteId).get();
+        Minute minutes = validaMinuteById(minuteId);
         List<MinuteFile> minuteFiles = minuteFileRepository.findByMinute(minutes);
 
         List<GetMinuteFileRes> getMinuteFileRes = minuteFiles.stream()
@@ -92,14 +93,14 @@ public class MinuteService {
     }
     @Transactional
     public void modifyMinute(Long minuteId, ModifyMinuteReq modifyMinuteReq, List<MultipartFile> files) {
-        Minute minute = minuteRepository.findById(minuteId).get();
+        Minute minute = validaMinuteById(minuteId);
         minute.update(modifyMinuteReq);
         deleteMinuteFiles(modifyMinuteReq.getDeleteFiles(), FileType.FILE);
         uploadMinuteFiles(files, minute);
     }
     @Transactional
     public void deleteMinute(Long minuteId) {
-        Minute minute = minuteRepository.findById(minuteId).get();
+        Minute minute = validaMinuteById(minuteId);
         List<MinuteFile> minuteFiles = minuteFileRepository.findByMinute(minute);
         // minuteFiles의 ID 리스트를 Integer로 추출
         List<Integer> fileIds = minuteFiles.stream()
@@ -155,5 +156,10 @@ public class MinuteService {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         DefaultAssert.isOptionalPresent(userOptional);
         return userOptional.get();
+    }
+    private Minute validaMinuteById(Long bannerId) {
+        Optional<Minute> minuteOptional = minuteRepository.findById(bannerId);
+        DefaultAssert.isOptionalPresent(minuteOptional);
+        return minuteOptional.get();
     }
 }

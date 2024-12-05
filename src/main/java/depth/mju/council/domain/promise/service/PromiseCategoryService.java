@@ -39,18 +39,23 @@ public class PromiseCategoryService {
                 .collect(Collectors.toList());
     }
     @Transactional
-    public void modifyPromiseCategory(Long promiseId, String promiseTitle) {
-        PromiseCategory promiseCategory = promiseCategoryRepository.findById(promiseId).get();
+    public void modifyPromiseCategory(Long promiseCategoryId, String promiseTitle) {
+        PromiseCategory promiseCategory = validatePromiseCategoryById(promiseCategoryId);
         promiseCategory.updatepromiseTitle(promiseTitle);
     }
     @Transactional
-    public void deletePromiseCategory(Long promiseId) {
-        PromiseCategory promiseCategory = promiseCategoryRepository.findById(promiseId).get();
+    public void deletePromiseCategory(Long promiseCategoryId) {
+        PromiseCategory promiseCategory = validatePromiseCategoryById(promiseCategoryId);
         promiseCategoryRepository.delete(promiseCategory);
     }
     private UserEntity validUserById(Long userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         DefaultAssert.isOptionalPresent(userOptional);
         return userOptional.get();
+    }
+    private PromiseCategory validatePromiseCategoryById(Long categoryId) {
+        Optional<PromiseCategory> categoryOptional = promiseCategoryRepository.findById(categoryId);
+        DefaultAssert.isOptionalPresent(categoryOptional);
+        return categoryOptional.get();
     }
 }

@@ -57,17 +57,22 @@ public class PromiseService {
     }
     @Transactional
     public void deletePromise(Long promiseId) {
-        Promise promise = promiseRepository.findById(promiseId).get();
+        Promise promise = validatePromiseById(promiseId);
         promiseRepository.delete(promise);
     }
     @Transactional
     public void modifyPromise(Long promiseId, ModifyPromiseReq modifyPromiseReq) {
-        Promise promise = promiseRepository.findById(promiseId).get();
+        Promise promise = validatePromiseById(promiseId);
         promise.update(modifyPromiseReq);
     }
     private UserEntity validUserById(Long userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         DefaultAssert.isOptionalPresent(userOptional);
         return userOptional.get();
+    }
+    private Promise validatePromiseById(Long promiseId) {
+        Optional<Promise> promiseOptional = promiseRepository.findById(promiseId);
+        DefaultAssert.isOptionalPresent(promiseOptional);
+        return promiseOptional.get();
     }
 }

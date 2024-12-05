@@ -71,7 +71,7 @@ public class RegulationService {
                 .build();
     }
     public GetRegulationRes getRegulation(Long regulationId) {
-        Regulation regulation = regulationRepository.findById(regulationId).get();
+        Regulation regulation = validateRegulationById(regulationId);
         List<RegulationFile> regulationFiles = regulationFileRepository.findByRegulation(regulation);
 
         List<GetRegulationFileRes> getRegulationFileRes = regulationFiles.stream()
@@ -94,7 +94,7 @@ public class RegulationService {
     }
     @Transactional
     public void modifyRegulation(Long regulationId, List<MultipartFile> files, ModifyRegulationReq modifyRegulationReq) {
-        Regulation regulation = regulationRepository.findById(regulationId).get();
+        Regulation regulation = validateRegulationById(regulationId);
         regulation.update(modifyRegulationReq);
         deleteRegulationFiles(modifyRegulationReq.getDeleteFiles(), FileType.FILE);
         uploadRegulationFiles(files, regulation);
@@ -102,7 +102,7 @@ public class RegulationService {
 
     @Transactional
     public void deleteRegulation(Long regulationId) {
-        Regulation regulation = regulationRepository.findById(regulationId).get();
+        Regulation regulation = validateRegulationById(regulationId);
         List<RegulationFile> regulationFiles = regulationFileRepository.findByRegulation(regulation);
         List<Integer> fileIds = regulationFiles.stream()
                 .map(file -> file.getId().intValue())  // Long을 Integer로 변환
@@ -157,5 +157,10 @@ public class RegulationService {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         DefaultAssert.isOptionalPresent(userOptional);
         return userOptional.get();
+    }
+    private Regulation validateRegulationById(Long regulationId) {
+        Optional<Regulation> regulationOptional = regulationRepository.findById(regulationId);
+        DefaultAssert.isOptionalPresent(regulationOptional);
+        return regulationOptional.get();
     }
 }
