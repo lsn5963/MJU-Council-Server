@@ -30,9 +30,8 @@ public class BannerService {
                 .build();
         bannerRepository.save(banner);
     }
-    public List<GetBannerRes> getBanner(Long userId) {
-        UserEntity user = userRepository.findById(userId).get();
-        List<Banner> banners = bannerRepository.findByUserEntity(user);
+    public List<GetBannerRes> getBanner() {
+        List<Banner> banners = bannerRepository.findAll();
         List<GetBannerRes> bannersRes = banners.stream()
                 .map(banner -> GetBannerRes.builder()
                         .bannerId(banner.getId())
