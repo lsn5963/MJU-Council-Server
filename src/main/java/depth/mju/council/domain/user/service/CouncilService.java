@@ -35,4 +35,24 @@ public class CouncilService {
                 .build();
     }
 
+    @Transactional
+    public void updateCouncil(UpdateCouncilReq request, MultipartFile image,
+                                UserPrincipal userPrincipal) {
+        UserEntity user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 기존 이미지 삭제
+        String oldImageUrl = user.getLogoUrl();
+        if (oldImageUrl != null) {
+            String oldImageName = s3Service.extractImageNameFromUrl(oldImageUrl);
+            s3Service.deleteImage(oldImageName);
+        }
+
+        // 새 이미지 업로드
+        String newImageUrl = s3Service.uploadImage(image);
+        user.updateCouncil(request.getGeneration(), request.getName(), request.getEmail(), request.getSnsUrl(),
+                newImageUrl);
+
+        userRepository.save(user);
+    }
 }

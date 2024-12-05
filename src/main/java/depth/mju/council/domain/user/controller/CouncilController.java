@@ -30,4 +30,19 @@ public class CouncilController {
                 .build();
         return ResponseEntity.ok(apiResult);
     }
+
+    @Operation(summary = "총학정보 수정")
+    @PutMapping("")
+    public ResponseEntity<?> updateCouncil(
+            @RequestPart("request") UpdateCouncilReq request,
+            @RequestPart("image") MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        councilService.updateCouncil(request, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("총학정보가 수정되었습니다.")
+                        .build()
+        );
+    }
 }
