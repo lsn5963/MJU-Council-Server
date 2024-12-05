@@ -17,6 +17,7 @@ import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.id.IncrementGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -40,14 +41,14 @@ public class BusinessService {
     private final BusinessFileRepository businessFileRepository;
 
     public BusinessRes getBusiness(Long businessId) {
-        Business notice = validBusinessById(businessId);
+        Business business = validBusinessById(businessId);
         List<FileRes> images = businessFileRepository.findBusinessFilesByBusinessIdAndFileType(businessId, FileType.IMAGE);
         List<FileRes> files = businessFileRepository.findBusinessFilesByBusinessIdAndFileType(businessId, FileType.FILE);
 
         return BusinessRes.builder()
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .createdAt(notice.getCreatedAt().toLocalDate())
+                .title(business.getTitle())
+                .content(business.getContent())
+                .createdAt(business.getCreatedAt().toLocalDate())
                 .images(images)
                 .files(files)
                 .build();
@@ -106,9 +107,11 @@ public class BusinessService {
     @Transactional
     public void deleteBusiness(Long noticeId) {
         Business business = validBusinessById(noticeId);
-        // SOFT DELETE로 구현
-        business.updateIsDeleted(true);
-        businessFileRepository.updateIsDeletedByBusinessId(noticeId, true);
+        List<BusinessFile> businessFiles = businessFileRepository.findByBusiness(business);
+        deleteBusinessFiles(business, businessFiles, FileType.FILE);
+        deleteBusinessFiles(business, businessFiles, FileType.IMAGE);
+
+        businessRepository.delete(business);
     }
 
     @Transactional
@@ -120,39 +123,36 @@ public class BusinessService {
     @Transactional
     public void modifyBusiness(Long noticeId, List<MultipartFile> images, List<MultipartFile> files, ModifyBusinessReq modifyBusinessReq) {
         Business business = validBusinessById(noticeId);
-        // Notice 정보 변경
         business.updateTitleAndContent(modifyBusinessReq.getTitle(), modifyBusinessReq.getContent());
         // 지우고자 하는 이미지/파일 삭제
-        deleteBusinessFiles(modifyBusinessReq.getDeleteFiles(), FileType.FILE);
-        deleteBusinessFiles(modifyBusinessReq.getDeleteImages(), FileType.IMAGE);
+        findBusinessFilesByIds(business, modifyBusinessReq.getDeleteFiles(), FileType.FILE);
+        findBusinessFilesByIds(business, modifyBusinessReq.getDeleteImages(), FileType.IMAGE);
         // 파일/이미지 업로드
         uploadBusinessFiles(images, business, FileType.IMAGE);
         uploadBusinessFiles(files, business, FileType.FILE);
     }
 
-    private void deleteBusinessFiles(List<Integer> files, FileType fileType) {
+    private void findBusinessFilesByIds(Business business, List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
         }
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<BusinessFile> filesToDelete = businessFileRepository.findAllById(fileIds);
-        filesToDelete.forEach(file -> {
+        deleteBusinessFiles(business, filesToDelete, fileType);
+    }
+
+    private void deleteBusinessFiles(Business business, List<BusinessFile> files, FileType fileType) {
+        files.forEach(file -> {
             // 저장 파일명 구하기
-            String saveFileName = extractSaveFileName(file.getFileUrl());
+            String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             // S3에서 삭제
             if (fileType == FileType.FILE) {
                 s3Service.deleteFile(saveFileName);
             } else {
                 s3Service.deleteImage(saveFileName);
             }
-            // DB에서 삭제
-            businessFileRepository.delete(file);
         });
-    }
-
-    public String extractSaveFileName(String fileUrl) {
-        String[] parts = fileUrl.split("/");
-        return parts[parts.length - 1];
+        businessFileRepository.deleteFilesByBusiness(business);
     }
 
     private Business validBusinessById(Long businessId) {

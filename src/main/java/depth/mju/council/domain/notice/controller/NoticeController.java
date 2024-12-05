@@ -2,19 +2,11 @@ package depth.mju.council.domain.notice.controller;
 
 import depth.mju.council.domain.notice.dto.req.ModifyNoticeReq;
 import depth.mju.council.domain.notice.dto.req.CreateNoticeReq;
-import depth.mju.council.domain.notice.dto.res.NoticeRes;
 import depth.mju.council.domain.notice.service.NoticeService;
 import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.ApiResult;
-import depth.mju.council.global.payload.ErrorResponse;
-import depth.mju.council.global.payload.Message;
-import depth.mju.council.global.payload.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -90,7 +82,7 @@ public class NoticeController {
 
     @Operation(summary = "공지사항 삭제")
     @DeleteMapping("/{noticeId}")
-    public ResponseEntity<ApiResult> deleteAllNotice(
+    public ResponseEntity<ApiResult> deleteNotice(
             @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "삭제하고자 하는 공지사항의 id를 입력해주세요.", required = true) @PathVariable Long noticeId
     ) {
