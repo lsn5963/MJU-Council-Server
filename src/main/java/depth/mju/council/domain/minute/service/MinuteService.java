@@ -12,6 +12,7 @@ import depth.mju.council.domain.minute.repository.MinuteRepository;
 import depth.mju.council.domain.minute.dto.res.GetAllMinuteRes;
 import depth.mju.council.domain.user.entity.UserEntity;
 import depth.mju.council.domain.user.repository.UserRepository;
+import depth.mju.council.global.DefaultAssert;
 import depth.mju.council.global.payload.PageResponse;
 import depth.mju.council.infrastructure.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +37,7 @@ public class MinuteService {
     private final S3Service s3Service;
     @Transactional
     public void createMinute(Long id, List<MultipartFile> files, CreateMinuteReq createMinuteReq) {
-        UserEntity user = userRepository.findById(id).get();
+        UserEntity user = validUserById(id);
         Minute minute = Minute.builder()
                 .title(createMinuteReq.getTitle())
                 .content(createMinuteReq.getContent())
@@ -148,5 +150,10 @@ public class MinuteService {
             // DB에서 삭제
             minuteFileRepository.delete(file);
         });
+    }
+    private UserEntity validUserById(Long userId) {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        DefaultAssert.isOptionalPresent(userOptional);
+        return userOptional.get();
     }
 }
