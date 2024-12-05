@@ -25,10 +25,10 @@ public class CommitteeRes {
     @Schema(type = "String", example = "새솔", description = "학생회명. 중운위는 null로 반환")
     public String name;
 
-    @Schema(type = "String", example = "홈페이지 주소", description = "홈페이지 주소. 중운위는 null로 반환")
+    @Schema(type = "String", example = "https://www.mju.ac.kr/sites/ict/index.do", description = "홈페이지 주소. 중운위는 null로 반환")
     public String pageUrl;
 
-    @Schema(type = "String", example = "인스타 주소", description = "인스타 주소. 중운위는 null로 반환")
+    @Schema(type = "String", example = "https://www.instagram.com/mju_ict?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==", description = "인스타 주소. 중운위는 null로 반환")
     public String snsUrl;
 
     @Schema(type = "String", example = "https://council-s3-bucket.s3.amazonaws.com/image/79fdc2c6-02e42b-ffb2fde8b189.png", description = "이미지 주소")
