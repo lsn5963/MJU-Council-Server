@@ -15,7 +15,7 @@ public class OrganizationRes {
     @Schema(type = "Long", example = "1", description = "조직도 ID")
     public Long organizationId;
 
-    @Schema(type = "String", example = "대외협력국", description = "제휴나 외부 업체와의 소통을 담당합니다.")
+    @Schema(type = "String", example = "대외협력국", description = "국명")
     public String title;
 
     @Schema(type = "String", example = "https://council-s3-bucket.s3.amazonaws.com/image/79fdc2c6-02e42b-ffb2fde8b189.png", description = "이미지/파일의 주소")
