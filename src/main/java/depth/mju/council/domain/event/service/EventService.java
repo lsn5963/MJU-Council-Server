@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -116,11 +115,12 @@ public class EventService {
         // 행사 세부사항 삭제
         List<EventDetail> eventDetails = eventDetailRepository.findByEventId(eventId);
         for (EventDetail eventDetail : eventDetails) {
-            deleteEventDetailFiles(eventDetail, eventDetailFileRepository.findByEventDetail(eventDetail), FileType.IMAGE);
+            deleteEventDetailFiles(eventDetailFileRepository.findByEventDetail(eventDetail));
         }
         eventDetailRepository.deleteEventDetailsByEvent(event);
         // 행사 삭제
-        eventFileRepository.deleteFilesByEvent(event);
+        List<EventFile> eventFiles = eventFileRepository.findByEvent(event);
+        deleteEventFiles(eventFiles);
         eventRepository.delete(event);
     }
 
@@ -138,20 +138,20 @@ public class EventService {
         validDateRange(modifyEventReq.getStartDate(), modifyEventReq.getEndDate());
         event.update(modifyEventReq.getTitle(), modifyEventReq.getContent(), modifyEventReq.getStartDate(), modifyEventReq.getEndDate());
 
-        findEventFilesByIds(event, modifyEventReq.getDeleteImages(), FileType.IMAGE);
+        findEventFilesByIds(modifyEventReq.getDeleteImages());
         uploadEventFiles(images, event, FileType.IMAGE);
     }
 
-    private void findEventFilesByIds(Event event, List<Integer> files, FileType fileType) {
+    private void findEventFilesByIds(List<Integer> files) {
         if (files == null || files.isEmpty()) {
             return;
         }
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<EventFile> filesToDelete = eventFileRepository.findAllById(fileIds);
-        deleteEventFiles(event, filesToDelete, fileType);
+        deleteEventFiles(filesToDelete);
     }
 
-    private void deleteEventFiles(Event event, List<EventFile> files, FileType fileType) {
+    private void deleteEventFiles(List<EventFile> files) {
         files.forEach(file -> {
             String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             // if (fileType == FileType.FILE) {
@@ -160,7 +160,7 @@ public class EventService {
                 s3Service.deleteImage(saveFileName);
             // }
         });
-        eventFileRepository.deleteFilesByEvent(event);
+        eventFileRepository.deleteEventFiles(files);
     }
 
     private UserEntity validUserById(Long userId) {
@@ -215,7 +215,7 @@ public class EventService {
         DefaultAssert.isTrue(event == eventDetail.getEvent(), "잘못된 접근입니다.");
 
         List<EventDetailFile> eventDetailFiles = eventDetailFileRepository.findByEventDetail(eventDetail);
-        deleteEventDetailFiles(eventDetail, eventDetailFiles, FileType.IMAGE);
+        deleteEventDetailFiles(eventDetailFiles);
         eventDetailRepository.deleteEventDetailsByEvent(event);
     }
 
@@ -232,24 +232,24 @@ public class EventService {
         DefaultAssert.isTrue(event == eventDetail.getEvent(), "잘못된 접근입니다.");
         eventDetail.updateTitleAndContent(modifyEventDetailReq.getTitle(), modifyEventDetailReq.getContent());
 
-        findEventDetailFilesByIds(eventDetail, modifyEventDetailReq.getDeleteImages(), FileType.IMAGE);
+        findEventDetailFilesByIds(modifyEventDetailReq.getDeleteImages());
         uploadEventDetailFiles(images, eventDetail, FileType.IMAGE);
     }
 
-    private void findEventDetailFilesByIds(EventDetail eventDetail, List<Integer> files, FileType fileType) {
+    private void findEventDetailFilesByIds(List<Integer> files) {
         if (files == null || files.isEmpty()) {
             return;
         }
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<EventDetailFile> filesToDelete = eventDetailFileRepository.findAllById(fileIds);
-        deleteEventDetailFiles(eventDetail, filesToDelete, fileType);
+        deleteEventDetailFiles(filesToDelete);
     }
 
-    private void deleteEventDetailFiles(EventDetail eventDetail, List<EventDetailFile> files, FileType fileType) {
+    private void deleteEventDetailFiles(List<EventDetailFile> files) {
         files.forEach(file -> {
             s3Service.deleteImage(s3Service.extractImageNameFromUrl(file.getFileUrl()));
         });
-        eventDetailFileRepository.deleteFilesByEventDetail(eventDetail);
+        eventDetailFileRepository.deleteEventDetailFiles(files);
     }
 
     public EventDetailRes getEventDetail(Long eventId, Long eventDetailId) {

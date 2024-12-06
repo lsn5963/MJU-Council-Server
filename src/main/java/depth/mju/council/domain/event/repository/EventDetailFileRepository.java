@@ -31,4 +31,8 @@ public interface EventDetailFileRepository extends JpaRepository<EventDetailFile
     void deleteFilesByEventDetail(@Param("eventDetail") EventDetail eventDetail);
 
     List<EventDetailFile> findByEventDetail(EventDetail eventDetail);
+
+    @Modifying
+    @Query("DELETE FROM EventDetailFile edf WHERE edf IN :files")
+    void deleteEventDetailFiles(@Param("files") List<EventDetailFile> files);
 }
