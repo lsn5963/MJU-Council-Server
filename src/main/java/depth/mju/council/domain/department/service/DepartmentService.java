@@ -37,4 +37,18 @@ public class DepartmentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void createDepartment(String description, MultipartFile image, UserPrincipal userPrincipal) {
+        UserEntity user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        String imgUrl = s3Service.uploadImage(image);
+        Department department = Department.builder()
+                .description(description)
+                .imgUrl(imgUrl)
+                .userEntity(user)
+                .build();
+        departmentRepository.save(department);
+    }
+
 }

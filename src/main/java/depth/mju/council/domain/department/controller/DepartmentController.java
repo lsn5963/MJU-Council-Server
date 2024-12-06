@@ -27,3 +27,18 @@ public class DepartmentController {
         return ResponseEntity.ok(apiResult);
     }
 
+    @Operation(summary = "국별 소개 등록")
+    @PostMapping("")
+    public ResponseEntity<?> createDepartments(
+            @RequestPart("description") String description,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        departmentService.createDepartment(description, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("국별 소개가 등록되었습니다.")
+                        .build()
+        );
+    }
+
