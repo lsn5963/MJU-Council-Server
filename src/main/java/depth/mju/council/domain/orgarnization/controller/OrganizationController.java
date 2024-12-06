@@ -10,8 +10,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/organizations")
 @RequiredArgsConstructor
@@ -32,10 +30,10 @@ public class OrganizationController {
     @Operation(summary = "조직도 등록")
     @PostMapping("")
     public ResponseEntity<?> createOrganization(
-            @RequestPart("titles") List<String> titles,
-            @RequestPart("images") List<MultipartFile> images,
+            @RequestPart("titles") String title,
+            @RequestPart("images") MultipartFile image,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        organizationService.createOrganizations(titles, images, userPrincipal);
+        organizationService.createOrganization(title, image, userPrincipal);
         return ResponseEntity.ok(
                 ApiResult.builder()
                         .check(true)
@@ -59,7 +57,6 @@ public class OrganizationController {
                         .build()
         );
     }
-
     @Operation(summary = "조직도 삭제")
     @DeleteMapping("/{organizationId}")
     public ResponseEntity<?> deleteOrganization(@PathVariable Long organizationId,
