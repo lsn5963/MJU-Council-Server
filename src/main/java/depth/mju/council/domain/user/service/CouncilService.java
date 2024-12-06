@@ -1,10 +1,11 @@
 package depth.mju.council.domain.user.service;
 
-import depth.mju.council.domain.committe.dto.req.CreateCommitteeReq;
-import depth.mju.council.domain.committe.entity.Committee;
 import depth.mju.council.domain.user.dto.req.UpdateCouncilReq;
+import depth.mju.council.domain.user.dto.res.CouncilImageRes;
 import depth.mju.council.domain.user.dto.res.CouncilRes;
+import depth.mju.council.domain.user.entity.CouncilImage;
 import depth.mju.council.domain.user.entity.UserEntity;
+import depth.mju.council.domain.user.repository.CouncilImageRepository;
 import depth.mju.council.domain.user.repository.UserRepository;
 import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.error.DefaultException;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -22,6 +26,7 @@ public class CouncilService {
 
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final CouncilImageRepository councilImageRepository;
 
     @Transactional(readOnly = true)
     public CouncilRes getCouncil() {
@@ -54,5 +59,18 @@ public class CouncilService {
                 newImageUrl);
 
         userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CouncilImageRes> getAllCouncilImages() {
+        List<CouncilImage> councilImages = councilImageRepository.findAll();
+
+        return councilImages.stream()
+                .map(councilImage -> CouncilImageRes.builder()
+                        .councilImageId(councilImage.getId())
+                        .description(councilImage.getDescription())
+                        .imgUrl(councilImage.getImgUrl())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
