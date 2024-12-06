@@ -69,4 +69,19 @@ public class CouncilController {
                         .build()
         );
     }
+    @Operation(summary = "소개이미지 수정")
+    @PutMapping("/images/{councilImageId}")
+    public ResponseEntity<?> updateCouncilImage(
+            @PathVariable Long councilImageId,
+            @RequestPart("description") String description,
+            @RequestPart(value = "image") MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        councilService.updateCouncilImage(councilImageId, description, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("소개이미지가 수정되었습니다.")
+                        .build()
+        );
+    }
 }
