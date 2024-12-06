@@ -107,8 +107,8 @@ public class NoticeService {
     public void deleteNotice(Long noticeId) {
         Notice notice = validNoticeById(noticeId);
         List<NoticeFile> noticeFiles = noticeFileRepository.findByNotice(notice);
-        deleteNoticeFiles(notice, noticeFiles, FileType.FILE);
-        deleteNoticeFiles(notice, noticeFiles, FileType.IMAGE);
+        deleteNoticeFiles(noticeFiles, FileType.FILE);
+        deleteNoticeFiles(noticeFiles, FileType.IMAGE);
 
         noticeRepository.delete(notice);
     }
@@ -124,23 +124,23 @@ public class NoticeService {
         Notice notice = validNoticeById(noticeId);
         notice.updateTitleAndContent(modifyNoticeReq.getTitle(), modifyNoticeReq.getContent());
         // 지우고자 하는 이미지/파일 삭제
-        findNoticeFilesByIds(notice, modifyNoticeReq.getDeleteFiles(), FileType.FILE);
-        findNoticeFilesByIds(notice, modifyNoticeReq.getDeleteImages(), FileType.IMAGE);
+        findNoticeFilesByIds(modifyNoticeReq.getDeleteFiles(), FileType.FILE);
+        findNoticeFilesByIds(modifyNoticeReq.getDeleteImages(), FileType.IMAGE);
         // 파일/이미지 업로드
         uploadNoticeFiles(images, notice, FileType.IMAGE);
         uploadNoticeFiles(files, notice, FileType.FILE);
     }
 
-    private void findNoticeFilesByIds(Notice notice, List<Integer> files, FileType fileType) {
+    private void findNoticeFilesByIds(List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
         }
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<NoticeFile> filesToDelete = noticeFileRepository.findAllById(fileIds);
-        deleteNoticeFiles(notice, filesToDelete, fileType);
+        deleteNoticeFiles(filesToDelete, fileType);
     }
 
-    private void deleteNoticeFiles(Notice notice, List<NoticeFile> files, FileType fileType) {
+    private void deleteNoticeFiles(List<NoticeFile> files, FileType fileType) {
         files.forEach(file -> {
             // 저장 파일명 구하기
             String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
@@ -151,7 +151,7 @@ public class NoticeService {
                 s3Service.deleteImage(saveFileName);
             }
         });
-        noticeFileRepository.deleteFilesByNotice(notice);
+        noticeFileRepository.deleteNoticeFiles(files);
     }
 
     private Notice validNoticeById(Long noticeId) {

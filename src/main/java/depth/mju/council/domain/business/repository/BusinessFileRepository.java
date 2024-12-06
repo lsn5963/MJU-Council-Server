@@ -1,5 +1,6 @@
 package depth.mju.council.domain.business.repository;
 
+import depth.mju.council.domain.alliance.entity.AllianceFile;
 import depth.mju.council.domain.business.entity.Business;
 import depth.mju.council.domain.business.entity.BusinessFile;
 import depth.mju.council.domain.common.FileType;
@@ -24,9 +25,9 @@ public interface BusinessFileRepository extends JpaRepository<BusinessFile, Long
             "ORDER BY bf.createdAt ASC")
     List<FileRes> findBusinessFilesByBusinessIdAndFileType(@Param("businessId") Long businessId, @Param("fileType") FileType fileType);
 
-    @Modifying
-    @Query("DELETE FROM BusinessFile bf WHERE bf.business = :business")
-    void deleteFilesByBusiness(@Param("business") Business business);
-
     List<BusinessFile> findByBusiness(Business business);
+
+    @Modifying
+    @Query("DELETE FROM BusinessFile bf WHERE bf IN :files")
+    void deleteBusinessFiles(@Param("files") List<BusinessFile> files);
 }
