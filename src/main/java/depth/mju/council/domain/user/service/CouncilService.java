@@ -109,4 +109,21 @@ public class CouncilService {
         councilImageRepository.save(councilImage);
     }
 
+    @Transactional
+    public void deleteCouncilImage(Long councilImageId, UserPrincipal userPrincipal) {
+        CouncilImage councilImage = councilImageRepository.findById(councilImageId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "소개이미지를 찾을 수 없습니다."));
+        userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 이미지 삭제
+        String imageUrl = councilImage.getImgUrl();
+        if (imageUrl != null) {
+            String imageName = s3Service.extractImageNameFromUrl(imageUrl);
+            s3Service.deleteImage(imageName);
+        }
+
+        // 소개이미지 삭제
+        councilImageRepository.delete(councilImage);
+    }
 }

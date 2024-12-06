@@ -84,4 +84,17 @@ public class CouncilController {
                         .build()
         );
     }
+
+    @Operation(summary = "소개이미지 삭제")
+    @DeleteMapping("/images/{councilImageId}")
+    public ResponseEntity<?> deleteCouncilImage(@PathVariable Long councilImageId,
+                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        councilService.deleteCouncilImage(councilImageId, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("소개이미지가 삭제되었습니다.")
+                        .build()
+        );
+    }
 }
