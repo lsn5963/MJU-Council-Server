@@ -70,4 +70,22 @@ public class DepartmentService {
 
         departmentRepository.save(department);
     }
+
+    @Transactional
+    public void deleteDepartment(Long departmentId, UserPrincipal userPrincipal) {
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "국 별 소개를 찾을 수 없습니다."));
+        userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 이미지 삭제
+        String imageUrl = department.getImgUrl();
+        if (imageUrl != null) {
+            String imageName = s3Service.extractImageNameFromUrl(imageUrl);
+            s3Service.deleteImage(imageName);
+        }
+
+        // 국별 소개 삭제
+        departmentRepository.delete(department);
+    }
 }

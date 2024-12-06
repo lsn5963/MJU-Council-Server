@@ -57,3 +57,17 @@ public class DepartmentController {
                         .build()
         );
     }
+
+    @Operation(summary = "국별 소개 삭제")
+    @DeleteMapping("/{departmentId}")
+    public ResponseEntity<?> deleteDepartment(@PathVariable Long departmentId,
+                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        departmentService.deleteDepartment(departmentId, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("국별 소개가 삭제되었습니다.")
+                        .build()
+        );
+    }
+}
