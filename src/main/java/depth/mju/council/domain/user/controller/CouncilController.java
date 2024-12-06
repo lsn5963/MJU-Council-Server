@@ -1,9 +1,7 @@
 package depth.mju.council.domain.user.controller;
 
-import depth.mju.council.domain.committe.dto.req.CreateCommitteeReq;
 import depth.mju.council.domain.user.dto.req.UpdateCouncilReq;
 import depth.mju.council.domain.user.service.CouncilService;
-import depth.mju.council.domain.user.service.UserService;
 import depth.mju.council.global.config.UserPrincipal;
 import depth.mju.council.global.payload.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +40,60 @@ public class CouncilController {
                 ApiResult.builder()
                         .check(true)
                         .message("총학정보가 수정되었습니다.")
+                        .build()
+        );
+    }
+
+    @Operation(summary = "소개이미지 조회")
+    @GetMapping("/images")
+    public ResponseEntity<ApiResult> getCouncilImages() {
+        ApiResult apiResult = ApiResult.builder()
+                .check(true)
+                .information(councilService.getAllCouncilImages())
+                .message("소개이미지를 성공적으로 조회했습니다.")
+                .build();
+        return ResponseEntity.ok(apiResult);
+    }
+
+    @Operation(summary = "소개이미지 등록")
+    @PostMapping("/images")
+    public ResponseEntity<?> createCouncilImage(
+            @RequestPart("description") String description,
+            @RequestPart(value = "image") MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        councilService.createCouncilImage(description, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("소개이미지가 등록되었습니다.")
+                        .build()
+        );
+    }
+    @Operation(summary = "소개이미지 수정")
+    @PutMapping("/images/{councilImageId}")
+    public ResponseEntity<?> updateCouncilImage(
+            @PathVariable Long councilImageId,
+            @RequestPart("description") String description,
+            @RequestPart(value = "image") MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        councilService.updateCouncilImage(councilImageId, description, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("소개이미지가 수정되었습니다.")
+                        .build()
+        );
+    }
+
+    @Operation(summary = "소개이미지 삭제")
+    @DeleteMapping("/images/{councilImageId}")
+    public ResponseEntity<?> deleteCouncilImage(@PathVariable Long councilImageId,
+                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        councilService.deleteCouncilImage(councilImageId, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("소개이미지가 삭제되었습니다.")
                         .build()
         );
     }
