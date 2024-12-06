@@ -29,5 +29,9 @@ public interface NoticeFileRepository extends JpaRepository<NoticeFile, Long> {
     @Query("DELETE FROM NoticeFile nf WHERE nf.notice = :notice")
     void deleteFilesByNotice(@Param("notice") Notice notice);
 
+    @Modifying
+    @Query("DELETE FROM NoticeFile nf WHERE nf IN :files")
+    void deleteNoticeFiles(@Param("files") List<NoticeFile> files);
+
     List<NoticeFile> findByNotice(Notice notice);
 }

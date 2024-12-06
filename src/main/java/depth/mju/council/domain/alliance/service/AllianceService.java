@@ -112,7 +112,10 @@ public class AllianceService {
     @Transactional
     public void deleteAlliance(Long allianceId) {
         Alliance alliance = validAllianceById(allianceId);
-        allianceFileRepository.deleteFilesByAlliance(alliance);
+        List<AllianceFile> allianceFiles = allianceFileRepository.findByAlliance(alliance);
+        deleteAllianceFiles(allianceFiles, FileType.FILE);
+        deleteAllianceFiles(allianceFiles, FileType.IMAGE);
+
         allianceRepository.delete(alliance);
     }
 
@@ -128,22 +131,22 @@ public class AllianceService {
         validDateRange(modifyAllianceReq.getStartDate(), modifyAllianceReq.getEndDate());
         alliance.update(modifyAllianceReq.getTitle(), modifyAllianceReq.getContent(), modifyAllianceReq.getStartDate(), modifyAllianceReq.getEndDate());
 
-        findAllianceFilesByIds(alliance, modifyAllianceReq.getDeleteImages(), FileType.IMAGE);
-        findAllianceFilesByIds(alliance, modifyAllianceReq.getDeleteFiles(), FileType.FILE);
+        findAllianceFilesByIds(modifyAllianceReq.getDeleteImages(), FileType.IMAGE);
+        findAllianceFilesByIds(modifyAllianceReq.getDeleteFiles(), FileType.FILE);
         uploadAllianceFiles(images, alliance, FileType.IMAGE);
         uploadAllianceFiles(files, alliance, FileType.FILE);
     }
 
-    private void findAllianceFilesByIds(Alliance alliance, List<Integer> files, FileType fileType) {
+    private void findAllianceFilesByIds(List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
         }
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<AllianceFile> filesToDelete = allianceFileRepository.findAllById(fileIds);
-        deleteAllianceFiles(alliance, filesToDelete, fileType);
+        deleteAllianceFiles(filesToDelete, fileType);
     }
 
-    private void deleteAllianceFiles(Alliance alliance, List<AllianceFile> files, FileType fileType) {
+    private void deleteAllianceFiles(List<AllianceFile> files, FileType fileType) {
         files.forEach(file -> {
             String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
             if (fileType == FileType.FILE) {
@@ -152,7 +155,7 @@ public class AllianceService {
             s3Service.deleteImage(saveFileName);
             }
         });
-        allianceFileRepository.deleteFilesByAlliance(alliance);
+        allianceFileRepository.deleteAllianceFiles(files);
     }
 
     private Alliance validAllianceById(Long allianceId) {

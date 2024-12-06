@@ -22,10 +22,12 @@ public interface AllianceFileRepository extends JpaRepository<AllianceFile, Long
     List<FileRes> findAllianceFilesByAllianceIdAndFileType(@Param("allianceId") Long allianceId, @Param("fileType") FileType fileType);
 
     @Modifying
-    @Query("DELETE FROM AllianceFile af WHERE af.alliance = :alliance")
-    void deleteFilesByAlliance(@Param("alliance") Alliance alliance);
+    @Query("DELETE FROM AllianceFile af WHERE af IN :files")
+    void deleteAllianceFiles(@Param("files") List<AllianceFile> files);
 
     @Modifying
     @Query("UPDATE AllianceFile af SET af.isDeleted = :isDeleted")
     void updateIsDeletedForAll(@Param("isDeleted") boolean isDeleted);
+
+    List<AllianceFile> findByAlliance(Alliance alliance);
 }

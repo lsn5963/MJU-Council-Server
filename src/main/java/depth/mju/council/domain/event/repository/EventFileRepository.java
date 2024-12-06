@@ -26,6 +26,8 @@ public interface EventFileRepository extends JpaRepository<EventFile, Long> {
     List<FileRes> findEventFilesByEventIdAndFileType(@Param("eventId") Long eventId, @Param("fileType") FileType fileType);
 
     @Modifying
-    @Query("DELETE FROM EventFile ef WHERE ef.event = :event")
-    void deleteFilesByEvent(@Param("event") Event event);
+    @Query("DELETE FROM EventFile ef WHERE ef IN :files")
+    void deleteEventFiles(@Param("files") List<EventFile> files);
+
+    List<EventFile> findByEvent(Event event);
 }
