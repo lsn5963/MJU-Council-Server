@@ -3,6 +3,7 @@ package depth.mju.council.global.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -53,6 +54,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(WHITE_LIST)
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated() //어떠한 요청이라도 인증 필요
