@@ -105,11 +105,11 @@ public class BusinessService {
     }
 
     @Transactional
-    public void deleteBusiness(Long noticeId) {
-        Business business = validBusinessById(noticeId);
+    public void deleteBusiness(Long businessId) {
+        Business business = validBusinessById(businessId);
         List<BusinessFile> businessFiles = businessFileRepository.findByBusiness(business);
-        deleteBusinessFiles(business, businessFiles, FileType.FILE);
-        deleteBusinessFiles(business, businessFiles, FileType.IMAGE);
+        deleteBusinessFiles(businessFiles, FileType.FILE);
+        deleteBusinessFiles(businessFiles, FileType.IMAGE);
 
         businessRepository.delete(business);
     }
@@ -121,27 +121,27 @@ public class BusinessService {
     }
 
     @Transactional
-    public void modifyBusiness(Long noticeId, List<MultipartFile> images, List<MultipartFile> files, ModifyBusinessReq modifyBusinessReq) {
-        Business business = validBusinessById(noticeId);
+    public void modifyBusiness(Long businessId, List<MultipartFile> images, List<MultipartFile> files, ModifyBusinessReq modifyBusinessReq) {
+        Business business = validBusinessById(businessId);
         business.updateTitleAndContent(modifyBusinessReq.getTitle(), modifyBusinessReq.getContent());
         // 지우고자 하는 이미지/파일 삭제
-        findBusinessFilesByIds(business, modifyBusinessReq.getDeleteFiles(), FileType.FILE);
-        findBusinessFilesByIds(business, modifyBusinessReq.getDeleteImages(), FileType.IMAGE);
+        findBusinessFilesByIds(modifyBusinessReq.getDeleteFiles(), FileType.FILE);
+        findBusinessFilesByIds(modifyBusinessReq.getDeleteImages(), FileType.IMAGE);
         // 파일/이미지 업로드
         uploadBusinessFiles(images, business, FileType.IMAGE);
         uploadBusinessFiles(files, business, FileType.FILE);
     }
 
-    private void findBusinessFilesByIds(Business business, List<Integer> files, FileType fileType) {
+    private void findBusinessFilesByIds(List<Integer> files, FileType fileType) {
         if (files == null || files.isEmpty()) {
             return;
         }
         List<Long> fileIds = files.stream().map(Long::valueOf).collect(Collectors.toList());
         List<BusinessFile> filesToDelete = businessFileRepository.findAllById(fileIds);
-        deleteBusinessFiles(business, filesToDelete, fileType);
+        deleteBusinessFiles(filesToDelete, fileType);
     }
 
-    private void deleteBusinessFiles(Business business, List<BusinessFile> files, FileType fileType) {
+    private void deleteBusinessFiles(List<BusinessFile> files, FileType fileType) {
         files.forEach(file -> {
             // 저장 파일명 구하기
             String saveFileName = s3Service.extractImageNameFromUrl(file.getFileUrl());
@@ -152,7 +152,7 @@ public class BusinessService {
                 s3Service.deleteImage(saveFileName);
             }
         });
-        businessFileRepository.deleteFilesByBusiness(business);
+        businessFileRepository.deleteBusinessFiles(files);
     }
 
     private Business validBusinessById(Long businessId) {
