@@ -42,3 +42,18 @@ public class DepartmentController {
         );
     }
 
+    @Operation(summary = "국별 소개 수정")
+    @PutMapping("/{departmentId}")
+    public ResponseEntity<?> updateDepartment(
+            @PathVariable Long departmentId,
+            @RequestPart("description") String description,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        departmentService.updateDepartment(departmentId, description, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("국별 소개가 수정되었습니다.")
+                        .build()
+        );
+    }

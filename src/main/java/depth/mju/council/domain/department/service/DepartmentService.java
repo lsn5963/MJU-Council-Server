@@ -51,4 +51,23 @@ public class DepartmentService {
         departmentRepository.save(department);
     }
 
+    @Transactional
+    public void updateDepartment(Long departmentId, String description, MultipartFile image, UserPrincipal userPrincipal) {
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "국 별 소개를 찾을 수 없습니다."));
+        userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        // 기존 이미지 삭제
+        String oldImageUrl = department.getImgUrl();
+        if (oldImageUrl != null) {
+            String oldImageName = s3Service.extractImageNameFromUrl(oldImageUrl);
+            s3Service.deleteImage(oldImageName);
+        }
+        // 새 이미지 업로드
+        String newImageUrl = s3Service.uploadImage(image);
+        department.updateDescriptionAndImgUrl(description, newImageUrl);
+
+        departmentRepository.save(department);
+    }
 }
