@@ -55,4 +55,18 @@ public class CouncilController {
         return ResponseEntity.ok(apiResult);
     }
 
+    @Operation(summary = "소개이미지 등록")
+    @PostMapping("/images")
+    public ResponseEntity<?> createCouncilImage(
+            @RequestPart("description") String description,
+            @RequestPart(value = "image") MultipartFile image,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        councilService.createCouncilImage(description, image, userPrincipal);
+        return ResponseEntity.ok(
+                ApiResult.builder()
+                        .check(true)
+                        .message("소개이미지가 등록되었습니다.")
+                        .build()
+        );
+    }
 }

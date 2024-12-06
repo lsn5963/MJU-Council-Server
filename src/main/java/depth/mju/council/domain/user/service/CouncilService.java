@@ -73,4 +73,19 @@ public class CouncilService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void createCouncilImage(String description, MultipartFile image, UserPrincipal userPrincipal) {
+        UserEntity user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+
+        String imgUrl = s3Service.uploadImage(image);
+        CouncilImage councilImage = CouncilImage.builder()
+                .description(description)
+                .imgUrl(imgUrl)
+                .userEntity(user)
+                .build();
+        councilImageRepository.save(councilImage);
+    }
+
 }
