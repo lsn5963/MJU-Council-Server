@@ -1,6 +1,5 @@
 package depth.mju.council.domain.minute.service;
 
-import depth.mju.council.domain.banner.entity.Banner;
 import depth.mju.council.domain.common.FileType;
 import depth.mju.council.domain.minute.dto.req.CreateMinuteReq;
 import depth.mju.council.domain.minute.dto.req.ModifyMinuteReq;
@@ -47,16 +46,14 @@ public class MinuteService {
         minuteRepository.save(minute);
         uploadMinuteFiles(files, minute);
     }
-    public PageResponse  getAllMinute(int page, int size) {
+    public PageResponse  getAllMinute(int page, int size, Optional<String> keyword) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
         Page<Minute> pageResult;
-        pageResult = minuteRepository.findAll(pageRequest);
-        //혹시 추후 리펙토링으로 KEYWORD가 나올 수 있어서 주석으로 남겨두겠습니다
-//        if (keyword.isPresent()) {
-//            pageResult = minuteRepository.findByTitleContaining(keyword.get(), pageRequest);
-//        } else {
-//            pageResult = minuteRepository.findAll(pageRequest);
-//        }
+        if (keyword.isPresent()) {
+            pageResult = minuteRepository.findByTitleContaining(keyword.get(), pageRequest);
+        } else {
+            pageResult = minuteRepository.findAll(pageRequest);
+        }
         return PageResponse.builder()
                 .totalElements(pageResult.getTotalElements())
                 .totalPage(pageResult.getTotalPages())

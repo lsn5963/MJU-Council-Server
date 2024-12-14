@@ -36,14 +36,14 @@ public class MinuteController {
         return ResponseEntity.ok(result);
     }
     @Operation(summary = "회의록 전체 조회 API", description = "회의록 목록을 조회하는 API입니다.")
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<ApiResult> getAllMinute(
             @Parameter(description = "현재 페이지의 번호입니다. 0부터 시작합니다.", required = true) @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size){
-//            @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword)
+            @Parameter(description = "한 페이지의 개수입니다.", required = true) @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "검색어입니다. 검색하지 않을 경우, 값을 보내지 않습니다.", required = false) @RequestParam Optional<String> keyword){
         ApiResult result = ApiResult.builder()
                 .check(true)
-                .information(minuteService.getAllMinute(page, size))
+                .information(minuteService.getAllMinute(page, size,keyword))
                 .build();
         return ResponseEntity.ok(result);
     }
