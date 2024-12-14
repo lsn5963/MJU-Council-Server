@@ -27,7 +27,7 @@ public class RegulationController {
     @PostMapping
     public ResponseEntity<ApiResult> createRegulation(
             @Parameter(description = "User의 토큰을 입력해주세요.", required = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @Parameter(description = "Schemas의 CreateRegulationReq를 참고해주세요.", required = true) @RequestBody CreateRegulationReq createRegulationReq,
+            @Parameter(description = "Schemas의 CreateRegulationReq를 참고해주세요.", required = true) @RequestPart CreateRegulationReq createRegulationReq,
             @Parameter(description = "Multiaprt form-data 형식으로, 업로드할 파일 리스트입니다. 보낼 데이터가 없다면 빈 리스트로 전달해주세요.", required = true)
             @RequestPart(value = "file", required = false) List<MultipartFile> file) {
         regulationService.createRegulation(userPrincipal.getId(), file,createRegulationReq);
